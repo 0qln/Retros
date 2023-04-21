@@ -12,21 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Debugger;
 
-namespace WpfApp1 {
+namespace WpfApp3 {
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
     public partial class MainWindow : Window {
-        
-        
         public MainWindow() {
-            
-            Debugger.Console console = Debugger.Console.Instaciate;
-            console.Log("");
-            
             InitializeComponent();
-        }
-
-        private async void Button_Click(object sender, RoutedEventArgs e) {
         }
     }
 }
