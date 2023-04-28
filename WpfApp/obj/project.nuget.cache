@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "SVzP2mX0FprZLN2v6XBRW2k1jlEYdXfLHW7mWUiA8AwTCBnXMWsrTrP1ckPoferFMoFHyxD/pydCg3Axw5bl9g==",
+  "dgSpecHash": "xb8guTIAGg/r0GbRIiJHUV/q3wd9+We/8v1wvFZQjX9QCopaDxinYJMrkGabRCryhGAZ/tct+Ua56H7d9QcaIw==",
   "success": true,
   "projectFilePath": "D:\\Programmmieren\\Projects\\Retros\\Visual Studio and Github\\WpfApp\\Retros.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\User\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\7.0.5\\microsoft.aspnetcore.app.runtime.win-x64.7.0.5.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\7.0.5\\microsoft.windowsdesktop.app.runtime.win-x64.7.0.5.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\7.0.5\\microsoft.netcore.app.runtime.win-x64.7.0.5.nupkg.sha512"
+  ],
   "logs": []
 }

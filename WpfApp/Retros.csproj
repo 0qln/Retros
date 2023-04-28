@@ -5,11 +5,18 @@
     <TargetFramework>net7.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+	  <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+	  <PublishSingleFile>true</PublishSingleFile>
+	  <SelfContained>true</SelfContained>
+	  <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <ItemGroup>
     <Reference Include="DebugLibrary">
       <HintPath>..\..\..\..\Github\Projects\DebugLibrary\DebugLibrary\bin\Debug\net7.0\DebugLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="WpfCustomControlLibrary1">
+      <HintPath>..\..\..\WPF Extensions\Release\WpfCustomControlLibrary1.dll</HintPath>
     </Reference>
   </ItemGroup>
 

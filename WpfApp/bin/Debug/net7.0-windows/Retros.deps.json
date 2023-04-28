@@ -8,7 +8,8 @@
     ".NETCoreApp,Version=v7.0": {
       "Retros/1.0.0": {
         "dependencies": {
-          "DebugLibrary": "1.0.0.0"
+          "DebugLibrary": "1.0.0.0",
+          "WpfCustomControlLibrary1": "1.0.0.0"
         },
         "runtime": {
           "Retros.dll": {}
@@ -17,6 +18,14 @@
       "DebugLibrary/1.0.0.0": {
         "runtime": {
           "DebugLibrary.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "WpfCustomControlLibrary1/1.0.0.0": {
+        "runtime": {
+          "WpfCustomControlLibrary1.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
@@ -39,6 +48,11 @@
       "sha512": ""
     },
     "DebugLibrary/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "WpfCustomControlLibrary1/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
