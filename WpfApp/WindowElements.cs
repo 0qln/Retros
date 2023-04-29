@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Ribbon.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
@@ -15,14 +16,15 @@ namespace Retros {
         private Canvas canvas;
 
         // Client Area
+        public ClientWorkStation workStation;
         public Grid ClientGrid = new();
-        public Grid WorkActionsGrid = new();
         public Grid WorkStationGrid = new();
+        public Grid WorkStationImageGrid = new();
         public System.Windows.Shapes.Rectangle shadow = new System.Windows.Shapes.Rectangle();
         private double shadowRectWidth = 5;
 
         public Brush WorkStationGrid_BG = Helper.StringToSolidColorBrush("#1f1f1f");
-        public Brush WorkActionGrid_BG = Brushes.Tomato;//Helper.StringToSolidColorBrush("#2e2e2e");
+        public Brush WorkActionGrid_BG = Helper.StringToSolidColorBrush("#2e2e2e");
 
         public Image CurrentImage = new();
 
@@ -51,26 +53,33 @@ namespace Retros {
 
 
             // WorkActionsGrid
-            Helper.AddRow(WorkActionsGrid, 21, GridUnitType.Star);
-            Helper.AddRow(WorkActionsGrid, 13, GridUnitType.Star);
-            Helper.SetChildInGrid(ClientGrid, WorkActionsGrid, 0, 1);
-            WorkActionsGrid.Background = WorkActionGrid_BG;
+            Helper.AddRow(WorkStationGrid, windowHandle.Height, GridUnitType.Pixel);
+            Helper.AddRow(WorkStationGrid, 1, GridUnitType.Star);
+            Helper.SetChildInGrid(ClientGrid, WorkStationGrid, 0, 1);
+            WorkStationGrid.Background = WorkActionGrid_BG;
 
-            
+            workStation = new();
+            Helper.SetChildInGrid(WorkStationGrid, workStation.FrameworkElement, 1, 0);
+            workStation.AddTab(new ClientWorkStation.Tab("Filter", new TabBodies.ImageEditing.Filters()));
+            workStation.AddTab(new ClientWorkStation.Tab("Pixel Sorter", new TabBodies.ImageEditing.PixelSorting()));
+            workStation.SelectTab(0);
+
             // WorkStation
-            Helper.SetChildInGrid(ClientGrid, WorkStationGrid, 0, 0);
-            WorkStationGrid.Background = WorkStationGrid_BG;
+            Helper.SetChildInGrid(ClientGrid, WorkStationImageGrid, 0, 0);
+            WorkStationImageGrid.Background = WorkStationGrid_BG;
 
-            Helper.AddColumn(WorkStationGrid, 1, GridUnitType.Star);
-            Helper.AddColumn(WorkStationGrid, 1, GridUnitType.Auto);
+            Helper.AddColumn(WorkStationImageGrid, 1, GridUnitType.Star);
+            Helper.AddColumn(WorkStationImageGrid, 1, GridUnitType.Auto);
             Helper.SetImageSource(CurrentImage, @"C:\Users\User\OneDrive\Bilder\Wallpapers\2560x1600-960402-anime-anime-girls-digital-art-artwork-long-hair.jpg");
             CurrentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
             CurrentImage.Margin = new Thickness(50);
-            Helper.SetChildInGrid(WorkStationGrid, CurrentImage, 0, 0);
-            Helper.SetChildInGrid(WorkStationGrid, shadow, 0, 1);
+            Helper.SetChildInGrid(WorkStationImageGrid, CurrentImage, 0, 0);
+            Helper.SetChildInGrid(WorkStationImageGrid, shadow, 0, 1);
 
             DropShadowEffect effect1 = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
             CurrentImage.Effect = effect1;
+
+
 
             // shadow
             DropShadowEffect effect2 = new DropShadowEffect { BlurRadius = 25, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.80, Direction = 180};
@@ -85,6 +94,8 @@ namespace Retros {
             shadow.MouseEnter += (s, e) => Application.Current.MainWindow.Cursor = Cursors.SizeWE; ;
             shadow.MouseLeave += (s, e) => Application.Current.MainWindow.Cursor = Cursors.Arrow; ;
             
+
+
 
             SetupWindowHandle();
         }
@@ -155,11 +166,7 @@ namespace Retros {
             MainGrid.Height = Application.Current.MainWindow.ActualHeight;
             MainGrid.Width = Application.Current.MainWindow.ActualWidth;
 
-            shadow.Height = WorkStationGrid.ActualHeight;
+            shadow.Height = WorkStationImageGrid.ActualHeight;
         }
-
-
-
     }
-
 }
