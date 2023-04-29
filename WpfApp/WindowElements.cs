@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
+using System.Windows.Threading;
 using WpfCustomControls;
 
 namespace Retros {
@@ -10,19 +12,26 @@ namespace Retros {
     internal class WindowElements {
         //Window
         public Grid MainGrid = new();
+        private Canvas canvas;
 
         // Client Area
         public Grid ClientGrid = new();
         public Grid WorkActionsGrid = new();
         public Grid WorkStationGrid = new();
         public System.Windows.Shapes.Rectangle shadow = new System.Windows.Shapes.Rectangle();
-        private double shadowRectWidth = 50;
+        private double shadowRectWidth = 5;
 
-        public Brush WorkStationGrid_BG = Helper.StringToSolidColorBrush("#585858");
-        public Brush WorkActionGrid_BG = Helper.StringToSolidColorBrush("#48484c");
+        public Brush WorkStationGrid_BG = Helper.StringToSolidColorBrush("#1f1f1f");
+        public Brush WorkActionGrid_BG = Brushes.Tomato;//Helper.StringToSolidColorBrush("#2e2e2e");
+
+        public Image CurrentImage = new();
 
         //WindowHandle
         public WindowHandle windowHandle = new();
+        public DropDownMenu fileMenu = new("File");
+        public DropDownMenu editMenu = new("Edit");
+        public DropDownMenu viewMenu = new("View");
+        public DropDownMenu settingsMenu = new("Settings");
 
 
         public WindowElements(Canvas canvas) {
@@ -32,47 +41,108 @@ namespace Retros {
                 MainGrid.Width = canvas.ActualWidth;
             };
             canvas.Children.Add(MainGrid);
+            this.canvas = canvas;
+
 
             // Client Grid
-            AddColumn(ClientGrid, 21, GridUnitType.Star);
-            AddColumn(ClientGrid, 13, GridUnitType.Star);
+            Helper.AddColumn(ClientGrid, 21, GridUnitType.Star);
+            Helper.AddColumn(ClientGrid, 13, GridUnitType.Star);
             Helper.SetChildInGrid(MainGrid, ClientGrid, 1, 0);
-            ClientGrid.ClipToBounds = false;
+
 
             // WorkActionsGrid
-            AddRow(WorkActionsGrid, 21, GridUnitType.Star);
-            AddRow(WorkActionsGrid, 13, GridUnitType.Star);
+            Helper.AddRow(WorkActionsGrid, 21, GridUnitType.Star);
+            Helper.AddRow(WorkActionsGrid, 13, GridUnitType.Star);
             Helper.SetChildInGrid(ClientGrid, WorkActionsGrid, 0, 1);
             WorkActionsGrid.Background = WorkActionGrid_BG;
-            WorkActionsGrid.ClipToBounds = false;
-            WorkActionsGrid.Background = Brushes.Tomato;
 
-            // shadow Rect
-            DropShadowEffect effect = new DropShadowEffect { BlurRadius = 50, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.5, Direction = 180};
-            shadow.Effect = effect;
-            shadow.Width = shadowRectWidth; 
-            shadow.Fill = Brushes.Gainsboro;
-            Canvas.SetZIndex(shadow, -10);
-            shadow.VerticalAlignment = VerticalAlignment.Top;
-            shadow.HorizontalAlignment = HorizontalAlignment.Right;
-            Helper.SetChildInGrid(WorkStationGrid, shadow, 0, 0);
-
-            // WorkStationGrid
+            
+            // WorkStation
             Helper.SetChildInGrid(ClientGrid, WorkStationGrid, 0, 0);
             WorkStationGrid.Background = WorkStationGrid_BG;
 
-            //WindowHandle
+            Helper.AddColumn(WorkStationGrid, 1, GridUnitType.Star);
+            Helper.AddColumn(WorkStationGrid, 1, GridUnitType.Auto);
+            Helper.SetImageSource(CurrentImage, @"C:\Users\User\OneDrive\Bilder\Wallpapers\2560x1600-960402-anime-anime-girls-digital-art-artwork-long-hair.jpg");
+            CurrentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
+            CurrentImage.Margin = new Thickness(50);
+            Helper.SetChildInGrid(WorkStationGrid, CurrentImage, 0, 0);
+            Helper.SetChildInGrid(WorkStationGrid, shadow, 0, 1);
+
+            DropShadowEffect effect1 = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
+            CurrentImage.Effect = effect1;
+
+            // shadow
+            DropShadowEffect effect2 = new DropShadowEffect { BlurRadius = 25, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.80, Direction = 180};
+            shadow.Effect = effect2;
+            shadow.Width = shadowRectWidth;
+            shadow.Fill = WorkActionGrid_BG;
+            Canvas.SetZIndex(shadow, -10);
+            shadow.VerticalAlignment = VerticalAlignment.Top;
+            shadow.HorizontalAlignment = HorizontalAlignment.Right;
+            shadow.MouseLeftButtonDown += Shadow_MouseDown;
+            shadow.MouseLeftButtonUp += Shadow_MouseUp;
+            shadow.MouseEnter += (s, e) => Application.Current.MainWindow.Cursor = Cursors.SizeWE; ;
+            shadow.MouseLeave += (s, e) => Application.Current.MainWindow.Cursor = Cursors.Arrow; ;
+            
+
+            SetupWindowHandle();
+        }
+
+        public void SetupWindowHandle() {
+            // Viusals
             windowHandle.SetParentWindow(canvas);
-            windowHandle.SetBGColor(Helper.StringToSolidColorBrush(windowHandle.BGColor.ToString(), 0.75));
+            windowHandle.SetBGColor(Helper.StringToSolidColorBrush("#000000", 0.45));
             windowHandle.ApplicationButtons.ColorWhenButtonHover = Helper.StringToSolidColorBrush("#000000", 0.2);
 
             Application.Current.MainWindow.Loaded += (object sender, RoutedEventArgs e) => UpdateGridSizes_T2();
             canvas.LayoutUpdated += (object? sender, EventArgs e) => UpdateGridSizes_T2();
+
+            // Client Buttons
+            windowHandle.CreateClientButton(fileMenu);
+            windowHandle.CreateClientButton(viewMenu);
+            windowHandle.CreateClientButton(editMenu);
+            windowHandle.CreateClientButton(settingsMenu);
+
+            fileMenu.AddOption("Save").SetKeyboardShortcut("Strg + S");
+            fileMenu.AddOption("Open").SetKeyboardShortcut("Strg + O");
+            editMenu.AddOption("Save Filter").SetKeyboardShortcut("Strg + S + F");
+            viewMenu.AddOption("Zoom").SetKeyboardShortcut("Bla bla");
+            settingsMenu.AddOption("Change Layout").SetKeyboardShortcut("Strg + LShift + L");
+
+            windowHandle.ActivateAllClientButtons();
         }
 
-        public void UpdateGridSizes_Old() {
-            try {
+        // Client area Handle 
+        private double offsetOnEnter = 0;
+        private void Shadow_MouseUp(object sender, MouseButtonEventArgs e) {
+            ((System.Windows.Shapes.Rectangle)sender).ReleaseMouseCapture();
+            CompositionTarget.Rendering -= CompositionTarget_Rendering;
+            offsetOnEnter = 0;
+        }
+        private void Shadow_MouseDown(object sender, MouseButtonEventArgs e) {
+            ((System.Windows.Shapes.Rectangle)sender).CaptureMouse();
+            CompositionTarget.Rendering += CompositionTarget_Rendering;
 
+            double shadowPos = Helper.GetAbsolutePosition(shadow).X;
+            double mousePos = Mouse.GetPosition(Application.Current.MainWindow).X; // Mouse Position Relative to the window
+            double mousePosDelta = mousePos - (shadowPos); // Mouse Position Relative to the AHsoq 
+            offsetOnEnter = mousePosDelta;
+        }
+        private void CompositionTarget_Rendering(object? sender, EventArgs e) {
+            double mousePos = Mouse.GetPosition(Application.Current.MainWindow).X; // Mouse Position Relative to the window
+
+            double a = mousePos / (ClientGrid.ActualWidth);
+            double b = 1 - a;
+
+            if (a < 0) a = shadowRectWidth / ClientGrid.ActualWidth;
+            if (b < 0) b = 0;
+            ClientGrid.ColumnDefinitions[0].Width = new GridLength(a, GridUnitType.Star);
+            ClientGrid.ColumnDefinitions[1].Width = new GridLength(b, GridUnitType.Star);
+        }
+
+
+        public void GoldenRatio_GridSizes() {
             MainGrid.Height = Application.Current.MainWindow.ActualHeight;
             MainGrid.Width = Application.Current.MainWindow.ActualWidth;
 
@@ -80,33 +150,14 @@ namespace Retros {
             double b = MainGrid.ActualWidth - a;
             ClientGrid.ColumnDefinitions[0].Width = new GridLength(a, GridUnitType.Pixel);
             ClientGrid.ColumnDefinitions[1].Width = new GridLength(b, GridUnitType.Pixel);
-            }
-            catch {
-                UpdateGridSizes_T2();
-            }
         }
         public void UpdateGridSizes_T2() {
-
             MainGrid.Height = Application.Current.MainWindow.ActualHeight;
             MainGrid.Width = Application.Current.MainWindow.ActualWidth;
-
-            ClientGrid.ColumnDefinitions[0].Width = new GridLength(21, GridUnitType.Star);
-            ClientGrid.ColumnDefinitions[1].Width = new GridLength(13, GridUnitType.Star);
-
 
             shadow.Height = WorkStationGrid.ActualHeight;
         }
 
-
-        public static void AddRow(Grid grid, double value, GridUnitType type) {
-            RowDefinition rowDefinition = new RowDefinition { Height = new GridLength(value, type) };
-            grid.RowDefinitions.Add(rowDefinition);
-        }
-
-        public static void AddColumn(Grid grid, double value, GridUnitType type) {
-            ColumnDefinition columnDefinition = new ColumnDefinition { Width = new GridLength(value, type) };
-            grid.ColumnDefinitions.Add(columnDefinition);
-        }
 
 
     }
