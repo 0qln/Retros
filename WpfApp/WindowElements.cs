@@ -37,13 +37,14 @@ namespace Retros {
 
 
         public WindowElements(Canvas canvas) {
+            this.canvas = canvas;
+
             // Main Grid
             MainGrid.Loaded += (object sender, RoutedEventArgs e) => { 
                 MainGrid.Height = canvas.ActualHeight;
                 MainGrid.Width = canvas.ActualWidth;
             };
             canvas.Children.Add(MainGrid);
-            this.canvas = canvas;
 
 
             // Client Grid
@@ -70,7 +71,7 @@ namespace Retros {
 
             Helper.AddColumn(WorkStationImageGrid, 1, GridUnitType.Star);
             Helper.AddColumn(WorkStationImageGrid, 1, GridUnitType.Auto);
-            Helper.SetImageSource(CurrentImage, @"C:\Users\User\OneDrive\Bilder\Wallpapers\2560x1600-960402-anime-anime-girls-digital-art-artwork-long-hair.jpg");
+            Helper.SetImageSource(CurrentImage, "C:\\Users\\User\\OneDrive\\Bilder\\Wallpapers\\mountain-lake-reflection-nature-scenery-hd-wallpaper-uhdpaper.com-385@0@h.jpg");
             CurrentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
             CurrentImage.Margin = new Thickness(50);
             Helper.SetChildInGrid(WorkStationImageGrid, CurrentImage, 0, 0);

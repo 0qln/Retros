@@ -41,25 +41,23 @@ namespace Retros {
 
         public void AddTab(Tab tab) {
             tabs.Add(tab);
+            tab.Index = tabs.Count - 1;
             tabPanel.Children.Add(tab.FrameworkElement);
-            Helper.SetChildInGrid(mainGrid, tabs[tabs.Count-1].body.FrameworkElement, 1, 0);
-            tabs[tabs.Count-1].body.Hide();
+            Helper.SetChildInGrid(mainGrid, tabs[tab.Index].body.FrameworkElement, 1, 0);
+            tabs[tab.Index].body.Hide();
+
+            tab.handle.FrameworkElement.MouseDown += (s, e) => { 
+                SelectTab(tab.Index);    
+            };
         }
 
 
         public void SelectTab(int index) {
             tabs[currentSelectedTab].body.Hide();
             tabs[index].body.Show();
-            currentSelectedTab = index;
-
+            currentSelectedTab = index; 
         }
 
-
-
-
-        public void SetBG(Brush color) {
-            border.Background = color;
-        }
 
 
         public class Tab  {
@@ -68,6 +66,9 @@ namespace Retros {
 
             private Border border = new();
             public FrameworkElement FrameworkElement => border;
+
+            private int index = -1;
+            public int Index { get => index; set => index = value; }
 
 
             public Tab(string name, IBody body) {
