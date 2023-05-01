@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "xb8guTIAGg/r0GbRIiJHUV/q3wd9+We/8v1wvFZQjX9QCopaDxinYJMrkGabRCryhGAZ/tct+Ua56H7d9QcaIw==",
+  "dgSpecHash": "0Go+luaVj16Nsx+zcj9VEVeAOXlcllYK2Ko4+MuDTyFLIS+FR5qwZJKzYKS0/VtewR+8E+3RHLvhxoYDdIkX9w==",
   "success": true,
   "projectFilePath": "D:\\Programmmieren\\Projects\\Retros\\Visual Studio and Github\\WpfApp\\Retros.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\User\\.nuget\\packages\\microsoft.win32.systemevents\\7.0.0\\microsoft.win32.systemevents.7.0.0.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\system.drawing.common\\7.0.0\\system.drawing.common.7.0.0.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\7.0.5\\microsoft.aspnetcore.app.runtime.win-x64.7.0.5.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\7.0.5\\microsoft.windowsdesktop.app.runtime.win-x64.7.0.5.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\7.0.5\\microsoft.netcore.app.runtime.win-x64.7.0.5.nupkg.sha512"

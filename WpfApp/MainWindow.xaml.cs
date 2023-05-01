@@ -19,6 +19,7 @@ using Retros;
 using WpfCustomControls;
 
 
+
 namespace WpfApp {
     public partial class MainWindow : Window {
         private static WindowElements ?windowElements;
@@ -29,6 +30,8 @@ namespace WpfApp {
 
             windowElements = new(MainCanvas);
 
+            
+            
         }
 
         private void MainWindow_LayoutUpdated(object? sender, EventArgs e) {

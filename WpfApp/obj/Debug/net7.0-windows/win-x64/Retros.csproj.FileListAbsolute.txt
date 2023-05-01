@@ -485,3 +485,4 @@ D:\Programmmieren\Projects\Retros\Visual Studio and Github\WpfApp\obj\Debug\net7
 D:\Programmmieren\Projects\Retros\Visual Studio and Github\WpfApp\obj\Debug\net7.0-windows\win-x64\Retros.pdb
 D:\Programmmieren\Projects\Retros\Visual Studio and Github\WpfApp\obj\Debug\net7.0-windows\win-x64\Retros.genruntimeconfig.cache
 D:\Programmmieren\Projects\Retros\Visual Studio and Github\WpfApp\obj\Debug\net7.0-windows\win-x64\ref\Retros.dll
+D:\Programmmieren\Projects\Retros\Visual Studio and Github\WpfApp\obj\Debug\net7.0-windows\win-x64\Retros.csproj.ResolveComReference.cache

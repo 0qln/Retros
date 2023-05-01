@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon.Primitives;
@@ -16,7 +18,6 @@ namespace Retros {
         private Canvas canvas;
 
         // Client Area
-        public ClientWorkStation workStation;
         public Grid ClientGrid = new();
         public Grid WorkStationGrid = new();
         public Grid WorkStationImageGrid = new();
@@ -26,7 +27,6 @@ namespace Retros {
         public Brush WorkStationGrid_BG = Helper.StringToSolidColorBrush("#1f1f1f");
         public Brush WorkActionGrid_BG = Helper.StringToSolidColorBrush("#2e2e2e");
 
-        public Image CurrentImage = new();
 
         //WindowHandle
         public WindowHandle windowHandle = new();
@@ -59,11 +59,11 @@ namespace Retros {
             Helper.SetChildInGrid(ClientGrid, WorkStationGrid, 0, 1);
             WorkStationGrid.Background = WorkActionGrid_BG;
 
-            workStation = new();
-            Helper.SetChildInGrid(WorkStationGrid, workStation.FrameworkElement, 1, 0);
-            workStation.AddTab(new ClientWorkStation.Tab("Filter", new TabBodies.ImageEditing.Filters()));
-            workStation.AddTab(new ClientWorkStation.Tab("Pixel Sorter", new TabBodies.ImageEditing.PixelSorting()));
-            workStation.SelectTab(0);
+            ClientWorkStation.Instanciate();
+            Helper.SetChildInGrid(WorkStationGrid, ClientWorkStation.FrameworkElement, 1, 0);
+            ClientWorkStation.AddTab(new ClientWorkStation.Tab("Filter", new TabBodies.ImageEditing.Filters()));
+            ClientWorkStation.AddTab(new ClientWorkStation.Tab("Pixel Sorter", new TabBodies.ImageEditing.PixelSorting()));
+            ClientWorkStation.SelectTab(0);
 
             // WorkStation
             Helper.SetChildInGrid(ClientGrid, WorkStationImageGrid, 0, 0);
@@ -71,14 +71,13 @@ namespace Retros {
 
             Helper.AddColumn(WorkStationImageGrid, 1, GridUnitType.Star);
             Helper.AddColumn(WorkStationImageGrid, 1, GridUnitType.Auto);
-            Helper.SetImageSource(CurrentImage, "C:\\Users\\User\\OneDrive\\Bilder\\Wallpapers\\mountain-lake-reflection-nature-scenery-hd-wallpaper-uhdpaper.com-385@0@h.jpg");
-            CurrentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
-            CurrentImage.Margin = new Thickness(50);
-            Helper.SetChildInGrid(WorkStationImageGrid, CurrentImage, 0, 0);
+            ClientWorkStation.WorkstationImage.Image.HorizontalAlignment = HorizontalAlignment.Stretch;
+            ClientWorkStation.WorkstationImage.Image.Margin = new Thickness(50);
+            Helper.SetChildInGrid(WorkStationImageGrid, ClientWorkStation.WorkstationImage.Image, 0, 0);
             Helper.SetChildInGrid(WorkStationImageGrid, shadow, 0, 1);
 
             DropShadowEffect effect1 = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
-            CurrentImage.Effect = effect1;
+            ClientWorkStation.WorkstationImage.Image.Effect = effect1;
 
 
 
@@ -117,12 +116,73 @@ namespace Retros {
             windowHandle.CreateClientButton(settingsMenu);
 
             fileMenu.AddOption("Save").SetKeyboardShortcut("Strg + S");
-            fileMenu.AddOption("Open").SetKeyboardShortcut("Strg + O");
+            fileMenu.AddOption("Open").SetKeyboardShortcut("Strg + O").AddCommand(LoadImage);
             editMenu.AddOption("Save Filter").SetKeyboardShortcut("Strg + S + F");
             viewMenu.AddOption("Zoom").SetKeyboardShortcut("Bla bla");
             settingsMenu.AddOption("Change Layout").SetKeyboardShortcut("Strg + LShift + L");
 
             windowHandle.ActivateAllClientButtons();
+        }
+        public void LoadImage() {
+            ClientWorkStation.WorkstationImage.SetSource(ShowImagePickerDialog());
+        }
+        public string ShowFolderPickerDialog() {
+            var openFileDialog = new OpenFileDialog {
+                Title = "Select a folder",
+                Filter = "Folders|*.000|All Files|*.*",
+                FileName = "Folder Selection",
+                CheckFileExists = false,
+                CheckPathExists = true,
+                ReadOnlyChecked = true,
+                Multiselect = false,
+                ValidateNames = false,
+                DereferenceLinks = true,
+                ShowReadOnly = false,
+                AddExtension = false,
+                RestoreDirectory = true,
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                CustomPlaces = null,
+            };
+
+            // Set the FolderPicker option
+            openFileDialog.ShowDialog(System.Windows.Application.Current.MainWindow);
+
+            // Get the selected folder path
+            string ?selectedFolderPath = System.IO.Path.GetDirectoryName(openFileDialog.FileName);
+            if (selectedFolderPath != null && Directory.Exists(selectedFolderPath)) {
+                return selectedFolderPath;
+            }
+
+            return "";
+        }
+        public string ShowImagePickerDialog() {
+            var openFileDialog = new OpenFileDialog {
+                Title = "Select an image",
+                Filter = "Image files (*.png;*.jpeg;*.jpg;*.gif)|*.png;*.jpeg;*.jpg;*.gif|All files (*.*)|*.*",
+                FileName = "Image Selection",
+                CheckFileExists = true,
+                CheckPathExists = true,
+                ReadOnlyChecked = true,
+                Multiselect = false,
+                ValidateNames = true,
+                DereferenceLinks = true,
+                ShowReadOnly = false,
+                AddExtension = true,
+                RestoreDirectory = true,
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
+                CustomPlaces = null,
+            };
+
+            // Set the ImagePicker option
+            openFileDialog.ShowDialog(System.Windows.Application.Current.MainWindow);
+
+            // Get the selected image path
+            string selectedImagePath = openFileDialog.FileName;
+            if (!string.IsNullOrEmpty(selectedImagePath) && File.Exists(selectedImagePath)) {
+                return selectedImagePath;
+            }
+
+            return "";
         }
 
         // Client area Handle 
