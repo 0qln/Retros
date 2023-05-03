@@ -3,109 +3,155 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Retros.ClientWorkStation.Tab;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows;
 using WpfCustomControls;
 using Retros.ImageEditing;
+using System.Diagnostics;
+using DebugLibrary.Benchmarks;
 
 namespace Retros {
-    namespace TabBodies {
-        namespace ImageEditing {
+    namespace ClientWorkStation {
+        namespace Tabs {
+            public abstract class Tab {
+                protected Handle handle;
+                public Handle Handle => handle;
+                protected Body body;
+                public Body Body => body;
 
 
-            public class Filters : IBody {
-                private Grid mainGrid = new();
-                private Border border = new();
+                protected Border border = new();
                 public FrameworkElement FrameworkElement => border;
-                public ImageEditor ImageEditor = new();
-                private StackPanel stackPanel = new();
 
-                public Button grayScaleButton = new();
+                protected int index = -1;
+                public int Index { get => index; set => index = value; }
 
-                public Filters() {
-                    border.BorderBrush = Helper.StringToSolidColorBrush("#3d3d3d");
-                    border.Child = mainGrid;
-                    border.BorderThickness = new Thickness(1);
 
-                    TextBlock textBlock = new TextBlock();
-                    textBlock.Text = "Filters";
-                    stackPanel.Children.Add(textBlock);
-
-                    Helper.SetChildInGrid(mainGrid, stackPanel, 0, 0);
-
-                    grayScaleButton.Background = Brushes.Transparent;
-                    grayScaleButton.Click += (s, e) => {
-                        ImageEditor.AddChange(new GrayScale());
-                        ImageEditor.ApplyAllChanges();
-                    };
-                    stackPanel.Children.Add(grayScaleButton);
-                    grayScaleButton.Content = "GrayScale";
+                public Tab(Body body, Handle handle) {
+                    border.Child = handle.FrameworkElement;
+                    this.body = body;
+                    this.handle = handle;
                 }
-
-                public void Hide() => mainGrid.Visibility = Visibility.Collapsed;
-                public void Show() => mainGrid.Visibility = Visibility.Visible;
             }
+            public abstract class Handle {
+                protected Border border = new();
+                protected StackPanel stackPanel = new();
+                protected TextBlock name = new();
+                protected System.Windows.Controls.Image icon = new();
 
-
-            public class PixelSorting : IBody {
-                private Grid mainGrid = new();
-                private Border border = new();
                 public FrameworkElement FrameworkElement => border;
 
+                public Handle(string name) {
+                    stackPanel.Orientation = Orientation.Horizontal;
+                    stackPanel.Children.Add(this.name);
+                    stackPanel.Background = System.Windows.Media.Brushes.Transparent;
+                    stackPanel.Margin = new Thickness(3, 0, 5, 0);
+                    stackPanel.MouseEnter += (s, e) => { border.BorderBrush = System.Windows.Media.Brushes.Gainsboro; };
+                    stackPanel.MouseLeave += (s, e) => { border.BorderBrush = System.Windows.Media.Brushes.Transparent; };
 
-                public PixelSorting() {
+                    border.Child = stackPanel;
+                    border.Background = Helper.StringToSolidColorBrush("#252525");
+                    border.BorderBrush = System.Windows.Media.Brushes.Transparent;
+                    border.BorderThickness = new Thickness(0.5);
+
+                    this.name.Text = name;
+                    this.name.VerticalAlignment = VerticalAlignment.Center;
+                    this.name.Foreground = System.Windows.Media.Brushes.Gainsboro;
+                    this.name.TextDecorations = TextDecorations.Underline;
+                }
+
+                public void SetIcon(string path) {
+                    Helper.SetImageSource(icon, path);
+                    stackPanel.Children.Insert(0, icon);
+                }
+            }
+            public abstract class Body {
+                protected Grid mainGrid = new();
+                protected Border border = new();
+                public FrameworkElement FrameworkElement => border;
+
+                public Body() {
                     border.BorderBrush = Helper.StringToSolidColorBrush("#3d3d3d");
                     border.Child = mainGrid;
                     border.BorderThickness = new Thickness(1);
-
-
-                    TextBlock textBlock = new TextBlock();
-                    textBlock.Text = "PixelSorting";
-                    Helper.SetChildInGrid(mainGrid, textBlock, 0, 0);
                 }
-
 
                 public void Hide() => mainGrid.Visibility = Visibility.Collapsed;
                 public void Show() => mainGrid.Visibility = Visibility.Visible;
             }
         }
-        
 
-        namespace File {
-            public class Export : IBody {
-                private Grid mainGrid = new();
-                private Border border = new();
-                public FrameworkElement FrameworkElement => border;
-
-
-                public Export() {
-                    border.BorderBrush = Helper.StringToSolidColorBrush("#3d3d3d");
-                    border.Child = mainGrid;
-                    border.BorderThickness = new Thickness(1);
-
-                }
-
-                public void Hide() => mainGrid.Visibility = Visibility.Collapsed;
-                public void Show() => mainGrid.Visibility = Visibility.Visible;
+        namespace Tabs {
+            public class ImageFilterTab : Tab {
+                public ImageFilterTab(Body body, Handle handle) : base(body, handle) { }
             }
 
-            public class Import : IBody {
-                private Grid mainGrid = new();
-                private Border border = new();
-                public FrameworkElement FrameworkElement => border;
+            public class PixelSortingTab : Tab {
+                public PixelSortingTab(Body body, Handle handle) : base(body, handle) { }
+            }
+        }
 
-
-                public Import() {
-                    border.BorderBrush = Helper.StringToSolidColorBrush("#3d3d3d");
-                    border.Child = mainGrid;
-                    border.BorderThickness = new Thickness(1);
+        namespace Tabs.Handles {
+            public class DefaultHandle : Handle{
+                public DefaultHandle(string name) : base(name) {
 
                 }
+            }
+        }
 
-                public void Hide() => mainGrid.Visibility = Visibility.Collapsed;
-                public void Show() => mainGrid.Visibility = Visibility.Visible;
+        namespace Tabs.Bodies {
+
+            public class ImageFilter : Body {
+                public ImageEditor ImageEditor = new();
+                private StackPanel stackPanel = new();
+
+                public Button grayScaleButton = new();
+
+                public ImageFilter() {
+                    Helper.SetChildInGrid(mainGrid, stackPanel, 0, 0);
+
+                    grayScaleButton.Background = Brushes.Transparent;
+                    grayScaleButton.Click += GrayScaleButton_Click;
+                    stackPanel.Children.Add(grayScaleButton);
+                    grayScaleButton.Content = "GrayScale";
+                }
+
+                private void GrayScaleButton_Click(object sender, RoutedEventArgs e) {
+                    GrayScale grayScale = new(WorkStation.WorkstationImage.Bitmap);
+                    ImageEditor.AddChange(grayScale);
+                    ImageEditor.ApplyAllChanges();
+                    WorkStation.WorkstationImage.Update();
+                    WorkStation.WorkstationImage.GetHistory.Add(grayScale);
+                }
+            }
+
+
+            public class PixelSorting : Body {
+
+                public PixelSorting() {
+                    TextBlock textBlock = new TextBlock();
+                    textBlock.Text = "PixelSorting";
+                    Helper.SetChildInGrid(mainGrid, textBlock, 0, 0);
+                }
+
+            }
+        
+
+            public class Export : Body {
+
+                public Export() {
+
+                }
+            }
+
+
+
+            public class Import : Body {
+
+                public Import() {
+
+                }
             }
         }
     }

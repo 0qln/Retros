@@ -9,6 +9,7 @@
 	  <PublishSingleFile>true</PublishSingleFile>
 	  <SelfContained>true</SelfContained>
 	  <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,7 +27,7 @@
 
   <ItemGroup>
     <Reference Include="DebugLibrary">
-      <HintPath>..\..\..\..\Github\Projects\DebugLibrary\DebugLibrary\bin\Debug\net7.0\DebugLibrary.dll</HintPath>
+      <HintPath>..\..\..\..\Github\Projects\DebugLibrary\DebugLibrary\bin\Release\net7.0\DebugLibrary.dll</HintPath>
     </Reference>
     <Reference Include="WpfCustomControlLibrary1">
       <HintPath>..\..\..\WPF Extensions\Release\WpfCustomControlLibrary1.dll</HintPath>

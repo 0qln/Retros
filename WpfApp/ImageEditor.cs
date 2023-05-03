@@ -12,6 +12,11 @@ using System.Windows.Interop;
 using System.Windows;
 using System.IO;
 using Color = System.Drawing.Color;
+using Retros.ClientWorkStation;
+using System.Diagnostics;
+using System.Drawing.Imaging;
+using COnsole = Debugger.Console;
+using DebugLibrary.Benchmarks;
 
 namespace Retros {
     public class ImageEditor {
@@ -28,53 +33,22 @@ namespace Retros {
         }
 
         public void ApplyAllChanges() {
+
             while (changes.Count > 0) {
-                IChange change = changes.Dequeue();
-                change.Apply();
+                using (IChange change = changes.Dequeue()) {
+                    change.Apply();
+                }
+
             }
-        }
-    }
-
-    public static class ImageConverter {
-        public static System.Windows.Controls.Image ConvertBitmapToImage(Bitmap bitmap) {
-            System.Windows.Controls.Image image = new();
-
-            using (MemoryStream memory = new MemoryStream()) {
-                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
-                memory.Position = 0;
-
-                BitmapImage bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = memory;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-
-                image.Source = bitmapImage;
-            }
-
-            image.Width = bitmap.Width;
-            image.Height = bitmap.Height;
-
-            return image;
-        }
-
-        public static Bitmap ConvertToBitmap(System.Windows.Controls.Image wpfImage) {
-            Bitmap bitmap;
-            using (MemoryStream stream = new MemoryStream()) {
-                BitmapEncoder encoder = new BmpBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create((BitmapSource)wpfImage.Source));
-                encoder.Save(stream);
-                bitmap = new Bitmap(stream);
-            }
-            return bitmap;
         }
     }
 
     namespace ImageEditing {
-        public class PixelSort : IChange {
+        public class PixelSort : IChange, IDisposable {
             private Bitmap image;
+            private bool disposed = false;
 
-            /// <summary> The upper and lower bounds of pixels that will be affected </summary>
+            /// <summary> The upper and lower bounds of pixels that will be sorted </summary>
             private double lowerBound;
             private double upperBound;
 
@@ -89,29 +63,78 @@ namespace Retros {
             public void Apply() {
                 throw new NotImplementedException();
             }
+
+
+            protected virtual void Dispose(bool disposing) {
+                if (!disposed) {
+                    if (disposing) {
+                        // Dispose of managed resources (if any)
+
+                    }
+
+                    // Dispose of unmanaged resources (if any)
+                    disposed = true;
+                }
+            }
+
+            public void Dispose() {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
         }
 
-        public class GrayScale : IChange {
+        public class GrayScale : IChange, IDisposable {
+            private Bitmap bitmap;
+            private bool disposed = false;
+
+            public GrayScale(Bitmap bitmap) {
+                this.bitmap = bitmap;
+            }
+
             public void Apply() {
-                Bitmap originalImage = ImageConverter.ConvertToBitmap(ClientWorkStation.WorkstationImage.Image);
-                Bitmap newImage = new Bitmap(originalImage.Width, originalImage.Height);
-
-                for (int x = 0; x < originalImage.Width; x++) {
-                    for (int y = 0; y < originalImage.Height; y++) {
-                        Color pixelColor = originalImage.GetPixel(x, y);
-                        int grayScale = (int)((pixelColor.R + pixelColor.G + pixelColor.B) / 3.0);
-                        Color newColor = Color.FromArgb(pixelColor.A, grayScale, grayScale, grayScale);
-                        newImage.SetPixel(x, y, newColor);
+                BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                int regionHeight = bitmap.Height / Environment.ProcessorCount;
+                Parallel.For(0, Environment.ProcessorCount, i =>
+                {
+                    int startY = i * regionHeight;
+                    int endY = (i == Environment.ProcessorCount - 1) ? bitmap.Height : startY + regionHeight;
+                    unsafe {
+                        byte* ptr = (byte*)bitmapData.Scan0.ToPointer() + startY * bitmapData.Stride;
+                        for (int y = startY; y < endY; y++) {
+                            for (int x = 0; x < bitmapData.Width; x++) {
+                                byte grayScale = (byte)((ptr[2] + ptr[1] + ptr[0]) / 3);
+                                ptr[0] = grayScale;
+                                ptr[1] = grayScale;
+                                ptr[2] = grayScale;
+                                ptr += 4;
+                            }
+                        }
                     }
-                }
+                });
+                bitmap.UnlockBits(bitmapData);
+            }
 
-                ClientWorkStation.WorkstationImage.Image = ImageConverter.ConvertBitmapToImage(newImage);
+            protected virtual void Dispose(bool disposing) {
+                if (!disposed) {
+                    if (disposing) {
+                        // Dispose of managed resources (if any)
+                        
+                    }
+
+                    // Dispose of unmanaged resources (if any)
+                    disposed = true;
+                }
+            }
+
+            public void Dispose() {
+                Dispose(true);
+                GC.SuppressFinalize(this);
             }
         }
 
     }
 
-    public interface IChange {
+    public interface IChange : IDisposable {
         public void Apply();
     }
 

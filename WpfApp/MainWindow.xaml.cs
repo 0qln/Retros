@@ -22,21 +22,17 @@ using WpfCustomControls;
 
 namespace WpfApp {
     public partial class MainWindow : Window {
-        private static WindowElements ?windowElements;
-
         public MainWindow() {
+
             InitializeComponent();
-            LayoutUpdated += MainWindow_LayoutUpdated; ;
 
-            windowElements = new(MainCanvas);
+            LayoutUpdated += (s, e) => {
+                MainCanvas.Height = ActualHeight;
+                MainCanvas.Width = ActualWidth;
+            };
 
-            
-            
-        }
+            UIManager.Instanciate(MainCanvas);
 
-        private void MainWindow_LayoutUpdated(object? sender, EventArgs e) {
-            MainCanvas.Height = ActualHeight;
-            MainCanvas.Width = ActualWidth;
         }
 
 
