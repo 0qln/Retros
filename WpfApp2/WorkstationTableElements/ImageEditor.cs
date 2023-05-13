@@ -29,7 +29,7 @@ namespace Retros.WorkstationTableElements.Bodies {
                 if (changes.Count <= 0) return;
 
                 IChange change = changes.Dequeue();
-                UIManager.Workstation.ImageElement.AddTaskToQueue(change.Apply);
+                UIManager.Workstation.ImageElement.AddTaskToQueue(change.Apply); 
             }
 
             public void AddChange(IChange change) {

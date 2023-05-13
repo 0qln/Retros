@@ -14,6 +14,8 @@ using Console = Debugger.Console;
 using System.Windows.Threading;
 using System.Drawing.Imaging;
 using System.Drawing;
+using static Retros.Workstation;
+using System.Windows.Media.Imaging;
 
 namespace Retros {
     namespace WorkstationTableElements {
@@ -109,6 +111,57 @@ namespace Retros {
                 }
 
                 public class GrayScale : IChange {
+                    private WorkstationImage image;
+                    private byte filterIntensity;
+
+                    public GrayScale(WorkstationImage image, double filterIntensity = 1) {
+                        this.image = image;
+                        this.filterIntensity = (byte)filterIntensity;
+                    }
+
+                    public void Apply() {
+                        // Get the BitmapSource from the Image
+                        BitmapSource bitmapSource = (BitmapSource)image.Image.Source;
+
+                        // Create a new WriteableBitmap based on the BitmapSource
+                        WriteableBitmap writeableBitmap = new WriteableBitmap(bitmapSource);
+                        // Copy the pixel data into a byte array
+                        int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
+                        byte[] pixelData = new byte[writeableBitmap.PixelWidth * writeableBitmap.PixelHeight * bytesPerPixel];
+                        writeableBitmap.CopyPixels(pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
+
+                        // Loop through each pixel
+                        for (int y = 0; y < writeableBitmap.PixelHeight; y++) {
+                            for (int x = 0; x < writeableBitmap.PixelWidth; x++) {
+                                // Get the pixel index in the byte array
+                                int index = (y * writeableBitmap.PixelWidth + x) * bytesPerPixel;
+
+                                // Get the RGB values
+                                byte blue = pixelData[index];
+                                byte green = pixelData[index + 1];
+                                byte red = pixelData[index + 2];
+
+                                // Calculate the grayscale value
+                                byte gray = (byte)(0.299 * red + 0.587 * green + 0.114 * blue);
+
+                                // Apply the filter intensity
+                                gray = (byte)(gray * filterIntensity);
+
+                                // Set the pixel to the grayscale value
+                                pixelData[index] = gray;     // Blue
+                                pixelData[index + 1] = gray; // Green
+                                pixelData[index + 2] = gray; // Red
+                            }
+                        }
+
+                        // Copy the modified pixel data back into the WriteableBitmap
+                        writeableBitmap.WritePixels(new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight), pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
+
+                        // Update the Image's source
+                        image.Image.Source = writeableBitmap;
+                    }
+
+                    /*
                     private Bitmap bitmap;
                     private byte filterIntensity;
 
@@ -137,9 +190,9 @@ namespace Retros {
                                 }
                             }
                         });
-
                         bitmap.UnlockBits(bitmapData);
                     }
+                    */
                 }
             }
 

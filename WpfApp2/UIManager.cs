@@ -137,7 +137,9 @@ namespace Retros {
         public static void LoadImage() {
             string path = ShowImagePickerDialog();
             if (path != null) {
-                Helper.SetImageSource(Workstation.ImageElement.Image, path);
+                Image image = new();
+                Helper.SetImageSource(image, path);
+                Workstation.ImageElement.Image = image;
             }
             windowHandle.HideAllMenus();
         }
