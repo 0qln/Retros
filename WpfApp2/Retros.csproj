@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DebugLibrary">
+      <HintPath>..\..\..\..\Github\Projects\DebugLibrary\DebugLibrary\bin\Release\net7.0\DebugLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="WpfCustomControlLibrary1">
+      <HintPath>..\..\..\WPF Extensions\Release\WpfCustomControlLibrary1.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

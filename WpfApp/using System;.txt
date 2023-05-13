@@ -1,0 +1,155 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
+using System.Windows;
+using WpfCustomControls;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Windows.Threading;
+using System.Threading;
+using System.Data;
+using COnsole = Debugger.Console;
+using System.ComponentModel;
+
+namespace Retros.ClientWorkStation {
+    public class WorkstationImage {
+        private ChangeHistory history;
+        public ChangeHistory GetHistory => history;
+
+        private string Path = "";
+        public string GetPath => Path;
+
+        public Bitmap Bitmap;
+        public System.Windows.Controls.Image Image = new();
+
+        Queue<Action> tasks = new();
+        DispatcherTimer timer_tasks = new();
+        DispatcherTimer timer_UI = new();
+
+        public WorkstationImage(string path) {
+            history = new(this);
+            Path = path;
+            Bitmap = new(path);
+            Helper.SetImageSource(Image, path);
+
+
+            Task.Run(() => {
+                while(true) {
+                    Debugger.Console.Log("tick");
+                    while (tasks.Count > 0) {
+                        Debugger.Console.Log("Apply Action");
+                        Action action = tasks.Dequeue();
+                        action();
+                    }
+                    Update();
+                }
+            });
+            /*
+            timer_tasks.Interval = UIManager.Framerate;
+            timer_tasks.Tick += async (s, e) => {
+                Debugger.Console.Log("tick");
+                while (tasks.Count > 0) {
+                    Action action = tasks.Dequeue();
+                    await Task.Run(action);
+                }
+                Update();
+            };
+            timer_tasks.Start();
+            */
+        }
+
+        public void AddTaskToQueue(Action action) {
+            Debugger.Console.Log("Task added to the queue");
+            tasks.Enqueue(action);
+        }
+
+        public void Update1() {
+            BitmapImage bitmapImage = new BitmapImage();
+            MemoryStream memoryStream = new MemoryStream();
+            Bitmap.Save(memoryStream, ImageFormat.Bmp);
+            memoryStream.Position = 0;
+            bitmapImage.BeginInit();
+            bitmapImage.StreamSource = memoryStream;
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.EndInit();
+
+            Image.Source = bitmapImage;
+        }
+
+        Bitmap? oldBitmap;
+        public void Update() {
+            Debugger.Console.Log("Update Called");
+
+            if (Bitmap.Equals(oldBitmap)) 
+                return;
+
+            Debugger.Console.Log("Update Start");
+
+            using (MemoryStream stream = new MemoryStream()) {
+                Bitmap.Save(stream, ImageFormat.Png);
+                stream.Seek(0, SeekOrigin.Begin);
+
+                BitmapImage newSource = new();
+                newSource.BeginInit();
+                newSource.CacheOption = BitmapCacheOption.OnLoad;
+                newSource.StreamSource = stream;
+                newSource.EndInit();
+
+                Image.Source = newSource;
+            }
+            oldBitmap = new Bitmap(Bitmap);
+
+            Debugger.Console.Log("Update End");
+
+        }
+
+        // Causes memory issues
+        private BitmapSource? oldSource;
+        private void Update_OLD() {
+            //Update UI
+            BitmapSource? source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                Bitmap.GetHbitmap(),
+                IntPtr.Zero,
+                Int32Rect.Empty,
+                BitmapSizeOptions.FromEmptyOptions()
+            );
+
+            if (oldSource == source) {
+                return;
+            }
+
+            Image.Source = source;
+            oldSource = source;
+        }
+
+
+        public class ChangeHistory {
+            private WorkstationImage workstationImage;
+
+            private List<System.Windows.Controls.Image> imageChache = new();
+            private List<IChange> changes = new();
+
+            private int currentIndex = 0;
+
+            public ChangeHistory(WorkstationImage workstationImage) {
+                this.workstationImage = workstationImage;
+            }
+
+            public void Add(IChange change) {
+
+            }
+
+            public void Forward() {
+
+            }
+
+            public void Backward() {
+
+            }
+        }
+    }
+}

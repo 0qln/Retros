@@ -30,6 +30,7 @@ namespace Retros {
         public static Brush WorkStationGrid_BG = Helper.StringToSolidColorBrush("#1f1f1f");
         public static Brush WorkActionGrid_BG = Helper.StringToSolidColorBrush("#2e2e2e");
 
+        public static TimeSpan Framerate = TimeSpan.FromMilliseconds(1000/60);
 
         //WindowHandle
         public static WindowHandle windowHandle = new();
@@ -63,7 +64,7 @@ namespace Retros {
             WorkStationGrid.Background = WorkActionGrid_BG;
 
             ClientWorkStation.WorkStation.Instanciate();
-            Helper.SetChildInGrid(WorkStationGrid, ClientWorkStation.WorkStation.FrameworkElement, 1, 0);
+            Helper.SetChildInGrid(WorkStationGrid, WorkStation.FrameworkElement, 1, 0);
             ClientWorkStation.WorkStation.WorkTable.AddTab(new ImageFilterTab(new ClientWorkStation.Tabs.Bodies.ImageFilter(), new ClientWorkStation.Tabs.Handles.DefaultHandle("Filters")));
             ClientWorkStation.WorkStation.WorkTable.SelectTab(0);
 

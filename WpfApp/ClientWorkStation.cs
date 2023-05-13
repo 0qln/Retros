@@ -37,6 +37,7 @@ namespace Retros.ClientWorkStation {
             border.BorderThickness = new Thickness(1);
         }
 
+
     }
 
 }

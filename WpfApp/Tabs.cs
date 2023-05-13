@@ -10,6 +10,9 @@ using WpfCustomControls;
 using Retros.ImageEditing;
 using System.Diagnostics;
 using DebugLibrary.Benchmarks;
+using Debugger;
+using Console = Debugger.Console;
+using System.Windows.Threading;
 
 namespace Retros {
     namespace ClientWorkStation {
@@ -107,21 +110,37 @@ namespace Retros {
                 private StackPanel stackPanel = new();
 
                 public Button grayScaleButton = new();
+                public Slider slider = new();
+
 
                 public ImageFilter() {
                     Helper.SetChildInGrid(mainGrid, stackPanel, 0, 0);
+                    stackPanel.Children.Add(slider);
+                    stackPanel.Children.Add(grayScaleButton);
+
+                    slider.ValueChanged += (s, e) => Slider_ValueChanged();
+
+                    DispatcherTimer timer = new();
+                    timer.Interval = UIManager.Framerate;
+                    timer.Tick += (s, e) => ImageEditor.ApplyChange();
+                    timer.Start();
 
                     grayScaleButton.Background = Brushes.Transparent;
                     grayScaleButton.Click += GrayScaleButton_Click;
-                    stackPanel.Children.Add(grayScaleButton);
                     grayScaleButton.Content = "GrayScale";
+                }
+
+
+                private void Slider_ValueChanged() {
+                    Debugger.Console.Log("Slider_ValueChanged");
+                    GrayScale grayScale = new(WorkStation.WorkstationImage.Bitmap, slider.Value / 10);
+                    ImageEditor.AddChange(grayScale);
+                    WorkStation.WorkstationImage.GetHistory.Add(grayScale);
                 }
 
                 private void GrayScaleButton_Click(object sender, RoutedEventArgs e) {
                     GrayScale grayScale = new(WorkStation.WorkstationImage.Bitmap);
                     ImageEditor.AddChange(grayScale);
-                    ImageEditor.ApplyAllChanges();
-                    WorkStation.WorkstationImage.Update();
                     WorkStation.WorkstationImage.GetHistory.Add(grayScale);
                 }
             }

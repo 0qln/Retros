@@ -17,6 +17,9 @@ using System.Diagnostics;
 using System.Drawing.Imaging;
 using COnsole = Debugger.Console;
 using DebugLibrary.Benchmarks;
+using System.Runtime.Intrinsics.X86;
+using System.Runtime.Intrinsics;
+using System.Threading;
 
 namespace Retros {
     public class ImageEditor {
@@ -27,26 +30,28 @@ namespace Retros {
 
         }
 
+        public void ApplyChange() {
+            if (changes.Count <= 0) return;
+
+            IChange change = changes.Dequeue();
+            WorkStation.WorkstationImage.AddTaskToQueue(change.Apply);
+        }
 
         public void AddChange(IChange change) {
             changes.Enqueue(change);
         }
 
         public void ApplyAllChanges() {
-
             while (changes.Count > 0) {
-                using (IChange change = changes.Dequeue()) {
-                    change.Apply();
-                }
-
+                IChange change = changes.Dequeue();
+                WorkStation.WorkstationImage.AddTaskToQueue(change.Apply);
             }
         }
     }
 
     namespace ImageEditing {
-        public class PixelSort : IChange, IDisposable {
+        public class PixelSort : IChange {
             private Bitmap image;
-            private bool disposed = false;
 
             /// <summary> The upper and lower bounds of pixels that will be sorted </summary>
             private double lowerBound;
@@ -63,39 +68,21 @@ namespace Retros {
             public void Apply() {
                 throw new NotImplementedException();
             }
-
-
-            protected virtual void Dispose(bool disposing) {
-                if (!disposed) {
-                    if (disposing) {
-                        // Dispose of managed resources (if any)
-
-                    }
-
-                    // Dispose of unmanaged resources (if any)
-                    disposed = true;
-                }
-            }
-
-            public void Dispose() {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-            }
         }
 
-        public class GrayScale : IChange, IDisposable {
+        public class GrayScale : IChange {
             private Bitmap bitmap;
-            private bool disposed = false;
+            private byte filterIntensity;
 
-            public GrayScale(Bitmap bitmap) {
+            public GrayScale(Bitmap bitmap, double filterIntensity = 1) {
                 this.bitmap = bitmap;
+                this.filterIntensity = (byte)filterIntensity;
             }
 
             public void Apply() {
                 BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
                 int regionHeight = bitmap.Height / Environment.ProcessorCount;
-                Parallel.For(0, Environment.ProcessorCount, i =>
-                {
+                Parallel.For(0, Environment.ProcessorCount, i => {
                     int startY = i * regionHeight;
                     int endY = (i == Environment.ProcessorCount - 1) ? bitmap.Height : startY + regionHeight;
                     unsafe {
@@ -103,38 +90,23 @@ namespace Retros {
                         for (int y = startY; y < endY; y++) {
                             for (int x = 0; x < bitmapData.Width; x++) {
                                 byte grayScale = (byte)((ptr[2] + ptr[1] + ptr[0]) / 3);
-                                ptr[0] = grayScale;
-                                ptr[1] = grayScale;
-                                ptr[2] = grayScale;
+                                ptr[0] = (byte)(grayScale * filterIntensity + ptr[0] * (1 - filterIntensity));
+                                ptr[1] = (byte)(grayScale * filterIntensity + ptr[1] * (1 - filterIntensity));
+                                ptr[2] = (byte)(grayScale * filterIntensity + ptr[2] * (1 - filterIntensity));
                                 ptr += 4;
                             }
                         }
                     }
                 });
+
                 bitmap.UnlockBits(bitmapData);
-            }
-
-            protected virtual void Dispose(bool disposing) {
-                if (!disposed) {
-                    if (disposing) {
-                        // Dispose of managed resources (if any)
-                        
-                    }
-
-                    // Dispose of unmanaged resources (if any)
-                    disposed = true;
-                }
-            }
-
-            public void Dispose() {
-                Dispose(true);
-                GC.SuppressFinalize(this);
             }
         }
 
+
     }
 
-    public interface IChange : IDisposable {
+    public interface IChange {
         public void Apply();
     }
 
