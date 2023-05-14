@@ -94,11 +94,11 @@ namespace Retros {
             public class ImageFilterTab : Tab {
                 public ImageFilterTab(Body body, Handle handle) : base(body, handle) { }
 
-                public class RedChannel : IChange {
+                public class OnlyRedChannel : IChange {
                     private WorkstationImage image;
                     private double filterIntensity;
 
-                    public RedChannel(WorkstationImage image, double filterIntensity = 1) {
+                    public OnlyRedChannel(WorkstationImage image, double filterIntensity = 1) {
                         this.image = image;
                         this.filterIntensity = filterIntensity;
                     }
@@ -114,32 +114,20 @@ namespace Retros {
                         for (int y = 0; y < writeableBitmap.PixelHeight; y++) {
                             for (int x = 0; x < writeableBitmap.PixelWidth; x++) {
                                 int index = (y * writeableBitmap.PixelWidth + x) * bytesPerPixel;
-
-                                byte r = pixelData[index + 2];
-                                byte g = pixelData[index + 1];
-                                byte b = pixelData[index + 0];
-
-                                byte newVal = r;
-
-                                var newR = (byte)((newVal * filterIntensity) + (r * (1 - filterIntensity)));
-                                var newG = (byte)((newVal * filterIntensity) + (g * (1 - filterIntensity)));
-                                var newB = (byte)((newVal * filterIntensity) + (b * (1 - filterIntensity)));
-
-                                pixelData[index + 2] = newR;    // Red
-                                pixelData[index + 1] = newG;    // Green
-                                pixelData[index + 0] = newB;    // Blue
+                                pixelData[index + 1] = (byte)(pixelData[index + 1] * (1 - filterIntensity));    // Green
+                                pixelData[index + 0] = (byte)(pixelData[index + 0] * (1 - filterIntensity));    // Blue
                             }
                         }
 
                         writeableBitmap.WritePixels(new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight), pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
-                        image.Image.Source = writeableBitmap;
+                        image.CurrentImage.Source = writeableBitmap;
                     }
                 }
-                public class GreenChannel : IChange {
+                public class OnlyGreenChannel : IChange {
                     private WorkstationImage image;
                     private double filterIntensity;
 
-                    public GreenChannel(WorkstationImage image, double filterIntensity = 1) {
+                    public OnlyGreenChannel(WorkstationImage image, double filterIntensity = 0) {
                         this.image = image;
                         this.filterIntensity = filterIntensity;
                     }
@@ -155,32 +143,20 @@ namespace Retros {
                         for (int y = 0; y < writeableBitmap.PixelHeight; y++) {
                             for (int x = 0; x < writeableBitmap.PixelWidth; x++) {
                                 int index = (y * writeableBitmap.PixelWidth + x) * bytesPerPixel;
-
-                                byte r = pixelData[index + 2];
-                                byte g = pixelData[index + 1];
-                                byte b = pixelData[index + 0];
-
-                                byte newVal = g;
-
-                                var newR = (byte)((newVal * filterIntensity) + (r * (1 - filterIntensity)));
-                                var newG = (byte)((newVal * filterIntensity) + (g * (1 - filterIntensity)));
-                                var newB = (byte)((newVal * filterIntensity) + (b * (1 - filterIntensity)));
-
-                                pixelData[index + 2] = newR;    // Red
-                                pixelData[index + 1] = newG;    // Green
-                                pixelData[index + 0] = newB;    // Blue
+                                pixelData[index + 2] = (byte)(pixelData[index + 2] * (1 - filterIntensity));    // Red
+                                pixelData[index + 0] = (byte)(pixelData[index + 0] * (1 - filterIntensity));    // Blue
                             }
                         }
 
                         writeableBitmap.WritePixels(new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight), pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
-                        image.Image.Source = writeableBitmap;
+                        image.CurrentImage.Source = writeableBitmap;
                     }
                 }
-                public class BlueChannel : IChange {
+                public class OnlyBlueChannel : IChange {
                     private WorkstationImage image;
                     private double filterIntensity;
 
-                    public BlueChannel(WorkstationImage image, double filterIntensity = 1) {
+                    public OnlyBlueChannel(WorkstationImage image, double filterIntensity = 1) {
                         this.image = image;
                         this.filterIntensity = filterIntensity;
                     }
@@ -196,27 +172,17 @@ namespace Retros {
                         for (int y = 0; y < writeableBitmap.PixelHeight; y++) {
                             for (int x = 0; x < writeableBitmap.PixelWidth; x++) {
                                 int index = (y * writeableBitmap.PixelWidth + x) * bytesPerPixel;
-
-                                byte r = pixelData[index + 2];
-                                byte g = pixelData[index + 1];
-                                byte b = pixelData[index + 0];
-
-                                byte newVal = b;
-
-                                var newR = (byte)((newVal * filterIntensity) + (r * (1 - filterIntensity)));
-                                var newG = (byte)((newVal * filterIntensity) + (g * (1 - filterIntensity)));
-                                var newB = (byte)((newVal * filterIntensity) + (b * (1 - filterIntensity)));
-
-                                pixelData[index + 2] = newR;    // Red
-                                pixelData[index + 1] = newG;    // Green
-                                pixelData[index + 0] = newB;    // Blue
+                                pixelData[index + 2] = (byte)(pixelData[index + 2] * (1 - filterIntensity));    // Red
+                                pixelData[index + 1] = (byte)(pixelData[index + 1] * (1 - filterIntensity));    // Green
                             }
                         }
 
                         writeableBitmap.WritePixels(new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight), pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
-                        image.Image.Source = writeableBitmap;
+                        image.CurrentImage.Source = writeableBitmap;
                     }
                 }
+
+
 
                 public class GrayScale : IChange {
                     private WorkstationImage image;
@@ -256,7 +222,7 @@ namespace Retros {
                         }
 
                         writeableBitmap.WritePixels(new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight), pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
-                        image.Image.Source = writeableBitmap;
+                        image.CurrentImage.Source = writeableBitmap;
                     }
 
                     /*

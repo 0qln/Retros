@@ -22,6 +22,10 @@ namespace Retros {
                 public void Backward() {
 
                 }
+
+                public void Clear() {
+
+                }
             }
 
         }

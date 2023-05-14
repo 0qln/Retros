@@ -26,40 +26,51 @@ namespace Retros {
     partial class Workstation {
         public partial class WorkstationImage {
             public class FilterManager {
-                private Queue<IChange> changes = new();
-                private DispatcherTimer timer = new();
+                private List<IChange> changes = new List<IChange>();
+                private DispatcherTimer timer = new DispatcherTimer();
+                private Type? lastChange = null;
+                public Type LastChange => lastChange!;
+
+                public FilterManager() {
+                    timer.Interval = UIManager.Framerate;
+                    timer.Tick += (s, e) => {
+                        ApplyChange();
+                    };
+                    timer.Start();
+                }
+
+                public void Clear() {
+                    changes.Clear();
+                }
 
                 public void ApplyChange() {
                     if (changes.Count <= 0) return;
+                    Debugger.Console.ClearAll();
+                    changes.ForEach(c => Debugger.Console.Log(c.GetType()));
 
-                    IChange change = changes.Dequeue();
+                    IChange change = changes[0];
                     UIManager.Workstation.ImageElement.AddTaskToQueue(change.Apply);
+                    lastChange = change.GetType();
+                    changes.RemoveAt(0);
+
                 }
 
                 public void AddChange(IChange change) {
                     bool replaced = false;
                     for (int i = 0; i < changes.Count; i++) {
-                        IChange currentChange = changes.Dequeue();
-                        if (currentChange.GetType() == change.GetType()) {
-                            currentChange = change;
+                        if (changes[i].GetType() == change.GetType()) {
+                            changes[i] = change;
                             replaced = true;
                         }
-                        changes.Enqueue(currentChange);
                     }
                     if (!replaced) {
-                        changes.Enqueue(change);
-                    }
-
-                    Debugger.Console.ClearAll();
-                    foreach (var item in changes) {
-                        Debugger.Console.Log(item.GetType().ToString());
+                        changes.Add(change);
                     }
                 }
 
                 public void ApplyAllChanges() {
                     while (changes.Count > 0) {
-                        IChange change = changes.Dequeue();
-                        UIManager.Workstation.ImageElement.AddTaskToQueue(change.Apply);
+                        ApplyChange();
                     }
                 }
             }

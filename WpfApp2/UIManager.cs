@@ -77,13 +77,13 @@ namespace Retros {
 
             Helper.AddColumn(WorkStationImageGrid, 1, GridUnitType.Star);
             Helper.AddColumn(WorkStationImageGrid, 1, GridUnitType.Auto);
-            Workstation.ImageElement.Image.HorizontalAlignment = HorizontalAlignment.Stretch;
-            Workstation.ImageElement.Image.Margin = new Thickness(50);
-            Helper.SetChildInGrid(WorkStationImageGrid, Workstation.ImageElement.Image, 0, 0);
+            Workstation.ImageElement.CurrentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
+            Workstation.ImageElement.CurrentImage.Margin = new Thickness(50);
+            Helper.SetChildInGrid(WorkStationImageGrid, Workstation.ImageElement.CurrentImage, 0, 0);
             Helper.SetChildInGrid(WorkStationImageGrid, shadow, 0, 1);
 
             DropShadowEffect effect1 = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
-            Workstation.ImageElement.Image.Effect = effect1;
+            Workstation.ImageElement.CurrentImage.Effect = effect1;
 
 
 
@@ -139,7 +139,7 @@ namespace Retros {
             if (path != null) {
                 Image image = new();
                 Helper.SetImageSource(image, path);
-                Workstation.ImageElement.Image = image;
+                Workstation.ImageElement.CurrentImage = image;
             }
             windowHandle.HideAllMenus();
         }
