@@ -37,12 +37,16 @@ namespace Retros {
                 }
 
                 public void AddChange(IChange change) {
-                    if (changes.Any(c => c.GetType() == change.GetType())) {
-                        IChange existingChange = changes.First(c => c.GetType() == change.GetType());
-                        changes = new Queue<IChange>(changes.Where(c => c != existingChange));
-                        changes.Enqueue(change);
+                    bool replaced = false;
+                    for (int i = 0; i < changes.Count; i++) {
+                        IChange currentChange = changes.Dequeue();
+                        if (currentChange.GetType() == change.GetType()) {
+                            currentChange = change;
+                            replaced = true;
+                        }
+                        changes.Enqueue(currentChange);
                     }
-                    else {
+                    if (!replaced) {
                         changes.Enqueue(change);
                     }
 
