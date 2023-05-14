@@ -24,17 +24,23 @@ namespace Retros {
                 get => image; 
                 set => image = value;
             }
+            private Image original = new();
+            public Image Original => original;
 
             DispatcherTimer actionTimer = new();
             Queue<Action> actionQueue = new();
 
-            public ChangeHistory History { get; }
+            public ChangeHistory History => changeHistory;
+            private ChangeHistory changeHistory = new();
+
+            public FilterManager GetFilterManager => filterManager;
+            private FilterManager filterManager = new();
 
 
             public WorkstationImage(string path) {
-                History = new();
-                Helper.SetImageSource(image, path);
                 StartUpdating();
+                Helper.SetImageSource(image, path);
+                Helper.SetImageSource(original, path);
             }
 
             private void StartUpdating() {

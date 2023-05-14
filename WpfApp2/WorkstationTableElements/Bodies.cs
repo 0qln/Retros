@@ -17,7 +17,7 @@ using System.Threading;
 namespace Retros.WorkstationTableElements.Bodies {
 
     public partial class ImageFilter : Body {
-        public ImageEditor imageEditor = new();
+        Workstation.WorkstationImage image = UIManager.Workstation.ImageElement; // TODO
         private StackPanel stackPanel = new();
 
         public Button grayScaleButton = new();
@@ -38,18 +38,16 @@ namespace Retros.WorkstationTableElements.Bodies {
 
 
         private void Slider_ValueChanged() {
-            GrayScale grayScale = new(UIManager.Workstation.ImageElement, slider.Value / 10);
-            imageEditor.AddChange(grayScale);
+            //GrayScale grayScale = new(image, slider.Value / 10);
+            BlueChannel grayScale = new();
+            image.GetFilterManager.AddChange(grayScale);
             UIManager.Workstation.ImageElement.History.Add(grayScale);
-            imageEditor.ApplyChange();
-            ///UIManager.Workstation.ImageElement.InterpolationSmoothness = (int)slider.Value;
         }
 
         private void GrayScaleButton_Click(object sender, RoutedEventArgs e) {
-            imageEditor.AddChange(new GrayScale(UIManager.Workstation.ImageElement, 1));
-            imageEditor.ApplyChange();
-            
-            //UIManager.Workstation.ImageElement.History.Add(grayScale);
+            var change = new GrayScale(UIManager.Workstation.ImageElement, 0.5);
+            image.GetFilterManager.AddChange(change);
+            UIManager.Workstation.ImageElement.History.Add(change);
         }
     }
 

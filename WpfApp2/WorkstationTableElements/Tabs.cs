@@ -112,15 +112,15 @@ namespace Retros {
 
                 public class GrayScale : IChange {
                     private WorkstationImage image;
-                    private byte filterIntensity;
+                    private double filterIntensity;
 
                     public GrayScale(WorkstationImage image, double filterIntensity = 1) {
                         this.image = image;
-                        this.filterIntensity = (byte)filterIntensity;
+                        this.filterIntensity = filterIntensity;
                     }
 
                     public void Apply() {
-                        BitmapSource bitmapSource = (BitmapSource)image.Image.Source;
+                        BitmapSource bitmapSource = (BitmapSource)image.Original.Source;
 
                         WriteableBitmap writeableBitmap = new WriteableBitmap(bitmapSource);
                         int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
@@ -135,16 +135,19 @@ namespace Retros {
                                 byte g = pixelData[index + 1];
                                 byte b = pixelData[index + 0];
 
-                                byte gray = (byte)(0.299 * r + 0.587 * g + 0.114 * b); // (`0.299`, `0.587`, `0.114`)  ITU-R BT.709 standard
+                                byte gray = (byte)(0.299 * r + 0.587 * g + 0.114 * b);  // (`0.299`, `0.587`, `0.114`)  ITU-R BT.709 standard
 
-                                pixelData[index + 2] = (byte)((gray * filterIntensity) + (r * (1 - filterIntensity)));  // Red
-                                pixelData[index + 1] = (byte)((gray * filterIntensity) + (g * (1 - filterIntensity)));  // Green
-                                pixelData[index + 0] = (byte)((gray * filterIntensity) + (b * (1 - filterIntensity)));  // Blue
+                                var newR = (byte)((gray * filterIntensity) + (r * (1 - filterIntensity)));
+                                var newG = (byte)((gray * filterIntensity) + (g * (1 - filterIntensity)));
+                                var newB = (byte)((gray * filterIntensity) + (b * (1 - filterIntensity)));
+
+                                pixelData[index + 2] = newR;    // Red
+                                pixelData[index + 1] = newG;    // Green
+                                pixelData[index + 0] = newB;    // Blue
                             }
                         }
 
                         writeableBitmap.WritePixels(new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight), pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
-
                         image.Image.Source = writeableBitmap;
                     }
 
