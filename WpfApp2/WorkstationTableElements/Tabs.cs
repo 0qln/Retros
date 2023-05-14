@@ -8,7 +8,7 @@ using System.Windows.Media;
 using System.Windows;
 using WpfCustomControls;
 using System.Diagnostics;
-using DebugLibrary.Benchmarks;
+using DebugLibrary.Benchmark;
 using Debugger;
 using Console = Debugger.Console;
 using System.Windows.Threading;
@@ -120,44 +120,31 @@ namespace Retros {
                     }
 
                     public void Apply() {
-                        // Get the BitmapSource from the Image
                         BitmapSource bitmapSource = (BitmapSource)image.Image.Source;
 
-                        // Create a new WriteableBitmap based on the BitmapSource
                         WriteableBitmap writeableBitmap = new WriteableBitmap(bitmapSource);
-                        // Copy the pixel data into a byte array
                         int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
                         byte[] pixelData = new byte[writeableBitmap.PixelWidth * writeableBitmap.PixelHeight * bytesPerPixel];
                         writeableBitmap.CopyPixels(pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
 
-                        // Loop through each pixel
                         for (int y = 0; y < writeableBitmap.PixelHeight; y++) {
                             for (int x = 0; x < writeableBitmap.PixelWidth; x++) {
-                                // Get the pixel index in the byte array
                                 int index = (y * writeableBitmap.PixelWidth + x) * bytesPerPixel;
 
-                                // Get the RGB values
-                                byte blue = pixelData[index];
-                                byte green = pixelData[index + 1];
-                                byte red = pixelData[index + 2];
+                                byte r = pixelData[index + 2];
+                                byte g = pixelData[index + 1];
+                                byte b = pixelData[index + 0];
 
-                                // Calculate the grayscale value
-                                byte gray = (byte)(0.299 * red + 0.587 * green + 0.114 * blue);
+                                byte gray = (byte)(0.299 * r + 0.587 * g + 0.114 * b); // (`0.299`, `0.587`, `0.114`)  ITU-R BT.709 standard
 
-                                // Apply the filter intensity
-                                gray = (byte)(gray * filterIntensity);
-
-                                // Set the pixel to the grayscale value
-                                pixelData[index] = gray;     // Blue
-                                pixelData[index + 1] = gray; // Green
-                                pixelData[index + 2] = gray; // Red
+                                pixelData[index + 2] = (byte)((gray * filterIntensity) + (r * (1 - filterIntensity)));  // Red
+                                pixelData[index + 1] = (byte)((gray * filterIntensity) + (g * (1 - filterIntensity)));  // Green
+                                pixelData[index + 0] = (byte)((gray * filterIntensity) + (b * (1 - filterIntensity)));  // Blue
                             }
                         }
 
-                        // Copy the modified pixel data back into the WriteableBitmap
                         writeableBitmap.WritePixels(new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight), pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
 
-                        // Update the Image's source
                         image.Image.Source = writeableBitmap;
                     }
 

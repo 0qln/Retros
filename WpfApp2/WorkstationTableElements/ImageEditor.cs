@@ -15,7 +15,7 @@ using Color = System.Drawing.Color;
 using System.Diagnostics;
 using System.Drawing.Imaging;
 using COnsole = Debugger.Console;
-using DebugLibrary.Benchmarks;
+using DebugLibrary.Benchmark;
 using System.Runtime.Intrinsics.X86;
 using System.Runtime.Intrinsics;
 using System.Threading;

@@ -38,26 +38,17 @@ namespace Retros.WorkstationTableElements.Bodies {
 
 
         private void Slider_ValueChanged() {
-            /*
-            Debugger.Console.Log("Slider_ValueChanged");
-            GrayScale grayScale = new(Bitmap, slider.Value / 10);
+            GrayScale grayScale = new(UIManager.Workstation.ImageElement, slider.Value / 10);
             imageEditor.AddChange(grayScale);
-            WorkStation.WorkstationImage.GetHistory.Add(grayScale);
-            */
-            UIManager.Workstation.ImageElement.InterpolationSmoothness = (int)slider.Value;
+            UIManager.Workstation.ImageElement.History.Add(grayScale);
+            imageEditor.ApplyChange();
+            ///UIManager.Workstation.ImageElement.InterpolationSmoothness = (int)slider.Value;
         }
 
         private void GrayScaleButton_Click(object sender, RoutedEventArgs e) {
-
-            /*
-            string path = UIManager.ShowImagePickerDialog();
-            System.Windows.Controls.Image image = new();
-            Helper.SetImageSource(image, path);
-            UIManager.Workstation.ImageElement.ChangeImage(image);
-            */
-
-            imageEditor.AddChange(new GrayScale(UIManager.Workstation.ImageElement));
+            imageEditor.AddChange(new GrayScale(UIManager.Workstation.ImageElement, 1));
             imageEditor.ApplyChange();
+            
             //UIManager.Workstation.ImageElement.History.Add(grayScale);
         }
     }

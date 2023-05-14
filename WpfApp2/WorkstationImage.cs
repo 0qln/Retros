@@ -17,7 +17,8 @@ using System.Windows.Media;
 
 namespace Retros {
     partial class Workstation {
-        public partial class WorkstationImage : IFrameworkElement {
+        /*
+        public partial class WorkstationImage0 : IFrameworkElement {
 
             public ChangeHistory History {
                 get;
@@ -42,7 +43,7 @@ namespace Retros {
             Queue<Action> actionQueue = new();
 
 
-            public WorkstationImage(string path) {
+            public WorkstationImage0(string path) {
                 Helper.SetImageSource(image, path);
                 bitmap = new(path);
                 History = new ChangeHistory();
@@ -213,5 +214,6 @@ namespace Retros {
                 return new Bitmap(ms);
             }
         }
+        */
     }
 }
