@@ -82,13 +82,13 @@ namespace Retros {
             Helper.SetChildInGrid(WorkStationImageGrid, Workstation.ImageElement.CurrentImage, 0, 0);
             Helper.SetChildInGrid(WorkStationImageGrid, shadow, 0, 1);
 
-            DropShadowEffect effect1 = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
+            DropShadowEffect effect1 = new() { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
             Workstation.ImageElement.CurrentImage.Effect = effect1;
 
 
 
             // shadow
-            DropShadowEffect effect2 = new DropShadowEffect { BlurRadius = 25, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.80, Direction = 180 };
+            DropShadowEffect effect2 = new() { BlurRadius = 25, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.80, Direction = 180 };
             shadow.Effect = effect2;
             shadow.Width = shadowRectWidth;
             shadow.Fill = WorkActionGrid_BG;

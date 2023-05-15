@@ -21,7 +21,7 @@ namespace Retros.WorkstationTableElements.Bodies {
         Workstation.WorkstationImage image = UIManager.Workstation.ImageElement; // TODO
         private StackPanel stackPanel = new();
 
-        public Button originalButton = new();
+        public Button resetButton = new();
 
         public Slider blueChannelSlider = new("Blue Channel");
         public Slider redChannelSlider = new("Red Channel");
@@ -31,18 +31,18 @@ namespace Retros.WorkstationTableElements.Bodies {
 
         public ImageFilter() {
             Helper.SetChildInGrid(mainGrid, stackPanel, 0, 0);
-            stackPanel.Children.Add(originalButton);
+            stackPanel.Children.Add(resetButton);
             stackPanel.Children.Add(grayscaleSlider.FrameworkElement);
             stackPanel.Children.Add(blueChannelSlider.FrameworkElement);
             stackPanel.Children.Add(redChannelSlider.FrameworkElement);
             stackPanel.Children.Add(greenChannelSlider.FrameworkElement);
 
-            originalButton.Background = System.Windows.Media.Brushes.Tomato;
-            originalButton.Click += OriginalButton_Click;
-            originalButton.Content = "Back to original";
+            resetButton.Background = System.Windows.Media.Brushes.Tomato;
+            resetButton.Click += ResetButton_Click;
+            resetButton.Content = "Back to original";
 
             //grayscale
-            grayscaleSlider.SliderElement.ValueChanged += SliderElement_ValueChanged; ;
+            grayscaleSlider.SliderElement.ValueChanged += GrayScaleSliderElement_ValueChanged; ;
 
             //blue
             blueChannelSlider.BorderElement.Background = System.Windows.Media.Brushes.Transparent;
@@ -57,32 +57,27 @@ namespace Retros.WorkstationTableElements.Bodies {
             greenChannelSlider.SliderElement.ValueChanged += GreenChannelButton_Click;
         }
 
-        private void SliderElement_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-            var change = new GrayScale(image, grayscaleSlider.SliderElement.Value / 10);
-            image.GetFilterManager.AddChange(change);
-            image.History.Add(change);
-        }
-
-        private void OriginalButton_Click(object sender, RoutedEventArgs e) {
+        private void ResetButton_Click(object sender, RoutedEventArgs e) {
             image.History.Clear();
             image.GetFilterManager.Clear();
             image.CurrentImage.Source = image.Original.Source.Clone();
         }
 
-        private void GreenChannelButton_Click(object sender, RoutedEventArgs e) {
-            var change = new OnlyGreenChannel(image, greenChannelSlider.SliderElement.Value / 10);
-            image.GetFilterManager.AddChange(change);
-            image.History.Add(change);
+        private void GrayScaleSliderElement_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+            AddChange(new GrayScale(image, grayscaleSlider.SliderElement.Value / 10));
         }
 
-        private void RedChannelButton_Click(object sender, RoutedEventArgs e) {
-            var change = new OnlyRedChannel(image, redChannelSlider.SliderElement.Value / 10);
-            image.GetFilterManager.AddChange(change);
-            image.History.Add(change);
-        }
+        private void GreenChannelButton_Click(object sender, RoutedEventArgs e)
+            => AddChange(new OnlyGreenChannel(image, greenChannelSlider.SliderElement.Value / 10));
 
-        private void BlueChannelButton_Click(object sender, RoutedEventArgs e) {
-            var change = new OnlyBlueChannel(image, blueChannelSlider.SliderElement.Value / 10);
+        private void RedChannelButton_Click(object sender, RoutedEventArgs e)
+            => AddChange(new OnlyRedChannel(image, redChannelSlider.SliderElement.Value / 10));
+
+        private void BlueChannelButton_Click(object sender, RoutedEventArgs e)
+            => image.InterpolationSmoothness = 10;
+            //=> AddChange(new OnlyBlueChannel(image, blueChannelSlider.SliderElement.Value / 10));
+
+        private void AddChange(IChange change) {
             image.GetFilterManager.AddChange(change);
             image.History.Add(change);
         }

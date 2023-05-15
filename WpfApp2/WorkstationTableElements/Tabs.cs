@@ -104,7 +104,7 @@ namespace Retros {
                     }
 
                     public void Apply() {
-                        BitmapSource bitmapSource = (BitmapSource)image.Original.Source;
+                        BitmapSource bitmapSource = (BitmapSource)image.CurrentImage.Source;
 
                         WriteableBitmap writeableBitmap = new WriteableBitmap(bitmapSource);
                         int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
@@ -122,20 +122,28 @@ namespace Retros {
                         writeableBitmap.WritePixels(new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight), pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
                         image.CurrentImage.Source = writeableBitmap;
                     }
+
+                    public bool Applied() {
+                        throw new NotImplementedException();
+                    }
                 }
                 public class OnlyGreenChannel : IChange {
                     private WorkstationImage image;
                     private double filterIntensity;
+                    private double lastFilterIntesity;
 
-                    public OnlyGreenChannel(WorkstationImage image, double filterIntensity = 0) {
+                    public OnlyGreenChannel(WorkstationImage image, double filterIntensity = 1) {
                         this.image = image;
                         this.filterIntensity = filterIntensity;
                     }
 
-                    public void Apply() {
-                        BitmapSource bitmapSource = (BitmapSource)image.Original.Source;
+                    public void SetIntensity(double filterIntensity) {
+                        lastFilterIntesity = filterIntensity;
+                        this.filterIntensity = filterIntensity;
+                    }
 
-                        WriteableBitmap writeableBitmap = new WriteableBitmap(bitmapSource);
+                    public void Apply() {
+                        WriteableBitmap writeableBitmap = new WriteableBitmap(image.CurrentImage.Source as BitmapSource);
                         int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
                         byte[] pixelData = new byte[writeableBitmap.PixelWidth * writeableBitmap.PixelHeight * bytesPerPixel];
                         writeableBitmap.CopyPixels(pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
@@ -143,13 +151,17 @@ namespace Retros {
                         for (int y = 0; y < writeableBitmap.PixelHeight; y++) {
                             for (int x = 0; x < writeableBitmap.PixelWidth; x++) {
                                 int index = (y * writeableBitmap.PixelWidth + x) * bytesPerPixel;
-                                pixelData[index + 2] = (byte)(pixelData[index + 2] * (1 - filterIntensity));    // Red
-                                pixelData[index + 0] = (byte)(pixelData[index + 0] * (1 - filterIntensity));    // Blue
+                                pixelData[index + 2] = (byte)(pixelData[index + 2] * (1 - (filterIntensity - lastFilterIntesity)));    // Red
+                                pixelData[index + 0] = (byte)(pixelData[index + 0] * (1 - (filterIntensity - lastFilterIntesity)));    // Blue
                             }
                         }
 
                         writeableBitmap.WritePixels(new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight), pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
                         image.CurrentImage.Source = writeableBitmap;
+                    }
+
+                    public bool Applied() {
+                        throw new NotImplementedException();
                     }
                 }
                 public class OnlyBlueChannel : IChange {
@@ -180,10 +192,11 @@ namespace Retros {
                         writeableBitmap.WritePixels(new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight), pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
                         image.CurrentImage.Source = writeableBitmap;
                     }
+
+                    public bool Applied() {
+                        throw new NotImplementedException();
+                    }
                 }
-
-
-
                 public class GrayScale : IChange {
                     private WorkstationImage image;
                     private double filterIntensity;
@@ -193,37 +206,40 @@ namespace Retros {
                         this.filterIntensity = filterIntensity;
                     }
 
-                    public void Apply() {
-                        BitmapSource bitmapSource = (BitmapSource)image.Original.Source;
+                    private bool applied = false;
+                    public bool Applied() => applied;
 
+                    public void Apply() {
+                        applied = true;
+                        BitmapSource? bitmapSource = null;
+                        bitmapSource = (BitmapSource)image.Original.Source;
                         WriteableBitmap writeableBitmap = new WriteableBitmap(bitmapSource);
+
                         int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
                         byte[] pixelData = new byte[writeableBitmap.PixelWidth * writeableBitmap.PixelHeight * bytesPerPixel];
                         writeableBitmap.CopyPixels(pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
+                        int pixelHeight = writeableBitmap.PixelHeight;
+                        int pixelWidth = writeableBitmap.PixelWidth;
 
-                        for (int y = 0; y < writeableBitmap.PixelHeight; y++) {
-                            for (int x = 0; x < writeableBitmap.PixelWidth; x++) {
-                                int index = (y * writeableBitmap.PixelWidth + x) * bytesPerPixel;
+                        Parallel.For(0, pixelHeight, y => {
+                            Parallel.For(0, pixelWidth, x => {
+                                int index = (y * pixelWidth + x) * bytesPerPixel;
 
                                 byte r = pixelData[index + 2];
                                 byte g = pixelData[index + 1];
                                 byte b = pixelData[index + 0];
+                                byte gray = (byte)(0.299 * r + 0.587 * g + 0.114 * b);  // (`0.299`, `0.587`, `0.114`) is ITU-R BT.709 standard
 
-                                byte gray = (byte)(0.299 * r + 0.587 * g + 0.114 * b);  // (`0.299`, `0.587`, `0.114`)  ITU-R BT.709 standard
-
-                                var newR = (byte)((gray * filterIntensity) + (r * (1 - filterIntensity)));
-                                var newG = (byte)((gray * filterIntensity) + (g * (1 - filterIntensity)));
-                                var newB = (byte)((gray * filterIntensity) + (b * (1 - filterIntensity)));
-
-                                pixelData[index + 2] = newR;    // Red
-                                pixelData[index + 1] = newG;    // Green
-                                pixelData[index + 0] = newB;    // Blue
-                            }
-                        }
+                                pixelData[index + 2] = (byte)((gray * filterIntensity) + (r * (1 - filterIntensity)));     // Red
+                                pixelData[index + 1] = (byte)((gray * filterIntensity) + (g * (1 - filterIntensity)));     // Green
+                                pixelData[index + 0] = (byte)((gray * filterIntensity) + (b * (1 - filterIntensity)));     // Blue
+                            });
+                        });
 
                         writeableBitmap.WritePixels(new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight), pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
-                        image.CurrentImage.Source = writeableBitmap;
+                        image.AddTaskToQueue(() => image.SetSource(writeableBitmap));
                     }
+
 
                     /*
                     private Bitmap bitmap;
@@ -279,6 +295,10 @@ namespace Retros {
 
                     /// <summary> Sort the pixels in the image </summary>
                     public void Apply() {
+                        throw new NotImplementedException();
+                    }
+
+                    public bool Applied() {
                         throw new NotImplementedException();
                     }
                 }
