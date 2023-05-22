@@ -22,6 +22,9 @@ namespace Retros {
         public static Grid MainGrid = new();
         private static Canvas? canvas;
 
+        public static Window? Settings;
+        public static bool SettingsOpened;
+
         // Client Area
         public static Workstation Workstation = new();
 
@@ -37,11 +40,11 @@ namespace Retros {
         public static TimeSpan Framerate = TimeSpan.FromMilliseconds(1000 / 60);
 
         //WindowHandle
-        private static WindowHandle windowHandle = new();
-        public static DropDownMenu fileMenu = new("File");
-        public static DropDownMenu editMenu = new("Edit");
-        public static DropDownMenu viewMenu = new("View");
-        public static DropDownMenu settingsMenu = new("Settings");
+        private static WindowHandle windowHandle = new(Application.Current.MainWindow);
+        public static DropDownMenu fileMenu = new("File", Application.Current.MainWindow);
+        public static DropDownMenu editMenu = new("Edit", Application.Current.MainWindow);
+        public static DropDownMenu viewMenu = new("View", Application.Current.MainWindow);
+        public static DropDownMenu settingsMenu = new("Settings", Application.Current.MainWindow);
 
         public static void Start(Canvas pCanvas) {
 
@@ -108,10 +111,10 @@ namespace Retros {
             // Viusals
             windowHandle.SetParentWindow(canvas!);
             windowHandle.SetBGColor(Helper.StringToSolidColorBrush("#000000", 0.45));
-            windowHandle.ApplicationButtons.ColorWhenButtonHover = Helper.StringToSolidColorBrush("#000000", 0.2);
+            windowHandle.ApplicationButtons.ColorWhenButtonHover = Helper.StringToSolidColorBrush("#000000", 0.4);
 
-            Application.Current.MainWindow.Loaded += (sender, e) => UpdateGridSizes_T2();
-            canvas!.LayoutUpdated += (sender, e) => UpdateGridSizes_T2();
+            Application.Current.MainWindow.Loaded += (sender, e) => UpdateGridSizes();
+            canvas!.LayoutUpdated += (sender, e) => UpdateGridSizes();
 
             // Client Buttons
             windowHandle.CreateClientButton(fileMenu);
@@ -127,15 +130,25 @@ namespace Retros {
 
             windowHandle.ActivateAllClientButtons();
 
+            // Application Buttons
             windowHandle.ApplicationButtons.AddSettingsButton();
-            windowHandle.ApplicationButtons.SettingsButtonImageSource = @"D:\Programmmieren\Projects\Retros\Visual Studio and Github\WpfApp2\settings6.png";
+            windowHandle.ApplicationButtons.SettingsButtonImageSource = @"D:\Programmmieren\Projects\Retros\Visual Studio and Github\WpfApp2\settings5.png";
             windowHandle.ApplicationButtons.SettingsButtonImagePadding = new Thickness(5);
             windowHandle.ApplicationButtons.OverrideSettings(() => {
-                Debugger.Console.Log("Settings Open");
+                if (Settings == null || !Settings.IsVisible) {
+                    Settings = new SettingsWindow();
+                }
+
+                if (!Settings.IsVisible) {
+                    Settings.Show();
+                }
+                else {
+                    Settings.Close();
+                }
             });
         }
 
-        public static void UpdateGridSizes_T2() {
+        public static void UpdateGridSizes() {
             MainGrid.Height = Application.Current.MainWindow.ActualHeight;
             MainGrid.Width = Application.Current.MainWindow.ActualWidth;
 
@@ -222,7 +235,7 @@ namespace Retros {
             ((System.Windows.Shapes.Rectangle)sender).CaptureMouse();
             CompositionTarget.Rendering += CompositionTarget_Rendering;
 
-            double shadowPos = Helper.GetAbsolutePosition(shadow).X;
+            double shadowPos = Helper.GetAbsolutePosition(shadow, Application.Current.MainWindow).X;
             double mousePos = Mouse.GetPosition(Application.Current.MainWindow).X; // Mouse Position Relative to the window
             double mousePosDelta = mousePos - shadowPos; // Mouse Position Relative to the AHsoq 
             offsetOnEnter = mousePosDelta;
