@@ -25,6 +25,9 @@ namespace Retros {
             private Image original = new();
             public Image Original => original;
 
+            private Grid imagesGrid = new();
+            public Grid Grid => imagesGrid;
+
             DispatcherTimer actionTimer = new();
             Queue<Action> actionQueue = new();
 
@@ -46,8 +49,6 @@ namespace Retros {
                 actionTimer.Interval = UIManager.Framerate;
                 actionTimer.Tick += (s, e) => {
                     if (actionQueue.Count > 0) {
-                        Debugger.Console.Log(imageCount);
-                        Debugger.Console.Log((currentImage.Parent as Grid)!.Children.Count);
                         Action action = actionQueue.Dequeue();
                         action.Invoke();
                     }
@@ -66,7 +67,7 @@ namespace Retros {
 
             private List<float> dp_tValues = new(); /// caches the opacity curve
             private bool isCalculated = false;
-            private int smoothness = 0;
+            private int smoothness = 2;
             public int InterpolationSmoothness {
                 get => smoothness;
                 set {
@@ -74,7 +75,7 @@ namespace Retros {
                     isCalculated = false;
                 }
             }
-            private float totalInterpolationTime = 400;
+            private float totalInterpolationTime = 100;
             public float TotalInterpolationTime {
                 get => totalInterpolationTime;
                 set {
@@ -83,8 +84,8 @@ namespace Retros {
                 }
             }
             private float interval = 6.94444444444f; /// time between ticks
-            private float startBoost => 0; /// recomendet for high smoothness (This approximates, will not work for very high values)
-            private int imageCount = 0; /// used to set the newest images to the front
+            private float startBoost => smoothness; /// recomendet for high smoothness (This approximates, will not work for very high values)
+            private int imageCount = 1; /// used to set the newest images to the front
 
             public void ChangeImage(Image newImage) {
                 //Prepare
@@ -92,11 +93,12 @@ namespace Retros {
                 newImage.Opacity = 0;
                 Helper.SetChildInGrid((currentImage.Parent as Grid)!, newImage, Grid.GetRow(currentImage), Grid.GetColumn(currentImage));
                 newImage.Margin = currentImage.Margin;
-                Canvas.SetZIndex(newImage, 10 * imageCount + 10);
+                Canvas.SetZIndex(newImage, 10);
+                Canvas.SetZIndex(currentImage, 10/imageCount);
 
                 //Interpolate
                 if (isCalculated) {
-                    int i = 0;
+                    int i = (int)startBoost;
                     var timer = new DispatcherTimer();
                     timer.Interval = TimeSpan.FromMilliseconds(interval);
                     timer.Tick += (s, e) => {
@@ -108,9 +110,6 @@ namespace Retros {
                             (currentImage.Parent as Grid)!.Children.Remove(currentImage);
                             currentImage = newImage;
                             imageCount--;
-
-                            Debugger.Console.Log("removed1");
-
                             timer.Stop();
                         }
                     };
@@ -131,10 +130,7 @@ namespace Retros {
                             newImage.Effect = currentImage.Effect;
                             (currentImage.Parent as Grid)!.Children.Remove(currentImage);
                             currentImage = newImage;
-                            imageCount--;
-                            
-                            Debugger.Console.Log("removed2");
-
+                            imageCount--;                            
                             isCalculated = true;
                             timer.Stop();
                         }

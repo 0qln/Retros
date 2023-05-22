@@ -26,3 +26,4 @@ D:\Programmmieren\Projects\Retros\Visual Studio and Github\WpfApp2\obj\Debug\net
 D:\Programmmieren\Projects\Retros\Visual Studio and Github\WpfApp2\obj\Debug\net7.0-windows\Retros.pdb
 D:\Programmmieren\Projects\Retros\Visual Studio and Github\WpfApp2\obj\Debug\net7.0-windows\Retros.genruntimeconfig.cache
 D:\Programmmieren\Projects\Retros\Visual Studio and Github\WpfApp2\obj\Debug\net7.0-windows\ref\Retros.dll
+D:\Programmmieren\Projects\Retros\Visual Studio and Github\WpfApp2\bin\Debug\net7.0-windows\SharpDX.dll

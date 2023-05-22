@@ -9,4 +9,12 @@ namespace Retros {
         public void Apply();
         public bool Applied();
     }
+
+    public interface IFilterChange : IChange {
+        
+    }
+
+    public interface IRezizeChange : IChange {
+
+    }
 }

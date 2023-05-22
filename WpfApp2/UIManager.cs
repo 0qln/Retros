@@ -79,7 +79,8 @@ namespace Retros {
             Helper.AddColumn(WorkStationImageGrid, 1, GridUnitType.Auto);
             Workstation.ImageElement.CurrentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
             Workstation.ImageElement.CurrentImage.Margin = new Thickness(50);
-            Helper.SetChildInGrid(WorkStationImageGrid, Workstation.ImageElement.CurrentImage, 0, 0);
+            Helper.SetChildInGrid(WorkStationImageGrid, Workstation.ImageElement.Grid, 0, 0);
+            Helper.SetChildInGrid(Workstation.ImageElement.Grid, Workstation.ImageElement.CurrentImage, 0, 0);
             Helper.SetChildInGrid(WorkStationImageGrid, shadow, 0, 1);
 
             DropShadowEffect effect1 = new() { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
@@ -97,8 +98,8 @@ namespace Retros {
             shadow.HorizontalAlignment = HorizontalAlignment.Right;
             shadow.MouseLeftButtonDown += Shadow_MouseDown;
             shadow.MouseLeftButtonUp += Shadow_MouseUp;
-            shadow.MouseEnter += (s, e) => Application.Current.MainWindow.Cursor = Cursors.SizeWE; ;
-            shadow.MouseLeave += (s, e) => Application.Current.MainWindow.Cursor = Cursors.Arrow; ;
+            shadow.MouseEnter += (s, e) => Application.Current.MainWindow.Cursor = Cursors.SizeWE;
+            shadow.MouseLeave += (s, e) => Application.Current.MainWindow.Cursor = Cursors.Arrow;
 
 
 
@@ -125,6 +126,13 @@ namespace Retros {
             settingsMenu.AddOption("Change Layout").SetKeyboardShortcut("Strg + LShift + L");
 
             windowHandle.ActivateAllClientButtons();
+
+            windowHandle.ApplicationButtons.AddSettingsButton();
+            windowHandle.ApplicationButtons.SettingsButtonImageSource = @"D:\Programmmieren\Projects\Retros\Visual Studio and Github\WpfApp2\settings6.png";
+            windowHandle.ApplicationButtons.SettingsButtonImagePadding = new Thickness(5);
+            windowHandle.ApplicationButtons.OverrideSettings(() => {
+                Debugger.Console.Log("Settings Open");
+            });
         }
 
         public static void UpdateGridSizes_T2() {

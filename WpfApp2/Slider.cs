@@ -29,7 +29,8 @@ namespace Retros.WorkstationTableElements {
             StackPanelElement.Children.Add(TextElement);
             StackPanelElement.Children.Add(SliderElement);
 
-            BorderElement = new Border { Child = StackPanelElement }; 
+            BorderElement = new Border { Child = StackPanelElement };
+            BorderElement.Background = Brushes.Transparent;
         }
     }
 }

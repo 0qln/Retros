@@ -44,8 +44,7 @@ namespace Retros {
                 public void ApplyChanges() {
                     if (changes.Count > 0) {
                         changes.ForEach(change => {
-                            if (!change.Applied()) 
-                                change.Apply();
+                            if (!change.Applied()) change.Apply();
                         });
                     }
                 }
@@ -63,7 +62,9 @@ namespace Retros {
                 }
 
                 public IChange GetChange(IChange change) {
-                    return changes.First(c => c.GetType() == change.GetType());
+                    if (changes.Count > 0)
+                        return changes.First(c => c.GetType() == change.GetType());
+                    return null!;
                 }
                 public bool HasChange(IChange change) {
                     return changeTypes.Contains(change.GetType());
