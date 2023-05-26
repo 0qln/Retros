@@ -7,7 +7,7 @@ using static Retros.WorkstationTableElements.Tabs.ImageFilterTab;
 namespace Retros.WorkstationTableElements.Bodies {
 
     public partial class ImageFilter : Body {
-        Workstation.WorkstationImage image = UIManager.Workstation.ImageElement; // TODO
+        Workstation.WorkstationImage image = WindowManager.MainWindow!.Workstation.ImageElement; // TODO
         private StackPanel stackPanel = new();
 
         public Button resetButton = new();

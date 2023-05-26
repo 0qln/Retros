@@ -28,14 +28,14 @@ namespace Retros {
 
             WindowHandle = new(this);
             WindowHandle.SetParentWindow(MainCanvas!);
-            WindowHandle.SetBGColor(UIManager.whBackground);
-            WindowHandle.ApplicationButtons.ColorWhenButtonHover = UIManager.whApplicationButtonHover;
+            WindowHandle.SetBGColor(WindowManager.whBackground);
+            WindowHandle.ApplicationButtons.ColorWhenButtonHover = WindowManager.whApplicationButtonHover;
             WindowHandle.SetWindowChromeActiveAll();
 
             WindowHandleRowDefinition.Height = new GridLength(WindowHandle.Height);
 
-            SettingsList.Background = UIManager.WorkStationGrid_BG;
-            SettingDetails.Background = UIManager.WorkActionGrid_BG;
+            SettingsList.Background = WindowManager.WorkStationImageGrid_BG;
+            SettingDetails.Background = WindowManager.WorkStationGrid_BG;
 
         }
 

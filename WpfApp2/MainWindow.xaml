@@ -11,8 +11,58 @@
     <Canvas x:Name="MainCanvas">
         
 
-        <Grid x:Name="MainGrid">
-            
+        <Grid x:Name="MainGrid"
+              Width="{Binding ActualWidth, ElementName=MainCanvas}"
+              Height="{Binding ActualHeight, ElementName=MainCanvas}">
+
+
+            <Grid x:Name="ClientGrid"
+                  Grid.Row="1">
+                
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="21*"/>
+                    <ColumnDefinition Width="13*"/>
+                </Grid.ColumnDefinitions>
+
+                
+                <Grid x:Name="WorkStationImageGrid"
+                      Grid.Column="0">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Rectangle x:Name="Shadow"
+                               Grid.Row="0"
+                               Grid.Column="1"
+                               Height="{Binding ActualHeight, ElementName=MainCanvas}"
+                               Panel.ZIndex="-10"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Right"
+                               MouseLeftButtonDown="Shadow_MouseLeftButtonDown"
+                               MouseLeftButtonUp="Shadow_MouseLeftButtonUp"
+                               MouseEnter="Shadow_MouseEnter"
+                               MouseLeave="Shadow_MouseLeave"/>
+
+                </Grid>
+                
+                <Grid x:Name="WorkStationGrid"
+                      Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                
+                
+                </Grid>
+                
+                
+                
+            </Grid>
+
+
+
             
             
         </Grid>

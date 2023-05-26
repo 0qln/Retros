@@ -19,155 +19,14 @@ using Retros.WorkstationTableElements.Handles;
 
 namespace Retros {
     public static class UIManager {
-        //Window
-        public static Grid MainGrid = new();
-        private static Canvas? canvas;
-
-        public static Window? Settings;
-        public static bool SettingsOpened;
-
-        // Client Area
-        public static Workstation Workstation = new();
-
-        public static Grid ClientGrid = new();
-        public static Grid WorkStationGrid = new();
-        public static Grid WorkStationImageGrid = new();
-        public static System.Windows.Shapes.Rectangle shadow = new System.Windows.Shapes.Rectangle();
-        private static double shadowRectWidth = 5;
-
-        public static Brush WorkStationGrid_BG = Helper.StringToSolidColorBrush("#1f1f1f");
-        public static Brush WorkActionGrid_BG = Helper.StringToSolidColorBrush("#2e2e2e");
-
-        public static TimeSpan Framerate = TimeSpan.FromMilliseconds(1000 / 60);
-
-        //WindowHandle
-        public static Brush whBackground = Helper.StringToSolidColorBrush("#000000", 0.45);
-        public static Brush whApplicationButtonHover = Helper.StringToSolidColorBrush("#000000", 0.4);
-
-        private static WindowHandle windowHandle = new(Application.Current.MainWindow);
-        public static DropDownMenu fileMenu = new("File", Application.Current.MainWindow);
-        public static DropDownMenu editMenu = new("Edit", Application.Current.MainWindow);
-        public static DropDownMenu viewMenu = new("View", Application.Current.MainWindow);
-        public static DropDownMenu settingsMenu = new("Settings", Application.Current.MainWindow);
-
-
-        public static void Start(Canvas pCanvas) {
-
-            canvas = pCanvas;
-
-            // Main Grid
-            MainGrid.Loaded += (sender, e) => {
-                MainGrid.Height = canvas.ActualHeight;
-                MainGrid.Width = canvas.ActualWidth;
-            };
-            canvas.Children.Add(MainGrid);
-
-
-            // Client Grid
-            Helper.AddColumn(ClientGrid, 21, GridUnitType.Star);
-            Helper.AddColumn(ClientGrid, 13, GridUnitType.Star);
-            Helper.SetChildInGrid(MainGrid, ClientGrid, 1, 0);
-
-
-            // WorkActionsGrid
-            Helper.AddRow(WorkStationGrid, windowHandle.Height, GridUnitType.Pixel);
-            Helper.AddRow(WorkStationGrid, 1, GridUnitType.Star);
-            Helper.SetChildInGrid(ClientGrid, WorkStationGrid, 0, 1);
-            WorkStationGrid.Background = WorkActionGrid_BG;
-
-            Helper.SetChildInGrid(WorkStationGrid, Workstation.FrameworkElement, 1, 0);
-            Workstation.TableElement.AddTab(new ImageFilterTab(new ImageFilter(), new DefaultHandle("Filters")));
-            Workstation.TableElement.SelectTab(0);
-
-            // WorkStation
-            Helper.SetChildInGrid(ClientGrid, WorkStationImageGrid, 0, 0);
-            WorkStationImageGrid.Background = WorkStationGrid_BG;
-
-            Helper.AddColumn(WorkStationImageGrid, 1, GridUnitType.Star);
-            Helper.AddColumn(WorkStationImageGrid, 1, GridUnitType.Auto);
-            Workstation.ImageElement.CurrentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
-            Workstation.ImageElement.CurrentImage.Margin = new Thickness(50);
-            Helper.SetChildInGrid(WorkStationImageGrid, Workstation.ImageElement.Grid, 0, 0);
-            Helper.SetChildInGrid(Workstation.ImageElement.Grid, Workstation.ImageElement.CurrentImage, 0, 0);
-            Helper.SetChildInGrid(WorkStationImageGrid, shadow, 0, 1);
-
-            DropShadowEffect effect1 = new() { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
-            Workstation.ImageElement.CurrentImage.Effect = effect1;
-
-
-
-            // shadow
-            DropShadowEffect effect2 = new() { BlurRadius = 25, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.80, Direction = 180 };
-            shadow.Effect = effect2;
-            shadow.Width = shadowRectWidth;
-            shadow.Fill = WorkActionGrid_BG;
-            Panel.SetZIndex(shadow, -10);
-            shadow.VerticalAlignment = VerticalAlignment.Top;
-            shadow.HorizontalAlignment = HorizontalAlignment.Right;
-            shadow.MouseLeftButtonDown += Shadow_MouseDown;
-            shadow.MouseLeftButtonUp += Shadow_MouseUp;
-            shadow.MouseEnter += (s, e) => Application.Current.MainWindow.Cursor = Cursors.SizeWE;
-            shadow.MouseLeave += (s, e) => Application.Current.MainWindow.Cursor = Cursors.Arrow;
-
-
-
-
-            // Set up WindowHandle
-            // Viusals
-            windowHandle.SetParentWindow(canvas!);
-            windowHandle.SetBGColor(whBackground);
-            windowHandle.ApplicationButtons.ColorWhenButtonHover = whApplicationButtonHover;
-
-            Application.Current.MainWindow.Loaded += (sender, e) => UpdateGridSizes();
-            canvas!.LayoutUpdated += (sender, e) => UpdateGridSizes();
-
-            // Client Buttons
-            windowHandle.CreateClientButton(fileMenu);
-            windowHandle.CreateClientButton(viewMenu);
-            windowHandle.CreateClientButton(editMenu);
-            windowHandle.CreateClientButton(settingsMenu);
-
-            fileMenu.AddOption("Save").SetKeyboardShortcut("Strg + S");
-            fileMenu.AddOption("Open").SetKeyboardShortcut("Strg + O").AddCommand(LoadImage);
-            editMenu.AddOption("Save Filter").SetKeyboardShortcut("Strg + S + F");
-            viewMenu.AddOption("Zoom").SetKeyboardShortcut("Bla bla");
-            settingsMenu.AddOption("Change Layout").SetKeyboardShortcut("Strg + LShift + L");
-
-            windowHandle.ActivateAllClientButtons();
-
-            // Application Buttons
-            windowHandle.ApplicationButtons.AddSettingsButton();
-            windowHandle.ApplicationButtons.SettingsButtonImageSource = "pack://application:,,,/settings5.png";
-            windowHandle.ApplicationButtons.SettingsButtonImagePadding = new Thickness(5);
-            windowHandle.ApplicationButtons.OverrideSettings(() => {
-                if (Settings == null || !Settings.IsVisible) {
-                    Settings = new SettingsWindow(); 
-                }
-
-                if (!Settings.IsVisible) {
-                    Settings.Show();
-                }
-                else {
-                    Settings.Close();
-                }
-            });
-        }
-
-        public static void UpdateGridSizes() {
-            MainGrid.Height = Application.Current.MainWindow.ActualHeight;
-            MainGrid.Width = Application.Current.MainWindow.ActualWidth;
-
-            shadow.Height = WorkStationImageGrid.ActualHeight;
-        }
-
         public static void LoadImage() {
             string path = ShowImagePickerDialog();
             if (path != null) {
                 Image image = new();
                 Helper.SetImageSource(image, path);
-                Workstation.ImageElement.CurrentImage = image;
+                WindowManager.MainWindow!.Workstation.ImageElement.CurrentImage = image;
             }
-            windowHandle.HideAllMenus();
+            WindowManager.MainWindow!.windowHandle.HideAllMenus();
         }
         public static string ShowFolderPickerDialog() {
             var openFileDialog = new OpenFileDialog {
@@ -226,35 +85,6 @@ namespace Retros {
             }
 
             return "";
-        }
-
-
-        // shadow 
-        private static double offsetOnEnter = 0;
-        private static void Shadow_MouseUp(object sender, MouseButtonEventArgs e) {
-            ((System.Windows.Shapes.Rectangle)sender).ReleaseMouseCapture();
-            CompositionTarget.Rendering -= CompositionTarget_Rendering;
-            offsetOnEnter = 0;
-        }
-        private static void Shadow_MouseDown(object sender, MouseButtonEventArgs e) {
-            ((System.Windows.Shapes.Rectangle)sender).CaptureMouse();
-            CompositionTarget.Rendering += CompositionTarget_Rendering;
-
-            double shadowPos = Helper.GetAbsolutePosition(shadow, Application.Current.MainWindow).X;
-            double mousePos = Mouse.GetPosition(Application.Current.MainWindow).X; // Mouse Position Relative to the window
-            double mousePosDelta = mousePos - shadowPos; // Mouse Position Relative to the AHsoq 
-            offsetOnEnter = mousePosDelta;
-        }
-        private static void CompositionTarget_Rendering(object? sender, EventArgs e) {
-            double mousePos = Mouse.GetPosition(Application.Current.MainWindow).X; // Mouse Position Relative to the window
-
-            double a = mousePos / ClientGrid.ActualWidth;
-            double b = 1 - a;
-
-            if (a < 0) a = shadowRectWidth / ClientGrid.ActualWidth;
-            if (b < 0) b = 0;
-            ClientGrid.ColumnDefinitions[0].Width = new GridLength(a, GridUnitType.Star);
-            ClientGrid.ColumnDefinitions[1].Width = new GridLength(b, GridUnitType.Star);
         }
     }
 }

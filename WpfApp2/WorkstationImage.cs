@@ -12,6 +12,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 
 namespace Retros {
     partial class Workstation {
@@ -43,16 +44,25 @@ namespace Retros {
 
 
             public WorkstationImage(string path) {
+
                 filterManager = new(this);
+
                 StartUpdating();
+
                 Helper.SetImageSource(currentImage, path);
+                currentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
+                currentImage.Margin = new Thickness(50);
+                imagesGrid.Children.Add(currentImage);
+                currentImage.Effect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
+
                 Helper.SetImageSource(original, path);
+
                 DummyImage = new WriteableBitmap((BitmapSource) Original.Source);
             }
 
 
             private void StartUpdating() {
-                actionTimer.Interval = UIManager.Framerate;
+                actionTimer.Interval = WindowManager.Framerate;
                 actionTimer.Tick += (s, e) => {
                     if (actionQueue.Count > 0) {
                         Action action = actionQueue.Dequeue();
