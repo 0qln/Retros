@@ -26,11 +26,11 @@ namespace Retros {
         }
 
         public static void ToggleSettings() {
-            if (SettingsWindow == null || SettingsWindow.IsVisible) {
+            if (SettingsWindow == null || !SettingsWindow.IsVisible) {
                 SettingsWindow = new SettingsWindow();
             }
 
-            if (SettingsWindow.IsVisible) {
+            if (!SettingsWindow.IsVisible) {
                 SettingsWindow.Show();
             }
             else {
