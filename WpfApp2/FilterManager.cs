@@ -20,56 +20,114 @@ using System.Runtime.Intrinsics;
 using System.Threading;
 using System.Windows.Threading;
 using Retros.WorkstationTableElements.Tabs;
+using Retros;
+using System.Windows.Navigation;
 
-namespace Retros {
+namespace Retros
+{
 
     // Functionality -> Image Filters Tab Body
     partial class Workstation {
         public partial class WorkstationImage {
             public class FilterManager {
-                private HashSet<Type> changeTypes = new(); // (change, index)
+                private HashSet<Type> changeTypes = new(); 
                 private List<IChange> changes = new();
                 private DispatcherTimer timer = new();
+                private WorkstationImage image; 
 
-                public FilterManager() {
-                    timer.Interval = TimeSpan.FromMilliseconds(250);
+                public FilterManager(WorkstationImage image) {
+                    timer.Interval = TimeSpan.FromMilliseconds(100);
                     timer.Tick += (s, e) => ApplyChanges();
                     timer.Start();
+
+                    this.image = image;
                 }
 
                 public void Clear() {
                     changes.Clear();
+                    changeTypes.Clear();
                 }
 
                 public void ApplyChanges() {
                     if (changes.Count > 0) {
+                        image.DummyImage = new WriteableBitmap((BitmapSource)image.Original.Source);
                         changes.ForEach(change => {
-                            if (!change.Applied()) change.Apply();
+                            change.Apply();
                         });
+                        image.SetSource(image.DummyImage);
                     }
                 }
 
-                public bool AddChange(IChange change) {
-                    if (HasChange(change)) {
-                        changes.Remove(GetChange(change));
-                    }
-                    else {
-                        changeTypes.Add(change.GetType());
+                /// <summary>
+                /// Could cause bugs, better use the other option 
+                /// </summary>
+                /// <param name="changeType"></param>
+                /// <returns></returns>
+                public bool AddChange(Type changeType) {
+                    if (ContainsChange(changeType)) {
+                        return false;
                     }
 
+                    changeTypes.Add(changeType);
+                    changes.Add((IChange) Activator.CreateInstance(changeType, image)!);
+                    return true;
+                }
+                public bool AddChange(IChange change) {
+                    if (ContainsChange(change)) {
+                        return false;
+                    }
+
+                    changeTypes.Add(change.GetType());
                     changes.Add(change);
                     return true;
                 }
+                public bool AddChange(IFilterChange filterChange) {
+                    if (ContainsFilter(filterChange)) {
+                        return false;
+                    }
 
-                public IChange GetChange(IChange change) {
-                    if (changes.Count > 0)
-                        return changes.First(c => c.GetType() == change.GetType());
+                    changeTypes.Add(filterChange.GetType());
+                    changes.Add((IChange)filterChange);
+                    return true;
+                }
+
+                public void SetFilterIntensity(IFilterChange filter, double value) {
+                    GetFilter(filter).FilterIntensity = value;
+                }
+
+                public void RemoveChange(Type changeType) {
+                    if (!ContainsChange(changeType)) return;
+
+                    changes.Remove(changes.First(c=> changeType == c.GetType()));
+                    changeTypes.Remove(changeType);
+                }
+                public void RemoveChange(IChange change) {
+                    if (!ContainsChange(change)) return;
+
+                    changes.Remove(GetChange(change));
+                    changeTypes.Remove(change.GetType());
+                }
+
+                public IFilterChange GetFilter(IFilterChange filter) {
+                    if (changes.Count > 0) return (IFilterChange)changes.First(c => c.GetType() == filter.GetType());
                     return null!;
                 }
-                public bool HasChange(IChange change) {
+                public IChange GetChange(IChange change) {
+                    if (changes.Count > 0) return changes.First(c => c.GetType() == change.GetType());
+                    return null!;
+                }
+                public IChange GetChange(Type changeType) {
+                    if (changes.Count > 0) return changes.First(c => c.GetType() == changeType);
+                    return null!;
+                    
+                }
+                public bool ContainsChange(IChange change) {
                     return changeTypes.Contains(change.GetType());
                 }
-                public bool HasChange(Type type) {
+                public bool ContainsFilter(IFilterChange filter) {
+                    return changeTypes.Contains(((IChange)filter).GetType());
+                }
+                public bool ContainsChange(Type type) {
                     return changeTypes.Contains(type);
                 }
             }

@@ -4,20 +4,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
-using WpfCustomControls;
+using WpfUtillities;
 using Retros.WorkstationTableElements.Tabs;
 using Retros.WorkstationTableElements.Bodies;
 using Retros.WorkstationTableElements.Handles;
 
 
 namespace Retros {
-    static class UIManager {
+    public static class UIManager {
         //Window
         public static Grid MainGrid = new();
         private static Canvas? canvas;
@@ -40,11 +41,15 @@ namespace Retros {
         public static TimeSpan Framerate = TimeSpan.FromMilliseconds(1000 / 60);
 
         //WindowHandle
+        public static Brush whBackground = Helper.StringToSolidColorBrush("#000000", 0.45);
+        public static Brush whApplicationButtonHover = Helper.StringToSolidColorBrush("#000000", 0.4);
+
         private static WindowHandle windowHandle = new(Application.Current.MainWindow);
         public static DropDownMenu fileMenu = new("File", Application.Current.MainWindow);
         public static DropDownMenu editMenu = new("Edit", Application.Current.MainWindow);
         public static DropDownMenu viewMenu = new("View", Application.Current.MainWindow);
         public static DropDownMenu settingsMenu = new("Settings", Application.Current.MainWindow);
+
 
         public static void Start(Canvas pCanvas) {
 
@@ -110,8 +115,8 @@ namespace Retros {
             // Set up WindowHandle
             // Viusals
             windowHandle.SetParentWindow(canvas!);
-            windowHandle.SetBGColor(Helper.StringToSolidColorBrush("#000000", 0.45));
-            windowHandle.ApplicationButtons.ColorWhenButtonHover = Helper.StringToSolidColorBrush("#000000", 0.4);
+            windowHandle.SetBGColor(whBackground);
+            windowHandle.ApplicationButtons.ColorWhenButtonHover = whApplicationButtonHover;
 
             Application.Current.MainWindow.Loaded += (sender, e) => UpdateGridSizes();
             canvas!.LayoutUpdated += (sender, e) => UpdateGridSizes();
@@ -132,11 +137,11 @@ namespace Retros {
 
             // Application Buttons
             windowHandle.ApplicationButtons.AddSettingsButton();
-            windowHandle.ApplicationButtons.SettingsButtonImageSource = @"D:\Programmmieren\Projects\Retros\Visual Studio and Github\WpfApp2\settings5.png";
+            windowHandle.ApplicationButtons.SettingsButtonImageSource = "pack://application:,,,/settings5.png";
             windowHandle.ApplicationButtons.SettingsButtonImagePadding = new Thickness(5);
             windowHandle.ApplicationButtons.OverrideSettings(() => {
                 if (Settings == null || !Settings.IsVisible) {
-                    Settings = new SettingsWindow();
+                    Settings = new SettingsWindow(); 
                 }
 
                 if (!Settings.IsVisible) {

@@ -1,0 +1,12 @@
+D:\Programmmieren\Projects\Retros\Release\Retros.exe
+D:\Programmmieren\Projects\Retros\Release\Retros.dll
+D:\Programmmieren\Projects\Retros\Release\Retros.deps.json
+D:\Programmmieren\Projects\Retros\Release\Retros.runtimeconfig.json
+D:\Programmmieren\Projects\Retros\Release\Retros.pdb
+D:\Programmmieren\Projects\Retros\Release\SharpDX.dll
+D:\Programmmieren\Projects\Retros\Release\DebugLibrary.dll
+D:\Programmmieren\Projects\Retros\Release\WpfCustomControlLibrary1.dll
+D:\Programmmieren\Projects\Retros\Release\CommandLibrary.dll
+D:\Programmmieren\Projects\Retros\Release\DebugLibrary.pdb
+D:\Programmmieren\Projects\Retros\Release\WpfCustomControlLibrary1.pdb
+D:\Programmmieren\Projects\Retros\Release\CommandLibrary.pdb

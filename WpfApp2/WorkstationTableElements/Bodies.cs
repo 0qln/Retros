@@ -1,18 +1,7 @@
-﻿using Retros.WorkstationTableElements;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Retros.WorkstationTableElements.Bodies.ImageFilter;
-using static Retros.WorkstationTableElements.Tabs.ImageFilterTab;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
-using System.Windows;
-using WpfCustomControls;
-using System.Threading;
-using static System.Net.Mime.MediaTypeNames;
+using WpfUtillities;
+using static Retros.WorkstationTableElements.Tabs.ImageFilterTab;
 
 // Bodies Manage the Tab body UIElements and functionality
 namespace Retros.WorkstationTableElements.Bodies {
@@ -56,7 +45,7 @@ namespace Retros.WorkstationTableElements.Bodies {
             greenChannelSlider.SliderElement.ValueChanged += GreenChannelButton_Click;
 
             //no red
-            noRedSlider.SliderElement.ValueChanged += (s, e) => AddChange(new NoRedChannel(image, noRedSlider.SliderElement.Value / 10));
+            ///noRedSlider.SliderElement.ValueChanged += (s, e) => AddChange(new NoRedChannel(image, noRedSlider.SliderElement.Value / 10));
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e) {
@@ -65,21 +54,33 @@ namespace Retros.WorkstationTableElements.Bodies {
             image.CurrentImage.Source = image.Original.Source.Clone();
         }
 
-        private void GrayScaleSliderElement_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) 
-            => AddChange(new GrayScale(image, grayscaleSlider.SliderElement.Value / 10));
+        private void GrayScaleSliderElement_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+            AddFilterChange(new GrayScale(image), grayscaleSlider.SliderElement.Value / 10);
+        }
 
-        private void GreenChannelButton_Click(object sender, RoutedEventArgs e)
-            => AddChange(new OnlyGreenChannel(image, greenChannelSlider.SliderElement.Value / 10));
+        private void GreenChannelButton_Click(object sender, RoutedEventArgs e) {
+            AddFilterChange(new OnlyGreenChannel(image), greenChannelSlider.SliderElement.Value / 10);
+        }
 
-        private void RedChannelButton_Click(object sender, RoutedEventArgs e)
-            => AddChange(new OnlyRedChannel(image, redChannelSlider.SliderElement.Value / 10));
+        private void RedChannelButton_Click(object sender, RoutedEventArgs e) {
+            AddFilterChange(new OnlyRedChannel(image), redChannelSlider.SliderElement.Value / 10);
+        }
 
-        private void BlueChannelButton_Click(object sender, RoutedEventArgs e)
-            => AddChange(new OnlyBlueChannel(image, blueChannelSlider.SliderElement.Value / 10));
+        private void BlueChannelButton_Click(object sender, RoutedEventArgs e) {
+            AddFilterChange(new OnlyBlueChannel(image), blueChannelSlider.SliderElement.Value / 10);
+        }
 
         private void AddChange(IChange change) {
-            image.GetFilterManager.AddChange(change);
-            image.History.Add(change);
+
+        }
+
+        private void AddFilterChange(IFilterChange filter, double value) {
+            if (value == 0) {
+                image.GetFilterManager.RemoveChange((IChange) filter);
+            }
+            else if (!image.GetFilterManager.AddChange(filter)) {
+                image.GetFilterManager.SetFilterIntensity(filter, value);
+            }
         }
     }
 

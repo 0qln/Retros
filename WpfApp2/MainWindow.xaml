@@ -9,7 +9,14 @@
         Height="600" Width="900">
 
     <Canvas x:Name="MainCanvas">
+        
 
-
+        <Grid x:Name="MainGrid">
+            
+            
+            
+        </Grid>
+        
+        
     </Canvas>
 </Window>

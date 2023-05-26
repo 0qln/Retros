@@ -7,14 +7,13 @@ using System.Threading.Tasks;
 namespace Retros {
     public interface IChange {
         public void Apply();
-        public bool Applied();
     }
 
-    public interface IFilterChange : IChange {
-        
+    public interface IFilterChange {
+        public double FilterIntensity { get; set; }
     }
 
-    public interface IRezizeChange : IChange {
+    public interface IResizeChange {
 
     }
 }

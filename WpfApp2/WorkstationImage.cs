@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using WpfCustomControls;
+using WpfUtillities;
 using System.Windows.Media.Imaging;
 using System.Drawing.Imaging;
 using System.IO;
@@ -17,6 +17,7 @@ namespace Retros {
     partial class Workstation {
         public partial class WorkstationImage : IFrameworkElement {
             public FrameworkElement FrameworkElement => CurrentImage;
+
             private Image currentImage = new();
             public Image CurrentImage {
                 get => currentImage; 
@@ -24,6 +25,9 @@ namespace Retros {
             }
             private Image original = new();
             public Image Original => original;
+
+            public WriteableBitmap DummyImage { get; set; }
+
 
             private Grid imagesGrid = new();
             public Grid Grid => imagesGrid;
@@ -35,13 +39,15 @@ namespace Retros {
             private ChangeHistory changeHistory = new();
 
             public FilterManager GetFilterManager => filterManager;
-            private FilterManager filterManager = new();
+            private FilterManager filterManager;
 
 
             public WorkstationImage(string path) {
+                filterManager = new(this);
                 StartUpdating();
                 Helper.SetImageSource(currentImage, path);
                 Helper.SetImageSource(original, path);
+                DummyImage = new WriteableBitmap((BitmapSource) Original.Source);
             }
 
 
@@ -58,10 +64,12 @@ namespace Retros {
             public void AddTaskToQueue(Action action) => actionQueue.Enqueue(action);
 
             public void SetSource(WriteableBitmap source) {
-                
                 Image newImage = new Image { Source = source };
                 ChangeImage(newImage);
+            }
 
+            public void ResetCurrent() {
+                currentImage.Source = original.Source.Clone();
             }
 
 
@@ -121,7 +129,7 @@ namespace Retros {
                     var timer = new DispatcherTimer();
                     timer.Interval = TimeSpan.FromMilliseconds(interval);
                     timer.Tick += (s, e) => {
-                        float val = LinearStep(t, smoothness, 0, totalInterpolationTime);
+                        float val = Utillities.Math.LinearStep(t, smoothness, 0, totalInterpolationTime);
                         newImage.Opacity = val;
                         dp_tValues.Add(val);
 
@@ -137,30 +145,6 @@ namespace Retros {
                     };
                     timer.Start();
                 }
-            }
-
-            private float LinearStep(float x, int n = 1, float edge0 = 0, float edge1 = 1.0f) {
-                return Clamp((x - edge0) / (edge1 - edge0));
-            }
-            private float RootStep(float x, int n = 1, float edge0 = 0, float edge1 = 1.0f) {
-                return Clamp(MathF.Sqrt((x - edge0) / (edge1 - edge0)));
-            }
-            private float SmoothStep(float x, int n = 1, float edge0 = 0, float edge1 = 1.0f) {
-                x = Clamp((x - edge0) / (edge1 - edge0));
-                float result = 0;
-                for (int i = 0; i <= n; ++i) {
-                    result += PascalTriangle(-n - 1, i) * PascalTriangle(2 * n + 1, n - i) * MathF.Pow(x, n + i + 1);
-                }
-                return result;
-            }
-            private float Clamp(float x, float lowerlimit = 0.0f, float upperlimit = 1.0f)
-                => (x < lowerlimit) ? (lowerlimit) : ((x > upperlimit) ? (upperlimit) : (x));
-            private float PascalTriangle(int a, int b) {
-                float result = 1;
-                for (int i = 0; i < b; i++) {
-                    result *= (a - i) / (a + i);
-                }
-                return result;
             }
 
         }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows;
-using WpfCustomControls;
+using WpfUtillities;
 using System.Diagnostics;
 using DebugLibrary.Benchmark;
 using Debugger;
@@ -17,9 +17,12 @@ using System.Drawing;
 using static Retros.Workstation;
 using System.Windows.Media.Imaging;
 using System.Security.RightsManagement;
+using Retros;
 
-namespace Retros {
-    namespace WorkstationTableElements {
+namespace Retros
+{
+    namespace WorkstationTableElements
+    {
 
         public abstract class Tab {
             protected Handle handle;
@@ -91,10 +94,13 @@ namespace Retros {
         }
 
 
-        namespace Tabs {
+        namespace Tabs
+        {
             public class ImageFilterTab : Tab {
                 public ImageFilterTab(Body body, Handle handle) : base(body, handle) { }
 
+
+                /*
                 public class NoRedChannel : IChange {
                     private WorkstationImage image;
                     private double filterIntensity;
@@ -127,137 +133,107 @@ namespace Retros {
                     private bool applied = false;
                     public bool Applied() => applied;
                 }
+                */
 
-                public class OnlyRedChannel : IChange {
+
+                public class OnlyRedChannel : IChange, IFilterChange {
                     private WorkstationImage image;
                     private double filterIntensity;
+                    public double FilterIntensity { set => filterIntensity = value; get => filterIntensity; }
 
-                    public OnlyRedChannel(WorkstationImage image, double filterIntensity = 1) {
+                    public OnlyRedChannel(WorkstationImage image) {
                         this.image = image;
-                        this.filterIntensity = filterIntensity;
                     }
 
                     public void Apply() {
-                        applied = true;
-                        BitmapSource bitmapSource = (BitmapSource)image.CurrentImage.Source;
+                        int bytesPerPixel = (image.DummyImage.Format.BitsPerPixel + 7) / 8;
+                        byte[] pixelData = new byte[image.DummyImage.PixelWidth *image.DummyImage.PixelHeight * bytesPerPixel];
+                        image.DummyImage.CopyPixels(pixelData, image.DummyImage.PixelWidth * bytesPerPixel, 0);
+                        int pixelHeight = image.DummyImage.PixelHeight;
+                        int pixelWidth = image.DummyImage.PixelWidth;
 
-                        WriteableBitmap writeableBitmap = new WriteableBitmap(bitmapSource);
-                        int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
-                        byte[] pixelData = new byte[writeableBitmap.PixelWidth * writeableBitmap.PixelHeight * bytesPerPixel];
-                        writeableBitmap.CopyPixels(pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
-
-                        for (int y = 0; y < writeableBitmap.PixelHeight; y++) {
-                            for (int x = 0; x < writeableBitmap.PixelWidth; x++) {
-                                int index = (y * writeableBitmap.PixelWidth + x) * bytesPerPixel;
+                        Parallel.For(0, pixelHeight, y => {
+                            Parallel.For(0, pixelWidth, x => {
+                                int index = (y * pixelWidth + x) * bytesPerPixel;
                                 pixelData[index + 1] = (byte)(pixelData[index + 1] * (1 - filterIntensity));    // Green
                                 pixelData[index + 0] = (byte)(pixelData[index + 0] * (1 - filterIntensity));    // Blue
-                            }
-                        }
+                            });
+                        });
 
-                        writeableBitmap.WritePixels(new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight), pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
-                        image.AddTaskToQueue(() => image.SetSource(writeableBitmap));
+                        image.DummyImage.WritePixels(new Int32Rect(0, 0, image.DummyImage.PixelWidth, image.DummyImage.PixelHeight), pixelData, image.DummyImage.PixelWidth * bytesPerPixel, 0);
                     }
-
-                    private bool applied = false;
-                    public bool Applied() => applied;
                 }
-                public class OnlyGreenChannel : IChange {
+                public class OnlyGreenChannel : IChange, IFilterChange {
                     private WorkstationImage image;
                     private double filterIntensity;
-                    private double lastFilterIntesity;
+                    public double FilterIntensity { set => filterIntensity = value; get => filterIntensity; }
 
-                    public OnlyGreenChannel(WorkstationImage image, double filterIntensity = 1) {
+                    public OnlyGreenChannel(WorkstationImage image) {
                         this.image = image;
-                        this.filterIntensity = filterIntensity;
-                    }
-
-                    public void SetIntensity(double filterIntensity) {
-                        lastFilterIntesity = filterIntensity;
-                        this.filterIntensity = filterIntensity;
                     }
 
                     public void Apply() {
-                        applied = true;
-                        WriteableBitmap writeableBitmap = new WriteableBitmap(image.CurrentImage.Source as BitmapSource);
-                        int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
-                        byte[] pixelData = new byte[writeableBitmap.PixelWidth * writeableBitmap.PixelHeight * bytesPerPixel];
-                        writeableBitmap.CopyPixels(pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
+                        int bytesPerPixel = (image.DummyImage.Format.BitsPerPixel + 7) / 8;
+                        byte[] pixelData = new byte[image.DummyImage.PixelWidth * image.DummyImage.PixelHeight * bytesPerPixel];
+                        image.DummyImage.CopyPixels(pixelData, image.DummyImage.PixelWidth * bytesPerPixel, 0);
+                        int pixelHeight = image.DummyImage.PixelHeight;
+                        int pixelWidth = image.DummyImage.PixelWidth;
 
-                        for (int y = 0; y < writeableBitmap.PixelHeight; y++) {
-                            for (int x = 0; x < writeableBitmap.PixelWidth; x++) {
-                                int index = (y * writeableBitmap.PixelWidth + x) * bytesPerPixel;
-                                pixelData[index + 2] = (byte)(pixelData[index + 2] * (1 - (filterIntensity - lastFilterIntesity)));    // Red
-                                pixelData[index + 0] = (byte)(pixelData[index + 0] * (1 - (filterIntensity - lastFilterIntesity)));    // Blue
-                            }
-                        }
+                        Parallel.For(0, pixelHeight, y => {
+                            Parallel.For(0, pixelWidth, x => {
+                                int index = (y * pixelWidth + x) * bytesPerPixel;
+                                pixelData[index + 2] = (byte)(pixelData[index + 2] * (1 - (filterIntensity)));    // Red
+                                pixelData[index + 0] = (byte)(pixelData[index + 0] * (1 - (filterIntensity)));    // Blue
+                            });
+                        });
 
-                        writeableBitmap.WritePixels(new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight), pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
-                        image.AddTaskToQueue(() => image.SetSource(writeableBitmap));
+                        image.DummyImage.WritePixels(new Int32Rect(0, 0, image.DummyImage.PixelWidth, image.DummyImage.PixelHeight), pixelData, image.DummyImage.PixelWidth * bytesPerPixel, 0);
                     }
-
-                    private bool applied = false;
-                    public bool Applied() => applied;
                 }
-                public class OnlyBlueChannel : IChange {
+                public class OnlyBlueChannel : IChange, IFilterChange {
                     private WorkstationImage image;
                     private double filterIntensity;
+                    public double FilterIntensity { set => filterIntensity = value; get => filterIntensity; }
 
-                    public OnlyBlueChannel(WorkstationImage image, double filterIntensity = 1) {
+                    public OnlyBlueChannel(WorkstationImage image) {
                         this.image = image;
-                        this.filterIntensity = filterIntensity;
                     }
 
                     public void Apply() {
-                        applied = true;
-                        BitmapSource bitmapSource = (BitmapSource)image.CurrentImage.Source;
+                        int bytesPerPixel = (image.DummyImage.Format.BitsPerPixel + 7) / 8;
+                        byte[] pixelData = new byte[image.DummyImage.PixelWidth * image.DummyImage.PixelHeight * bytesPerPixel];
+                        image.DummyImage.CopyPixels(pixelData, image.DummyImage.PixelWidth * bytesPerPixel, 0);
+                        int pixelHeight = image.DummyImage.PixelHeight;
+                        int pixelWidth = image.DummyImage.PixelWidth;
 
-                        WriteableBitmap writeableBitmap = new WriteableBitmap(bitmapSource);
-                        int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
-                        byte[] pixelData = new byte[writeableBitmap.PixelWidth * writeableBitmap.PixelHeight * bytesPerPixel];
-                        writeableBitmap.CopyPixels(pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
-
-                        for (int y = 0; y < writeableBitmap.PixelHeight; y++) {
-                            for (int x = 0; x < writeableBitmap.PixelWidth; x++) {
-                                int index = (y * writeableBitmap.PixelWidth + x) * bytesPerPixel;
+                        Parallel.For(0, pixelHeight, y => {
+                            Parallel.For(0, pixelWidth, x => {
+                                int index = (y * pixelWidth + x) * bytesPerPixel;
                                 pixelData[index + 2] = (byte)(pixelData[index + 2] * (1 - filterIntensity));    // Red
                                 pixelData[index + 1] = (byte)(pixelData[index + 1] * (1 - filterIntensity));    // Green
-                            }
-                        }
+                            });
+                        });
 
-                        writeableBitmap.WritePixels(new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight), pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
-                        image.AddTaskToQueue(() => image.SetSource(writeableBitmap));
+                        image.DummyImage.WritePixels(new Int32Rect(0, 0, image.DummyImage.PixelWidth, image.DummyImage.PixelHeight), pixelData, image.DummyImage.PixelWidth * bytesPerPixel, 0);
                     }
-
-                    private bool applied = false;
-                    public bool Applied() => applied;
                 }
 
-                public class GrayScale : IChange {
-                    private WorkstationImage changed;
-                    private WorkstationImage original;
+                public class GrayScale : IChange, IFilterChange {
+                    private WorkstationImage image;
                     private double filterIntensity;
+                    public double FilterIntensity { set => filterIntensity = value; get => filterIntensity; }
 
                     public GrayScale(WorkstationImage image, double filterIntensity = 1) {
-                        this.original = image;
+                        this.image = image;
                         this.filterIntensity = filterIntensity;
                     }
 
-                    private bool applied = false;
-                    public bool Applied() => applied;
-
-                    private void GenerateChanged() {
-
-                    }
-
                     public void Apply() {
-                        applied = true;
-                        WriteableBitmap writeableBitmap = new WriteableBitmap((BitmapSource)original.CurrentImage.Source);
-
-                        int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
-                        byte[] pixelData = new byte[writeableBitmap.PixelWidth * writeableBitmap.PixelHeight * bytesPerPixel];
-                        writeableBitmap.CopyPixels(pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
-                        int pixelHeight = writeableBitmap.PixelHeight;
-                        int pixelWidth = writeableBitmap.PixelWidth;
+                        int bytesPerPixel = (image.DummyImage.Format.BitsPerPixel + 7) / 8;
+                        byte[] pixelData = new byte[image.DummyImage.PixelWidth * image.DummyImage.PixelHeight * bytesPerPixel];
+                        image.DummyImage.CopyPixels(pixelData, image.DummyImage.PixelWidth * bytesPerPixel, 0);
+                        int pixelHeight = image.DummyImage.PixelHeight;
+                        int pixelWidth = image.DummyImage.PixelWidth;
 
                         Parallel.For(0, pixelHeight, y => {
                             Parallel.For(0, pixelWidth, x => {
@@ -274,11 +250,8 @@ namespace Retros {
                             });
                         });
 
-                        writeableBitmap.WritePixels(new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight), pixelData, writeableBitmap.PixelWidth * bytesPerPixel, 0);
-                        original.AddTaskToQueue(() => original.SetSource(writeableBitmap));
+                        image.DummyImage.WritePixels(new Int32Rect(0, 0, image.DummyImage.PixelWidth, image.DummyImage.PixelHeight), pixelData, image.DummyImage.PixelWidth * bytesPerPixel, 0);
                     }
-
-
                 }
             }
 

@@ -6,7 +6,14 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+	<PublishSingleFile>true</PublishSingleFile>
+	<SelfContained>true</SelfContained>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="settings5.png" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="SharpDX" Version="4.2.0" />
@@ -17,9 +24,16 @@
     <Reference Include="DebugLibrary">
       <HintPath>..\..\..\..\Github\Projects\DebugLibrary\DebugLibrary\bin\Release\net7.0\DebugLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="WpfCustomControlLibrary1">
-      <HintPath>..\..\..\WPF Extensions\Release\WpfCustomControlLibrary1.dll</HintPath>
+    <Reference Include="Utillities">
+      <HintPath>..\..\..\Utillities\Release\Utillities.dll</HintPath>
     </Reference>
+    <Reference Include="WpfUtillities">
+      <HintPath>..\..\..\WpfUtillities\Release\WpfUtillities.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="settings5.png" />
   </ItemGroup>
 
 </Project>

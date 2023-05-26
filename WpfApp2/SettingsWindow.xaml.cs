@@ -12,22 +12,31 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Shell;
-using WpfCustomControls;
+using WpfUtillities;
 
 namespace Retros {
     public partial class SettingsWindow : Window {
-        private WindowHandle windowHandle;
+        public static WindowHandle? WindowHandle;
+        public Brush BackgroundColor { 
+            set {
+                MainCanvas.Background = value;
+            } 
+        }
 
         public SettingsWindow() {
             InitializeComponent();
 
-            windowHandle = new(this);
-            windowHandle.SetParentWindow(MainCanvas!);
-            windowHandle.SetBGColor(Helper.StringToSolidColorBrush("#000000", 0.45));
-            windowHandle.ApplicationButtons.ColorWhenButtonHover = Helper.StringToSolidColorBrush("#000000", 0.4);
-            windowHandle.SetWindowChromActiveAll();
+            WindowHandle = new(this);
+            WindowHandle.SetParentWindow(MainCanvas!);
+            WindowHandle.SetBGColor(UIManager.whBackground);
+            WindowHandle.ApplicationButtons.ColorWhenButtonHover = UIManager.whApplicationButtonHover;
+            WindowHandle.SetWindowChromeActiveAll();
 
-            MainCanvas.Background = Brushes.Tomato;
+            WindowHandleRowDefinition.Height = new GridLength(WindowHandle.Height);
+
+            SettingsList.Background = UIManager.WorkStationGrid_BG;
+            SettingDetails.Background = UIManager.WorkActionGrid_BG;
+
         }
 
 
