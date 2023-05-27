@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET7_0;NETCOREAPP
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\App.xaml
-2-2121854466
+32137052590
 
-20-1025354759
+25-522212372
 203-745980196
-MainWindow.xaml;SettingsWindow.xaml;
+ProgramWindow\MainWindow.xaml;Settings\SettingsWindow.xaml;Settings\Window1.xaml;
 
 False
 

@@ -12,9 +12,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using WpfUtillities;
-using Retros.WorkstationTableElements.Tabs;
-using Retros.WorkstationTableElements.Bodies;
-using Retros.WorkstationTableElements.Handles;
+using Retros.ProgramWindow.Interactive.Tabs;
+using Retros.ProgramWindow.Interactive.Tabs.Bodies;
+using Retros.ProgramWindow.Interactive.Tabs.Handles;
+
 
 
 namespace Retros {
@@ -26,7 +27,7 @@ namespace Retros {
                 Helper.SetImageSource(image, path);
                 WindowManager.MainWindow!.Workstation.ImageElement.CurrentImage = image;
             }
-            WindowManager.MainWindow!.windowHandle.HideAllMenus();
+            WindowManager.MainWindow!.windowHandle!.HideAllMenus();
         }
         public static string ShowFolderPickerDialog() {
             var openFileDialog = new OpenFileDialog {
