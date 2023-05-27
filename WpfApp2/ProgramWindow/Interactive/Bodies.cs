@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using WpfUtillities;
+using Utillities.Wpf;
 
 using Retros.ProgramWindow.DisplaySystem;
 using Retros.ProgramWindow.Filters;
@@ -70,6 +70,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e) {
+            Debugger.Console.Log("Reverted all changes and cleared History");
             image.History.Clear();
             image.GetFilterManager.Clear();
             image.CurrentImage.Source = image.Original.Source.Clone();

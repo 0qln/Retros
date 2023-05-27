@@ -482,11 +482,8 @@ D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x6
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\Retros.pdb
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\Retros.genruntimeconfig.cache
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\ref\Retros.dll
-D:\Programmmieren\Projects\Retros\Retros\WpfApp2\bin\Debug\net7.0-windows\win-x64\WpfUtillities.dll
-D:\Programmmieren\Projects\Retros\Retros\WpfApp2\bin\Debug\net7.0-windows\win-x64\WpfUtillities.pdb
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\bin\Debug\net7.0-windows\win-x64\Utillities.dll
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\bin\Debug\net7.0-windows\win-x64\Utillities.pdb
-D:\Programmmieren\Projects\Retros\Retros\WpfApp2\bin\Debug\net7.0-windows\win-x64\WpfUtillities.xml
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\Settings\SettingsWindow.g.cs
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\Settings\SettingsWindow.baml
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\Settings\Window1.g.cs

@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using System.Threading.Tasks;
-using WpfUtillities;
+using Utillities.Wpf;
 
 namespace Retros {
     public static class WindowManager {

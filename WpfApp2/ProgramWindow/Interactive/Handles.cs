@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows;
-using WpfUtillities;
+using Utillities.Wpf;
 
 // Handles manage the funtionality as tab (e.g. dragging around) and the Tab titlebar UIElements
 namespace Retros.ProgramWindow.Interactive.Tabs.Handles {

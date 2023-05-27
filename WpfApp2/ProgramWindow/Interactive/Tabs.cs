@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows;
-using WpfUtillities;
+using Utillities.Wpf;
 using System.Diagnostics;
 using DebugLibrary.Benchmark;
 using Debugger;

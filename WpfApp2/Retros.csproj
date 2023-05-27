@@ -27,9 +27,6 @@
     <Reference Include="Utillities">
       <HintPath>..\..\..\Utillities\Release\Utillities.dll</HintPath>
     </Reference>
-    <Reference Include="WpfUtillities">
-      <HintPath>..\..\..\WpfUtillities\Release\WpfUtillities.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>

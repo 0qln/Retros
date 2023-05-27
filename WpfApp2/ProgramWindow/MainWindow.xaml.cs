@@ -19,7 +19,7 @@ using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WpfUtillities;
+using Utillities.Wpf;
 
 namespace Retros
 {

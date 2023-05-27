@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Shell;
-using WpfUtillities;
+using Utillities.Wpf;
 
 namespace Retros {
     public partial class SettingsWindow : Window {

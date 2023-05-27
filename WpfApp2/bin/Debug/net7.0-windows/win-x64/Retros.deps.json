@@ -13,7 +13,6 @@
           "System.Drawing.Common": "7.0.0",
           "DebugLibrary": "1.0.0.0",
           "Utillities": "1.0.0.0",
-          "WpfUtillities": "1.0.0.0",
           "runtimepack.Microsoft.NETCore.App.Runtime.win-x64": "7.0.5",
           "runtimepack.Microsoft.WindowsDesktop.App.Runtime.win-x64": "7.0.5"
         },
@@ -1860,14 +1859,6 @@
           }
         }
       },
-      "WpfUtillities/1.0.0.0": {
-        "runtime": {
-          "WpfUtillities.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
-          }
-        }
-      },
       "CommandLibrary/1.0.0.0": {
         "runtime": {
           "CommandLibrary.dll": {
@@ -2642,11 +2633,6 @@
       "sha512": ""
     },
     "Utillities/1.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "WpfUtillities/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

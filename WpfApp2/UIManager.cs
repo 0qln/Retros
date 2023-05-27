@@ -11,7 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
-using WpfUtillities;
+using Utillities.Wpf;
 using Retros.ProgramWindow.Interactive.Tabs;
 using Retros.ProgramWindow.Interactive.Tabs.Bodies;
 using Retros.ProgramWindow.Interactive.Tabs.Handles;

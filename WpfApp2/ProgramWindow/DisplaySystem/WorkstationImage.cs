@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using WpfUtillities;
+using Utillities.Wpf;
+using Utillities;
 using System.Windows.Media.Imaging;
 using System.Drawing.Imaging;
 using System.IO;
@@ -138,7 +139,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 var timer = new DispatcherTimer();
                 timer.Interval = TimeSpan.FromMilliseconds(interval);
                 timer.Tick += (s, e) => {
-                    float val = Utillities.Math.LinearStep(t, smoothness, 0, totalInterpolationTime);
+                    float val = ExtendedMath.LinearStep(t, smoothness, 0, totalInterpolationTime);
                     newImage.Opacity = val;
                     dp_tValues.Add(val);
 
