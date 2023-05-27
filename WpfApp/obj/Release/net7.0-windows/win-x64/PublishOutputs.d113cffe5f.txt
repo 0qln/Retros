@@ -1,5 +1,0 @@
-D:\Programmmieren\Projects\Retros\Release\Retros.pdb
-D:\Programmmieren\Projects\Retros\Release\DebugLibrary.pdb
-D:\Programmmieren\Projects\Retros\Release\WpfCustomControlLibrary1.pdb
-D:\Programmmieren\Projects\Retros\Release\CommandLibrary.pdb
-D:\Programmmieren\Projects\Retros\Release\Retros.exe

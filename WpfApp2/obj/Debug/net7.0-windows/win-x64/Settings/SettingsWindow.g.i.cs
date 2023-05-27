@@ -189,7 +189,7 @@ namespace Retros {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/Retros;V1.0.0.0;component/settings/settingswindow.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Retros;component/settings/settingswindow.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\..\Settings\SettingsWindow.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);
