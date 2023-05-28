@@ -15,11 +15,38 @@ using Utillities.Wpf;
 using Retros.ProgramWindow.Interactive.Tabs;
 using Retros.ProgramWindow.Interactive.Tabs.Bodies;
 using Retros.ProgramWindow.Interactive.Tabs.Handles;
-
-
+using Retros;
 
 namespace Retros {
     public static class UIManager {
+        // These should be getters
+        /// These will get changed when the theme changes
+        public static List<Brush> Background_Colors = new List<Brush> {
+            Helper.StringToSolidColorBrush("#1f1f1f", 1),
+            Helper.StringToSolidColorBrush("#2e2e2e", 2),
+            Helper.StringToSolidColorBrush("#000000", 0.45)
+        };
+        public static List<Brush> Acctent_Colors = new List<Brush> {
+            Helper.StringToSolidColorBrush("#bb1f1f", 1),
+        };
+        public static List<Brush> Highlight_Colors = new List<Brush> {
+            Helper.StringToSolidColorBrush("#FFFFFF", 0.1)
+        };
+
+        public static IColorTheme CurrentTheme => colorThemes[currentThemeIndex];
+        private static List<IColorTheme> colorThemes = new();
+        private static int currentThemeIndex;
+
+        // Create setters here...
+
+
+
+        public static Brush WorkStationImageGrid_BG = Helper.StringToSolidColorBrush("#1f1f1f");
+        public static Brush WorkStationGrid_BG = Helper.StringToSolidColorBrush("#2e2e2e");
+
+        public static Brush whBackground = Helper.StringToSolidColorBrush("#000000", 0.45);
+        public static Brush whApplicationButtonHover = Helper.StringToSolidColorBrush("#000000", 0.4);
+
         public static void LoadImage() {
             string path = ShowImagePickerDialog();
             if (path != null) {

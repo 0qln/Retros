@@ -9,6 +9,12 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Settings\SettingPages\ColorThemePage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Settings\SettingPages\DefaultExportPath.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Settings\SettingsWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -18,6 +24,12 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="ProgramWindow\MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Settings\SettingPages\ColorThemePage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Settings\SettingPages\DefaultExportPath.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Settings\SettingsWindow.xaml">

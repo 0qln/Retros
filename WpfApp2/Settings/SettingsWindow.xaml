@@ -38,6 +38,8 @@
                         
                         <!--Content-->
                         <!--This is a Sketch, will be generated using code-behind-->
+                        
+                        <!--
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -107,6 +109,7 @@
                         <StackPanel x:Name="ImportChildren" Visibility="Collapsed">
                             
                         </StackPanel>
+                        -->
 
                     </StackPanel>
 
@@ -117,14 +120,22 @@
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Stretch">
 
-                    <!--Child will be the FrameworkElement of the Tab, -->
-                    <!--which will contain the title of the Tab and a StackPanel, -->
-                    <!--which will contain the FrameworkElements of the TabDetails of the Tab-->
-                    <Grid x:Name="SettingDetailDisplay">
+                    <StackPanel x:Name="SettingDetailDisplaySP">
+                        
+                        <!--Padding because of the windowhandle-->
+                        <Grid x:Name="SettingDetailDisplay_Padding"/>
+                    
+                   
+                        <!--Child will be the FrameworkElement of the Tab, -->
+                        <!--which will contain the title of the Tab and a StackPanel, -->
+                        <!--which will contain the FrameworkElements of the TabDetails of the Tab-->
+                        <Grid x:Name="SettingDetailDisplay">
 
                         
 
-                    </Grid>
+                        </Grid>
+                    
+                    </StackPanel>
                 </Grid>
                 
                 

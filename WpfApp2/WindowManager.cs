@@ -14,12 +14,6 @@ namespace Retros {
         public static MainWindow? MainWindow;
         public static SettingsWindow? SettingsWindow;
 
-        public static Brush WorkStationImageGrid_BG = Helper.StringToSolidColorBrush("#1f1f1f");
-        public static Brush WorkStationGrid_BG = Helper.StringToSolidColorBrush("#2e2e2e");
-
-        public static Brush whBackground = Helper.StringToSolidColorBrush("#000000", 0.45);
-        public static Brush whApplicationButtonHover = Helper.StringToSolidColorBrush("#000000", 0.4);
-
 
         public static void Start(MainWindow mainWindow) {
             MainWindow = mainWindow;

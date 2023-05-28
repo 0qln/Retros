@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET7_0;NETCOREAPP
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\App.xaml
-32137052590
+5536284163
 
-23-1385941475
+25-2041058951
 202592792242
-ProgramWindow\MainWindow.xaml;Settings\SettingsWindow.xaml;Settings\Window1.xaml;
+ProgramWindow\MainWindow.xaml;Settings\SettingPages\ColorThemePage.xaml;Settings\SettingPages\DefaultExportPath.xaml;Settings\SettingsWindow.xaml;Settings\Window1.xaml;
 
 False
 

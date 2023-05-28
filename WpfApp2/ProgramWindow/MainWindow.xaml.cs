@@ -46,10 +46,10 @@ namespace Retros
 
             //UI
             WorkStationGrid.RowDefinitions[0].Height = new(windowHandle.Height);
-            WorkStationGrid.Background = WindowManager.WorkStationGrid_BG;
+            WorkStationGrid.Background = UIManager.Background_Colors[1];
             Helper.SetChildInGrid(WorkStationGrid, Workstation.FrameworkElement, 1, 0);
             
-            WorkStationImageGrid.Background = WindowManager.WorkStationImageGrid_BG;
+            WorkStationImageGrid.Background = UIManager.Background_Colors[0];
             Helper.SetChildInGrid(WorkStationImageGrid, Workstation.ImageElement.Grid, 0, 0);
 
             Workstation.TableElement.AddTab(new ImageFilterTab(new ImageFilter(), new DefaultHandle("Filters")));
@@ -57,13 +57,13 @@ namespace Retros
 
             Shadow.Width = shadowRectWidth;
             Shadow.Effect = new DropShadowEffect { BlurRadius = 25, ShadowDepth = 10, Color = Colors.Black, Opacity = 0.80, Direction = 180 };
-            Shadow.Fill = WindowManager.WorkStationGrid_BG;
+            Shadow.Fill = UIManager.Background_Colors[1];
             
 
             // WindowHandle
             windowHandle.SetParentWindow(MainCanvas);
-            windowHandle.SetBGColor(WindowManager.whBackground);
-            windowHandle.ApplicationButtons.ColorWhenButtonHover = WindowManager.whApplicationButtonHover;
+            windowHandle.SetBGColor(UIManager.Background_Colors[2]);
+            windowHandle.ApplicationButtons.ColorWhenButtonHover = UIManager.Highlight_Colors[0];
 
 
             DropDownMenu fileMenu = new("File", this);

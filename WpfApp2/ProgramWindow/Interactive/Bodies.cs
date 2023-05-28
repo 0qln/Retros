@@ -45,7 +45,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             stackPanel.Children.Add(greenChannelSlider.FrameworkElement);
             stackPanel.Children.Add(noRedSlider.FrameworkElement);
 
-            resetButton.Background = System.Windows.Media.Brushes.Tomato;
+            resetButton.Background = UIManager.Acctent_Colors[0];
             resetButton.Click += ResetButton_Click;
             resetButton.Content = "Back to original";
 
@@ -70,7 +70,6 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e) {
-            Debugger.Console.Log("Reverted all changes and cleared History");
             image.History.Clear();
             image.GetFilterManager.Clear();
             image.CurrentImage.Source = image.Original.Source.Clone();

@@ -490,3 +490,7 @@ D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x6
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\Settings\Window1.baml
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\ProgramWindow\MainWindow.g.cs
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\ProgramWindow\MainWindow.baml
+D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\Settings\SettingPages\ColorThemePage.g.cs
+D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\Settings\SettingPages\DefaultExportPath.g.cs
+D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\Settings\SettingPages\ColorThemePage.baml
+D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\Settings\SettingPages\DefaultExportPath.baml
