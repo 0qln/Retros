@@ -9,10 +9,37 @@
       Title="ColorTheme">
 
     <Grid>
+        <StackPanel>
+            
         <Button x:Name="ChangeButton"
                 Click="ChangeButton_Click"
                 MaxHeight="50"
                 MaxWidth="100"
-                Content="Change"/>
+                Content="Change"
+                HorizontalAlignment="Left"/>
+
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="Import"
+                    Click="Import_Click"
+                    MaxHeight="50"
+                    MaxWidth="100"
+                    Content="Import"/>
+                <TextBox x:Name="ImportText" Margin="10, 0, 0, 0" MinWidth="100"/>
+
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                
+                <Button x:Name="Export"
+                    Click="Export_Click"
+                    MaxHeight="50"
+                    MaxWidth="100"
+                    Content="Export"/>
+
+                <TextBox x:Name="ExportText" Margin="10, 0, 0, 0" MinWidth="100"/>
+
+            </StackPanel>
+
+        </StackPanel>
     </Grid>
 </Page>

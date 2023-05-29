@@ -10,35 +10,35 @@
 
 
     <Canvas x:Name="MainCanvas">
-        
-        
+
+
         <Grid x:Name="MainGrid"
               Height="{Binding ActualHeight, ElementName=MainCanvas}"
               Width="{Binding ActualWidth, ElementName=MainCanvas}">
 
-            
+
             <Grid x:Name="ClientGrid">
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="200"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                
-                
+
+
                 <Grid Grid.Row="1"
                       Grid.Column="0"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Stretch">
 
                     <StackPanel x:Name="SettingsList">
-                        
+
                         <!--Padding because of the windowhandle-->
                         <Grid x:Name="SettingsList_Padding"/>
 
-                        
+
                         <!--Content-->
                         <!--This is a Sketch, will be generated using code-behind-->
-                        
+
                         <!--
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -121,25 +121,25 @@
                       VerticalAlignment="Stretch">
 
                     <StackPanel x:Name="SettingDetailDisplaySP">
-                        
+
                         <!--Padding because of the windowhandle-->
                         <Grid x:Name="SettingDetailDisplay_Padding"/>
-                    
-                   
+
+
                         <!--Child will be the FrameworkElement of the Tab, -->
                         <!--which will contain the title of the Tab and a StackPanel, -->
                         <!--which will contain the FrameworkElements of the TabDetails of the Tab-->
                         <Grid x:Name="SettingDetailDisplay">
 
-                        
+
 
                         </Grid>
-                    
+
                     </StackPanel>
                 </Grid>
-                
-                
-                
+
+
+
             </Grid>
 
         </Grid>

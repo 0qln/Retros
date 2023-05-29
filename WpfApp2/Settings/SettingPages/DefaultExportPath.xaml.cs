@@ -23,15 +23,5 @@ namespace Retros.Settings.Pages
             InitializeComponent();
         }
 
-        private void SaveJson_Click(object sender, RoutedEventArgs e) {
-            string json = ColorThemes.Json.Serialize(UIManager.ColorThemeManager.CurrentTheme);
-            Debugger.Console.Log(json);
-
-            var c = ColorThemes.Json.Deserialize(json);
-
-            File.WriteAllText("\\Styles\\style.json", json);
-
-            UIManager.ColorThemeManager.SetTheme(new ColorThemes.Test());
-        }
     }
 }

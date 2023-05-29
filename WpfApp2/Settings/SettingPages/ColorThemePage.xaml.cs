@@ -33,5 +33,13 @@ namespace Retros.Settings.Pages
                 b = true;
             }
         }
+
+        private void Import_Click(object sender, RoutedEventArgs e) {
+            UIManager.ColorThemeManager.LoadFromFile(ImportText.Text);
+        }
+
+        private void Export_Click(object sender, RoutedEventArgs e) {
+            UIManager.ColorThemeManager.SaveToFile(ExportText.Text);
+        }
     }
 }

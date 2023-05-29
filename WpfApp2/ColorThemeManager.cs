@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.IO;
 
 namespace Retros {
     public class ColorThemeManager {
@@ -19,6 +22,32 @@ namespace Retros {
         public void SetTheme(IColorTheme colorTheme) {
             currentTheme = colorTheme;
             UpdateColors();
+        }
+
+        public void SaveToFile(string path) {
+            var json = Json.Serialize(UIManager.ColorThemeManager.CurrentTheme);
+            if (!Path.Exists(path)) {
+                return;
+            }
+
+            string filePath = path + "\\style.json";
+            int i = 0;
+            while (File.Exists(filePath)) {
+                i++;
+                filePath = path + "\\style" + i.ToString() + ".json" ;
+            }
+            try { File.WriteAllText(filePath, json); }
+            catch (Exception ex) { Debugger.Console.Log(ex);}
+        }
+        public void LoadFromFile(string path) {
+            if (!File.Exists(path)) {
+                return;
+            }
+            IColorTheme ct = Json.Deserialize(File.ReadAllText(path))!;
+            if (ct == null) {
+                return;
+            }
+            SetTheme(ct);
         }
 
         private void UpdateColors() {
@@ -70,6 +99,101 @@ namespace Retros {
         public void Set_BC3(Action<Brush> handler) => SetHandler(handler, ref BC3_Changed);
         public void Set_BCh1(Action<Brush> handler) => SetHandler(handler, ref BCh1_Changed);
         public void Set_AC1(Action<Brush> handler) => SetHandler(handler, ref AC1_Changed);
+
+
+        public static class Json {
+            public static string Serialize(IColorTheme colorTheme) => JsonSerializer.Serialize(new Serializable(colorTheme));
+            public static IColorTheme? Deserialize(string json) {
+                try {
+                    return new Deserializable(JsonSerializer.Deserialize<Serializable>(json));
+                }
+                catch (Exception ex) {
+                    Debugger.Console.Log(ex);
+                    return null;
+                }
+            }
+
+            public class Serializable {
+                [JsonInclude]
+                public List<string> colors;
+
+                public Serializable(IColorTheme colorTheme) {
+                    colors = new() {
+                        colorTheme.BG1.ToString(),
+                        colorTheme.BG2.ToString(),
+                        colorTheme.BG3.ToString(),
+                        colorTheme.BG4.ToString(),
+                        colorTheme.BG5.ToString(),
+                        colorTheme.AC1.ToString(),
+                        colorTheme.BGh1.ToString(),
+                        colorTheme.BGh2.ToString(),
+                        colorTheme.BGh3.ToString(),
+                        colorTheme.BC1.ToString(),
+                        colorTheme.BC2.ToString(),
+                        colorTheme.BC3.ToString(),
+                        colorTheme.BCh1.ToString(),
+                        colorTheme.BCh2.ToString(),
+                        colorTheme.BCh3.ToString(),
+                    };
+                }
+
+                [JsonConstructorAttribute]
+                public Serializable(List<string> colors) {
+                    this.colors = colors;
+                }
+            }
+
+            public class Deserializable : IColorTheme {
+                public Brush BG1 { get; }
+                public Brush BG2 { get; }
+                public Brush BG3 { get; }
+                public Brush BG4 { get; }
+                public Brush BG5 { get; }
+                public Brush AC1 { get; }
+                public Brush BGh1 { get; }
+                public Brush BGh2 { get; }
+                public Brush BGh3 { get; }
+                public Brush BC1 { get; }
+                public Brush BC2 { get; }
+                public Brush BC3 { get; }
+                public Brush BCh1 { get; }
+                public Brush BCh2 { get; }
+                public Brush BCh3 { get; }
+
+                public Deserializable(Serializable serializable) {
+                    BG1 = StringToBrush(serializable.colors[0]);
+                    BG2 = StringToBrush(serializable.colors[1]);
+                    BG3 = StringToBrush(serializable.colors[2]);
+                    BG4 = StringToBrush(serializable.colors[3]);
+                    BG5 = StringToBrush(serializable.colors[4]);
+                    AC1 = StringToBrush(serializable.colors[5]);
+                    BGh1 = StringToBrush(serializable.colors[6]);
+                    BGh2 = StringToBrush(serializable.colors[7]);
+                    BGh3 = StringToBrush(serializable.colors[8]);
+                    BC1 = StringToBrush(serializable.colors[9]);
+                    BC2 = StringToBrush(serializable.colors[10]);
+                    BC3 = StringToBrush(serializable.colors[11]);
+                    BCh1 = StringToBrush(serializable.colors[12]);
+                    BCh2 = StringToBrush(serializable.colors[13]);
+                    BCh3 = StringToBrush(serializable.colors[14]);
+                }
+
+                public static Brush StringToBrush(string colorString) {
+                    colorString = colorString.Substring(1, 8);
+
+                    if (colorString.Length != 8) {
+                        throw new ArgumentException("Invalid color string. Expected format: transparency, r, g, b");
+                    }
+
+                    byte transparency = byte.Parse(colorString.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+                    byte red = byte.Parse(colorString.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+                    byte green = byte.Parse(colorString.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+                    byte blue = byte.Parse(colorString.Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
+
+                    return new SolidColorBrush(Color.FromArgb(transparency, red, green, blue));
+                }
+            }
+        }
     }
 
 }

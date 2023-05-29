@@ -9,12 +9,8 @@
       Title="DefaultExportPath">
 
     <Grid>
-        <StackPanel> 
+        <StackPanel>
             <Image Source="C:\Users\User\OneDrive\Bilder\EYh6spDUEAUcr2D.jpg"/>
-            <Button x:Name="SaveJson"
-                    Content="Save Current Style as Json" Click="SaveJson_Click">
-                
-            </Button>
         </StackPanel>
     </Grid>
 </Page>
