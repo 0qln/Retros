@@ -24,26 +24,26 @@ namespace Retros {
             UpdateColors();
         }
 
-        public void SaveToFile(string path) {
+        public void SaveToFile(string folderPath) {
             var json = Json.Serialize(UIManager.ColorThemeManager.CurrentTheme);
-            if (!Path.Exists(path)) {
+            if (!Path.Exists(folderPath)) {
                 return;
             }
 
-            string filePath = path + "\\style.json";
+            string filePath = folderPath + "\\style.json";
             int i = 0;
             while (File.Exists(filePath)) {
                 i++;
-                filePath = path + "\\style" + i.ToString() + ".json" ;
+                filePath = folderPath + "\\style" + i.ToString() + ".json" ;
             }
             try { File.WriteAllText(filePath, json); }
             catch (Exception ex) { Debugger.Console.Log(ex);}
         }
-        public void LoadFromFile(string path) {
-            if (!File.Exists(path)) {
+        public void LoadFromFile(string filePath) {
+            if (!File.Exists(filePath)) {
                 return;
             }
-            IColorTheme ct = Json.Deserialize(File.ReadAllText(path))!;
+            IColorTheme ct = Json.Deserialize(File.ReadAllText(filePath))!;
             if (ct == null) {
                 return;
             }
@@ -115,34 +115,73 @@ namespace Retros {
 
             public class Serializable {
                 [JsonInclude]
-                public List<string> colors;
+                public string BG1 { get; set; }
+                [JsonInclude]
+                public string BG2 { get; set; }
+                [JsonInclude]
+                public string BG3 { get; set; }
+                [JsonInclude]
+                public string BG4 { get; set; }
+                [JsonInclude]
+                public string BG5 { get; set; }
+                [JsonInclude]
+                public string AC1 { get; set; }
+                [JsonInclude]
+                public string BGh1 { get; set; }
+                [JsonInclude]
+                public string BGh2 { get; set; }
+                [JsonInclude]
+                public string BGh3 { get; set; }
+                [JsonInclude]
+                public string BC1 { get; set; }
+                [JsonInclude]
+                public string BC2 { get; set; }
+                [JsonInclude]
+                public string BC3 { get; set; }
+                [JsonInclude]
+                public string BCh1 { get; set; }
+                [JsonInclude]
+                public string BCh2 { get; set; }
+                [JsonInclude]
+                public string BCh3 { get; set; }
 
                 public Serializable(IColorTheme colorTheme) {
-                    colors = new() {
-                        colorTheme.BG1.ToString(),
-                        colorTheme.BG2.ToString(),
-                        colorTheme.BG3.ToString(),
-                        colorTheme.BG4.ToString(),
-                        colorTheme.BG5.ToString(),
-                        colorTheme.AC1.ToString(),
-                        colorTheme.BGh1.ToString(),
-                        colorTheme.BGh2.ToString(),
-                        colorTheme.BGh3.ToString(),
-                        colorTheme.BC1.ToString(),
-                        colorTheme.BC2.ToString(),
-                        colorTheme.BC3.ToString(),
-                        colorTheme.BCh1.ToString(),
-                        colorTheme.BCh2.ToString(),
-                        colorTheme.BCh3.ToString(),
-                    };
+                    BG1 = colorTheme.BG1.ToString();
+                    BG2 = colorTheme.BG2.ToString();
+                    BG3 = colorTheme.BG3.ToString();
+                    BG4 = colorTheme.BG4.ToString();
+                    BG5 = colorTheme.BG5.ToString();
+                    AC1 = colorTheme.AC1.ToString();
+                    BGh1 = colorTheme.BGh1.ToString();
+                    BGh2 = colorTheme.BGh2.ToString();
+                    BGh3 = colorTheme.BGh3.ToString();
+                    BC1 = colorTheme.BC1.ToString();
+                    BC2 = colorTheme.BC2.ToString();
+                    BC3 = colorTheme.BC3.ToString();
+                    BCh1 = colorTheme.BCh1.ToString();
+                    BCh2 = colorTheme.BCh2.ToString();
+                    BCh3 = colorTheme.BCh3.ToString();
                 }
 
                 [JsonConstructorAttribute]
-                public Serializable(List<string> colors) {
-                    this.colors = colors;
+                public Serializable(string bG1, string bG2, string bG3, string bG4, string bG5, string aC1, string bGh1, string bGh2, string bGh3, string bC1, string bC2, string bC3, string bCh1, string bCh2, string bCh3) {
+                    BG1 = bG1;
+                    BG2 = bG2;
+                    BG3 = bG3;
+                    BG4 = bG4;
+                    BG5 = bG5;
+                    AC1 = aC1;
+                    BGh1 = bGh1;
+                    BGh2 = bGh2;
+                    BGh3 = bGh3;
+                    BC1 = bC1;
+                    BC2 = bC2;
+                    BC3 = bC3;
+                    BCh1 = bCh1;
+                    BCh2 = bCh2;
+                    BCh3 = bCh3;
                 }
             }
-
             public class Deserializable : IColorTheme {
                 public Brush BG1 { get; }
                 public Brush BG2 { get; }
@@ -161,26 +200,25 @@ namespace Retros {
                 public Brush BCh3 { get; }
 
                 public Deserializable(Serializable serializable) {
-                    BG1 = StringToBrush(serializable.colors[0]);
-                    BG2 = StringToBrush(serializable.colors[1]);
-                    BG3 = StringToBrush(serializable.colors[2]);
-                    BG4 = StringToBrush(serializable.colors[3]);
-                    BG5 = StringToBrush(serializable.colors[4]);
-                    AC1 = StringToBrush(serializable.colors[5]);
-                    BGh1 = StringToBrush(serializable.colors[6]);
-                    BGh2 = StringToBrush(serializable.colors[7]);
-                    BGh3 = StringToBrush(serializable.colors[8]);
-                    BC1 = StringToBrush(serializable.colors[9]);
-                    BC2 = StringToBrush(serializable.colors[10]);
-                    BC3 = StringToBrush(serializable.colors[11]);
-                    BCh1 = StringToBrush(serializable.colors[12]);
-                    BCh2 = StringToBrush(serializable.colors[13]);
-                    BCh3 = StringToBrush(serializable.colors[14]);
+                    BG1 = StringToBrush(serializable.BG1);
+                    BG2 = StringToBrush(serializable.BG2);
+                    BG3 = StringToBrush(serializable.BG3);
+                    BG4 = StringToBrush(serializable.BG4);
+                    BG5 = StringToBrush(serializable.BG5);
+                    AC1 = StringToBrush(serializable.AC1);
+                    BGh1 = StringToBrush(serializable.BGh1);
+                    BGh2 = StringToBrush(serializable.BGh2);
+                    BGh3 = StringToBrush(serializable.BGh3);
+                    BC1 = StringToBrush(serializable.BC1);
+                    BC2 = StringToBrush(serializable.BC2);
+                    BC3 = StringToBrush(serializable.BC3);
+                    BCh1 = StringToBrush(serializable.BCh1);
+                    BCh2 = StringToBrush(serializable.BCh2);
+                    BCh3 = StringToBrush(serializable.BCh3);
                 }
 
                 public static Brush StringToBrush(string colorString) {
-                    colorString = colorString.Substring(1, 8);
-
+                    if (colorString[0] == '#') colorString = colorString.Substring(1, 8);
                     if (colorString.Length != 8) {
                         throw new ArgumentException("Invalid color string. Expected format: transparency, r, g, b");
                     }
