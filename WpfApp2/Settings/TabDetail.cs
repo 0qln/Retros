@@ -28,12 +28,15 @@ namespace Retros.Settings {
             public Button Title = new();
 
             private double height;
-            private Brush colorOnHover = Helper.StringToSolidColorBrush("#000000", 0.1);
-            private Brush borderColorOnHover = Helper.StringToSolidColorBrush("#000000", 0);
+            private Brush colorOnHover = UIManager.ColorThemeManager.CurrentTheme.BGh3;
+            private Brush borderColorOnHover = UIManager.ColorThemeManager.CurrentTheme.BCh1;
 
             public Header(string name = "No name specified", double height = 25) {
                 Title.Content = name;
                 this.height = height;
+
+                UIManager.ColorThemeManager.Set_BGh3(b => { colorOnHover = b; UpdateTitleStyle(); });
+                UIManager.ColorThemeManager.Set_BCh1(b => { borderColorOnHover = b; UpdateTitleStyle(); });
 
                 UpdateTitleStyle();
             }

@@ -33,4 +33,8 @@
     <Resource Include="settings5.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Styles\" />
+  </ItemGroup>
+
 </Project>

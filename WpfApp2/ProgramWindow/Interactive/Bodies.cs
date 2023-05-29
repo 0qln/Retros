@@ -45,7 +45,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             stackPanel.Children.Add(greenChannelSlider.FrameworkElement);
             stackPanel.Children.Add(noRedSlider.FrameworkElement);
 
-            resetButton.Background = UIManager.Acctent_Colors[0];
+            UIManager.ColorThemeManager.Set_AC1(b => resetButton.Background = b);
             resetButton.Click += ResetButton_Click;
             resetButton.Content = "Back to original";
 

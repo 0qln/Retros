@@ -38,10 +38,10 @@ namespace Retros.Settings {
 
             private double titleHeight;
             private double arrowWidth;
-            private Brush titleColorOnHover = Helper.StringToSolidColorBrush("#000000", 0.3);
-            private Brush titleBorderOnHover = Helper.StringToSolidColorBrush("#000000", 0);
-            private Brush arrowColorOnHover = Helper.StringToSolidColorBrush("#FFFFFF", 0.1);
-            private Brush arrowBorderOnHover = Helper.StringToSolidColorBrush("#000000", 0); 
+            private Brush titleColorOnHover = UIManager.ColorThemeManager.CurrentTheme.BGh2;
+            private Brush titleBorderOnHover = UIManager.ColorThemeManager.CurrentTheme.BCh1;
+            private Brush arrowColorOnHover = UIManager.ColorThemeManager.CurrentTheme.BGh1;
+            private Brush arrowBorderOnHover = UIManager.ColorThemeManager.CurrentTheme.BCh1;
             private Grid mainGrid = new(); // contains all
             private Grid headerGrid = new();
             private Button arrow = new(); // show/ hide children
@@ -50,7 +50,7 @@ namespace Retros.Settings {
 
 
             public Header(Body body, string name = "No name specified", double height = 30, double minArrowButtonWidth = 25) {
-                this.titleHeight = height;
+                titleHeight = height;
                 arrowWidth = minArrowButtonWidth;
                 title.Content = name;
                 detailTitles.Visibility = Visibility.Collapsed;
@@ -65,6 +65,11 @@ namespace Retros.Settings {
                 Helper.AddColumn(headerGrid, 1, GridUnitType.Star);
                 Helper.SetChildInGrid(headerGrid, arrow, 0, 0);
                 Helper.SetChildInGrid(headerGrid, title, 0, 1);
+
+                UIManager.ColorThemeManager.Set_BGh2(b => { titleColorOnHover = b; UpdateTitle(); } );
+                UIManager.ColorThemeManager.Set_BCh1(b => { titleBorderOnHover = b; UpdateTitle(); } );
+                UIManager.ColorThemeManager.Set_BGh1(b => { arrowColorOnHover = b; UpdateArrow(); });
+                UIManager.ColorThemeManager.Set_BCh1(b => { arrowColorOnHover = b; UpdateArrow(); });
 
                 UpdateArrow();
                 UpdateTitle();
@@ -84,6 +89,11 @@ namespace Retros.Settings {
             }
             public void AddDetail(TabDetail tabDetail) {
                 detailTitles.Children.Add(tabDetail._Header.FrameworkElement);
+            }
+
+            public void UpdateStyles() {
+                UpdateArrow();
+                UpdateTitle();
             }
 
             public void UpdateArrow() {

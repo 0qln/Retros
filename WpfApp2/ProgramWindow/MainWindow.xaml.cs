@@ -46,10 +46,10 @@ namespace Retros
 
             //UI
             WorkStationGrid.RowDefinitions[0].Height = new(windowHandle.Height);
-            WorkStationGrid.Background = UIManager.Background_Colors[1];
+            UIManager.ColorThemeManager.Set_BG2(b => WorkStationGrid.Background = b);
             Helper.SetChildInGrid(WorkStationGrid, Workstation.FrameworkElement, 1, 0);
-            
-            WorkStationImageGrid.Background = UIManager.Background_Colors[0];
+
+            UIManager.ColorThemeManager.Set_BG1(b => WorkStationImageGrid.Background = b);
             Helper.SetChildInGrid(WorkStationImageGrid, Workstation.ImageElement.Grid, 0, 0);
 
             Workstation.TableElement.AddTab(new ImageFilterTab(new ImageFilter(), new DefaultHandle("Filters")));
@@ -57,14 +57,13 @@ namespace Retros
 
             Shadow.Width = shadowRectWidth;
             Shadow.Effect = new DropShadowEffect { BlurRadius = 25, ShadowDepth = 10, Color = Colors.Black, Opacity = 0.80, Direction = 180 };
-            Shadow.Fill = UIManager.Background_Colors[1];
+            UIManager.ColorThemeManager.Set_BG2(b => Shadow.Fill = b);
             
 
             // WindowHandle
             windowHandle.SetParentWindow(MainCanvas);
-            windowHandle.SetBGColor(UIManager.Background_Colors[2]);
-            windowHandle.ApplicationButtons.ColorWhenButtonHover = UIManager.Highlight_Colors[0];
-
+            UIManager.ColorThemeManager.Set_BG3(b => windowHandle.SetBGColor(b));
+            UIManager.ColorThemeManager.Set_BGh1(b => windowHandle.ApplicationButtons.ColorWhenButtonHover = b);
 
             DropDownMenu fileMenu = new("File", this);
             DropDownMenu editMenu = new("Edit", Application.Current.MainWindow);

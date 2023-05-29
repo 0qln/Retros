@@ -34,7 +34,6 @@ namespace Retros {
             UIManager.ColorThemeManager.Set_BG1(newBrush => SettingsList.Background = newBrush);
             UIManager.ColorThemeManager.Set_BG2(newBrush => SettingDetailDisplaySP.Background = newBrush);
 
-
             Loaded += (s, e) => {
                 Tab appearance = new Tab("Appearance");
                 appearance.AddDetail(new TabDetail("Color Theme", new ColorTheme()));

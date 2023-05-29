@@ -25,11 +25,11 @@ namespace Retros.Settings.Pages
         bool b = true;
         private void ChangeButton_Click(object sender, RoutedEventArgs e) {
             if (b) {
-                UIManager.ColorThemeManager.Set(new ColorThemes.Test());
+                UIManager.ColorThemeManager.SetTheme(new ColorThemes.Test());
                 b = false;
             }
             else {
-                UIManager.ColorThemeManager.Set(new ColorThemes.DefaultDark());
+                UIManager.ColorThemeManager.SetTheme(new ColorThemes.DefaultDark());
                 b = true;
             }
         }

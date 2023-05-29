@@ -23,6 +23,7 @@ namespace Retros {
         private static ColorThemeManager colorThemeManager = new(new ColorThemes.DefaultDark());
 
         // TODO remove these, wont be needed anymore after the colorThemeManager manages the colors
+        /*
         public static List<Brush> Background_Colors = new List<Brush> {
             Helper.StringToSolidColorBrush("#1f1f1f", 1),
             Helper.StringToSolidColorBrush("#2e2e2e", 2),
@@ -35,6 +36,7 @@ namespace Retros {
             Helper.StringToSolidColorBrush("#FFFFFF", 0.1),
             Helper.StringToSolidColorBrush("#000000", 0.4)
         };
+        */
 
         public static IColorTheme CurrentTheme => colorThemes[currentThemeIndex];
         private static List<IColorTheme> colorThemes = new();

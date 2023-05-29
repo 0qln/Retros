@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text.Json;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,6 +21,17 @@ namespace Retros.Settings.Pages
         public DefaultExportPath()
         {
             InitializeComponent();
+        }
+
+        private void SaveJson_Click(object sender, RoutedEventArgs e) {
+            string json = ColorThemes.Json.Serialize(UIManager.ColorThemeManager.CurrentTheme);
+            Debugger.Console.Log(json);
+
+            var c = ColorThemes.Json.Deserialize(json);
+
+            File.WriteAllText("\\Styles\\style.json", json);
+
+            UIManager.ColorThemeManager.SetTheme(new ColorThemes.Test());
         }
     }
 }

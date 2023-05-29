@@ -18,13 +18,19 @@ namespace Retros {
         // Accent color
         public Brush AC1 { get; }
 
-        // Highlight color
-        public Brush HC1 { get; } 
-        public Brush HC2 { get; }
+        // Background color on hover
+        public Brush BGh1 { get; } 
+        public Brush BGh2 { get; }
+        public Brush BGh3 { get; }
 
         // Border color
         public Brush BC1 { get; } 
         public Brush BC2 { get; }
+        public Brush BC3 { get; }
 
+        // Border color on hover
+        public Brush BCh1 { get; }
+        public Brush BCh2 { get; }
+        public Brush BCh3 { get; }
     }
 }
