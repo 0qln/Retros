@@ -26,7 +26,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Handles {
             stackPanel.MouseLeave += (s, e) => { border.BorderBrush = System.Windows.Media.Brushes.Transparent; };
 
             border.Child = stackPanel;
-            border.Background = Helper.StringToSolidColorBrush("#252525");
+            UIManager.ColorThemeManager.Set_BG4(newBrush => border.Background = newBrush);
             border.BorderBrush = System.Windows.Media.Brushes.Transparent;
             border.BorderThickness = new Thickness(0.5);
 

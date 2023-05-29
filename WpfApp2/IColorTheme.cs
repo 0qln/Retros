@@ -12,12 +12,15 @@ namespace Retros {
         public Brush BG1 { get; }
         public Brush BG2 { get; }
         public Brush BG3 { get; }
+        public Brush BG4 { get; }
+        public Brush BG5 { get; }
 
         // Accent color
         public Brush AC1 { get; }
 
         // Highlight color
         public Brush HC1 { get; } 
+        public Brush HC2 { get; }
 
         // Border color
         public Brush BC1 { get; } 

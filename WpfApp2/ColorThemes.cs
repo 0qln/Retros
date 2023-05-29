@@ -11,12 +11,14 @@ namespace Retros.ColorThemes {
         public Brush BG1 => Helper.StringToSolidColorBrush("#1f1f1f", 1);
         public Brush BG2 => Helper.StringToSolidColorBrush("#2e2e2e", 1);
         public Brush BG3 => Helper.StringToSolidColorBrush("#000000", 0.45);
+        public Brush BG4 => Helper.StringToSolidColorBrush("#252525", 1);
 
         public Brush AC1 => Helper.StringToSolidColorBrush("#bb1f1f", 1);
 
         public Brush HC1 => Helper.StringToSolidColorBrush("#FFFFFF", 0.1);
+        public Brush HC2 => Helper.StringToSolidColorBrush("#000000", 0.4);
 
-        public Brush BC1 => Helper.StringToSolidColorBrush("#FFFFFF", 0);
+        public Brush BC1 => Helper.StringToSolidColorBrush("#3d3d3d", 1);
         public Brush BC2 => Helper.StringToSolidColorBrush("#FFFFFF", 0);
     }
 
@@ -24,11 +26,12 @@ namespace Retros.ColorThemes {
         public Brush BG1 => Helper.StringToSolidColorBrush("#FF0000", 1);
         public Brush BG2 => Helper.StringToSolidColorBrush("#00FF00", 1);
         public Brush BG3 => Helper.StringToSolidColorBrush("#000000", 1);
+        public Brush BG4 => Helper.StringToSolidColorBrush("#252525", 1);
 
         public Brush AC1 => Helper.StringToSolidColorBrush("#FFFF00", 1);
 
         public Brush HC1 => Helper.StringToSolidColorBrush("#00FFFF", 1);
-
+        public Brush HC2 => Helper.StringToSolidColorBrush("#FFFFFF", 0.1);
 
         public Brush BC1 => Helper.StringToSolidColorBrush("#FFFFFF", 0);
         public Brush BC2 => Helper.StringToSolidColorBrush("#FFFFFF", 0);

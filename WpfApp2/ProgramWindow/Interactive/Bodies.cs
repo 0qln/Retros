@@ -13,7 +13,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
         public FrameworkElement FrameworkElement => border;
 
         public Body() {
-            border.BorderBrush = Helper.StringToSolidColorBrush("#3d3d3d");
+            UIManager.ColorThemeManager.Set_BC1(newBrush => border.BorderBrush = newBrush);
             border.Child = mainGrid;
             border.BorderThickness = new Thickness(1);
         }
