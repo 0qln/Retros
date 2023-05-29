@@ -21,6 +21,7 @@ namespace Retros {
     public static class UIManager {
         public static ColorThemeManager ColorThemeManager => colorThemeManager;
         private static ColorThemeManager colorThemeManager = new(new ColorThemes.DefaultDark());
+        public static string SettingsIconPath => "pack://application:,,,/settings5.png";
 
         public static void LoadImage() {
             string path = ShowImagePickerDialog();

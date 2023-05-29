@@ -85,7 +85,7 @@ namespace Retros
 
 
             windowHandle.ApplicationButtons.AddSettingsButton();
-            windowHandle.ApplicationButtons.SettingsButtonImageSource = "pack://application:,,,/settings5.png";
+            windowHandle.ApplicationButtons.SettingsButtonImageSource = UIManager.SettingsIconPath;
             windowHandle.ApplicationButtons.SettingsButtonImagePadding = new Thickness(5);
             windowHandle.ApplicationButtons.OverrideSettings(WindowManager.ToggleSettings);
         }

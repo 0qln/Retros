@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Utillities.Wpf;
 
 namespace Retros.Settings.Pages
 {
@@ -20,22 +21,36 @@ namespace Retros.Settings.Pages
         public ColorTheme()
         {
             InitializeComponent();
+            UIManager.ColorThemeManager.SetStyle(Title, () => TabDetail.Body.HeadlineStyle("Color Theme"));
+            UIManager.ColorThemeManager.SetStyle(ChangeButton, () => TabDetail.Body.ButtonStyle("Change"));
+            UIManager.ColorThemeManager.SetStyle(ImportButton, () => TabDetail.Body.ButtonStyle("Import"));
+            UIManager.ColorThemeManager.SetStyle(ExportButton, () => TabDetail.Body.ButtonStyle("Export"));
+            UIManager.ColorThemeManager.SetStyle(ImportText, () => TabDetail.Body.TextboxStyle());
+            UIManager.ColorThemeManager.SetStyle(ExportText, () => TabDetail.Body.TextboxStyle());
+            UIManager.ColorThemeManager.SetStyle(ImportDescription, () => TabDetail.Body.TextblockStyle("Enter the location of your .json file: "));
+            UIManager.ColorThemeManager.SetStyle(ExportDescription, () => TabDetail.Body.TextblockStyle("Enter the location of the folder, that the .json file will be safed to: "));
+
+
+            foreach (FrameworkElement element in MainStackpanel.Children) {
+                element.Margin = new Thickness(30, 5, 0, 0);
+            }
+
+            UpdateAvailableThemes();
         }
 
-        bool b = true;
+        public void UpdateAvailableThemes() {
+            ThemeSelcetion.Items.Clear();
+            UIManager.ColorThemeManager.ColorThemes.ForEach(theme =>  ThemeSelcetion.Items.Add(theme.Name));
+        }
+
         private void ChangeButton_Click(object sender, RoutedEventArgs e) {
-            if (b) {
-                UIManager.ColorThemeManager.SetTheme(new ColorThemes.Test());
-                b = false;
-            }
-            else {
-                UIManager.ColorThemeManager.SetTheme(new ColorThemes.DefaultDark());
-                b = true;
-            }
+            var selected = ThemeSelcetion.SelectedIndex;
+            UIManager.ColorThemeManager.SetTheme(UIManager.ColorThemeManager.ColorThemes[selected]);
         }
 
         private void Import_Click(object sender, RoutedEventArgs e) {
             UIManager.ColorThemeManager.LoadFromFile(ImportText.Text);
+            UpdateAvailableThemes();
         }
 
         private void Export_Click(object sender, RoutedEventArgs e) {

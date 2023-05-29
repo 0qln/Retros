@@ -5,11 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Retros"
         mc:Ignorable="d"
-        Title="SettingsWindow" Height="700" Width="600"
+        Title="SettingsWindow" Height="600" Width="850"
         WindowStyle="None">
 
 
     <Canvas x:Name="MainCanvas">
+        <!--TextBlock x:Name="WindowTitle" Text="Settings" FontSize="23"-->
 
 
         <Grid x:Name="MainGrid"
@@ -33,83 +34,8 @@
                     <StackPanel x:Name="SettingsList">
 
                         <!--Padding because of the windowhandle-->
-                        <Grid x:Name="SettingsList_Padding"/>
-
-
-                        <!--Content-->
-                        <!--This is a Sketch, will be generated using code-behind-->
-
-                        <!--
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            
-                            <Button x:Name="AppearanceToggle"
-                                    Grid.Column="0"
-                                    Content="V"
-                                    MinWidth="25"
-                                    Click="AppearanceToggle_Click"/>
-                            <Button x:Name="AppearanceButton"
-                                    Grid.Column="1"
-                                    Content="Appearance"
-                                    Click="AppearanceButton_Click"/>
+                        <Grid x:Name="SettingsList_Padding">
                         </Grid>
-                        <StackPanel x:Name="AppearanceChildren" Visibility="Collapsed">
-                            <Button x:Name="ThemesButton"
-                                Content="Themes"
-                                Click="ThemesButton_Click"/>
-                            <Button x:Name="TabsButton"
-                                Content="Tab Layout"
-                                Click="TabsButton_Click"/>
-                        </StackPanel>
-
-
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-
-                            <Button x:Name="ExportToggle"
-                                    Grid.Column="0"
-                                    Content="V"
-                                    MinWidth="25"
-                                    Click="ExportToggle_Click"/>
-                            <Button x:Name="ExportButton"
-                                    Grid.Column="1"
-                                    Content="Export"
-                                    Click="ExportButton_Click"/>
-                        </Grid>
-                        <StackPanel x:Name="ExportChildren" Visibility="Collapsed">
-                            
-                        </StackPanel>
-
-
-
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-
-                            <Button x:Name="ImportToggle"
-                                    Grid.Column="0"
-                                    Content="V"
-                                    MinWidth="25"
-                                    Click="ImportToggle_Click"/>
-                            <Button x:Name="ImportButton"
-                                    Grid.Column="1"
-                                Content="Import"
-                                Click="ImportButton_Click"/>
-                        </Grid>
-                        <StackPanel x:Name="ImportChildren" Visibility="Collapsed">
-                            
-                        </StackPanel>
-                        -->
 
                     </StackPanel>
 

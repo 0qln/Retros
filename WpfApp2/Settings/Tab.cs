@@ -38,10 +38,10 @@ namespace Retros.Settings {
 
             private double titleHeight;
             private double arrowWidth;
-            private Brush titleColorOnHover = UIManager.ColorThemeManager.CurrentTheme.BGh2;
-            private Brush titleBorderOnHover = UIManager.ColorThemeManager.CurrentTheme.BCh1;
-            private Brush arrowColorOnHover = UIManager.ColorThemeManager.CurrentTheme.BGh1;
-            private Brush arrowBorderOnHover = UIManager.ColorThemeManager.CurrentTheme.BCh1;
+            private Brush titleColorOnHover = UIManager.ColorThemeManager.Current.BGh2;
+            private Brush titleBorderOnHover = UIManager.ColorThemeManager.Current.BCh1;
+            private Brush arrowColorOnHover = UIManager.ColorThemeManager.Current.BGh1;
+            private Brush arrowBorderOnHover = UIManager.ColorThemeManager.Current.BCh1;
             private Grid mainGrid = new(); // contains all
             private Grid headerGrid = new();
             private Button arrow = new(); // show/ hide children
@@ -158,7 +158,8 @@ namespace Retros.Settings {
                 style.Setters.Add(new Setter(Button.HorizontalAlignmentProperty, HorizontalAlignment.Stretch));
                 style.Setters.Add(new Setter(Button.VerticalAlignmentProperty, VerticalAlignment.Center));
                 style.Setters.Add(new Setter(Button.HeightProperty, titleHeight));
-                style.Setters.Add(new Setter(Button.FontWeightProperty, FontWeights.Bold));
+                style.Setters.Add(new Setter(Button.FontWeightProperty, FontWeights.SemiBold));
+                style.Setters.Add(new Setter(Button.FontSizeProperty, 14.0));
 
                 ControlTemplate userButtonTemplate = new ControlTemplate(typeof(Button));
                 FrameworkElementFactory borderFactory = new FrameworkElementFactory(typeof(Border));
