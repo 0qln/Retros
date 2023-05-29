@@ -19,6 +19,9 @@ using Retros;
 
 namespace Retros {
     public static class UIManager {
+        public static ColorThemeManager ColorThemeManager => colorThemeManager;
+        private static ColorThemeManager colorThemeManager = new(new ColorThemes.DefaultDark());
+
         // These should be getters
         /// These will get changed when the theme changes
         public static List<Brush> Background_Colors = new List<Brush> {
@@ -30,7 +33,8 @@ namespace Retros {
             Helper.StringToSolidColorBrush("#bb1f1f", 1),
         };
         public static List<Brush> Highlight_Colors = new List<Brush> {
-            Helper.StringToSolidColorBrush("#FFFFFF", 0.1)
+            Helper.StringToSolidColorBrush("#FFFFFF", 0.1),
+            Helper.StringToSolidColorBrush("#000000", 0.4) //TODO add
         };
 
         public static IColorTheme CurrentTheme => colorThemes[currentThemeIndex];
@@ -41,11 +45,11 @@ namespace Retros {
 
 
 
-        public static Brush WorkStationImageGrid_BG = Helper.StringToSolidColorBrush("#1f1f1f");
-        public static Brush WorkStationGrid_BG = Helper.StringToSolidColorBrush("#2e2e2e");
+        //public static Brush WorkStationImageGrid_BG = Helper.StringToSolidColorBrush("#1f1f1f");
+        //public static Brush WorkStationGrid_BG = Helper.StringToSolidColorBrush("#2e2e2e");
 
-        public static Brush whBackground = Helper.StringToSolidColorBrush("#000000", 0.45);
-        public static Brush whApplicationButtonHover = Helper.StringToSolidColorBrush("#000000", 0.4);
+        //public static Brush whBackground = Helper.StringToSolidColorBrush("#000000", 0.45);
+        //public static Brush whApplicationButtonHover = Helper.StringToSolidColorBrush("#000000", 0.4);
 
         public static void LoadImage() {
             string path = ShowImagePickerDialog();

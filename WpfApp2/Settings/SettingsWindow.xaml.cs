@@ -26,15 +26,13 @@ namespace Retros {
 
             WindowHandle = new(this);
             WindowHandle.SetParentWindow(MainCanvas!);
-            WindowHandle.SetBGColor(UIManager.Background_Colors[2]);
-            WindowHandle.ApplicationButtons.ColorWhenButtonHover = UIManager.Highlight_Colors[0];
             WindowHandle.SetWindowChromeActiveAll();
+            UIManager.ColorThemeManager.Set_BG3((brush) => WindowHandle.SetBGColor(brush));
 
             SettingsList_Padding.MinHeight = WindowHandle.Height;
             SettingDetailDisplay_Padding.MinHeight = WindowHandle.Height;
-
-            SettingsList.Background = UIManager.Background_Colors[0];
-            SettingDetailDisplaySP.Background = UIManager.Background_Colors[1];
+            UIManager.ColorThemeManager.Set_BG1(newBrush => SettingsList.Background = newBrush);
+            UIManager.ColorThemeManager.Set_BG2(newBrush => SettingDetailDisplaySP.Background = newBrush);
 
 
             Loaded += (s, e) => {

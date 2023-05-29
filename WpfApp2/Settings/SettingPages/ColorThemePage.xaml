@@ -9,6 +9,10 @@
       Title="ColorTheme">
 
     <Grid>
-        <Image Source="C:\Users\User\OneDrive\Bilder\image0.jpg"/>
+        <Button x:Name="ChangeButton"
+                Click="ChangeButton_Click"
+                MaxHeight="50"
+                MaxWidth="100"
+                Content="Change"/>
     </Grid>
 </Page>
