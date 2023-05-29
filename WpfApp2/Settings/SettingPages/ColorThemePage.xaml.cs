@@ -32,7 +32,7 @@ namespace Retros.Settings.Pages
 
 
             foreach (FrameworkElement element in MainStackpanel.Children) {
-                element.Margin = new Thickness(30, 5, 0, 0);
+                element.Margin = new Thickness(20, 5, 0, 0);
             }
 
             UpdateAvailableThemes();
@@ -45,6 +45,8 @@ namespace Retros.Settings.Pages
 
         private void ChangeButton_Click(object sender, RoutedEventArgs e) {
             var selected = ThemeSelcetion.SelectedIndex;
+            if (selected == -1) return;
+
             UIManager.ColorThemeManager.SetTheme(UIManager.ColorThemeManager.ColorThemes[selected]);
         }
 

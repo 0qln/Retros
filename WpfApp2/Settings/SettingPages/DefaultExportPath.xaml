@@ -10,7 +10,15 @@
 
     <Grid>
         <StackPanel>
-            <Image Source="C:\Users\User\OneDrive\Bilder\EYh6spDUEAUcr2D.jpg"/>
+            <TextBlock x:Name="Title"/>
+
+            <StackPanel>
+                
+                
+                
+            </StackPanel>
+
+
         </StackPanel>
     </Grid>
 </Page>

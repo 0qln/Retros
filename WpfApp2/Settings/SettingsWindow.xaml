@@ -55,7 +55,7 @@
                         <!--Child will be the FrameworkElement of the Tab, -->
                         <!--which will contain the title of the Tab and a StackPanel, -->
                         <!--which will contain the FrameworkElements of the TabDetails of the Tab-->
-                        <Grid x:Name="SettingDetailDisplay">
+                        <Grid x:Name="SettingDetailDisplay" Margin="5">
 
 
 

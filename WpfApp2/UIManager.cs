@@ -16,6 +16,9 @@ using Retros.ProgramWindow.Interactive.Tabs;
 using Retros.ProgramWindow.Interactive.Tabs.Bodies;
 using Retros.ProgramWindow.Interactive.Tabs.Handles;
 using Retros;
+using System.Windows.Media.Imaging;
+using Retros.ProgramWindow;
+using System.IO.Pipes;
 
 namespace Retros {
     public static class UIManager {
@@ -26,11 +29,40 @@ namespace Retros {
         public static void LoadImage() {
             string path = ShowImagePickerDialog();
             if (path != null) {
-                Image image = new();
-                Helper.SetImageSource(image, path);
-                WindowManager.MainWindow!.Workstation.ImageElement.CurrentImage = image;
+                WindowManager.MainWindow!.Workstation.ImageElement.SetSource(new BitmapImage(new Uri(path)));
             }
             WindowManager.MainWindow!.windowHandle!.HideAllMenus();
+        }
+        public static void SaveImage() {
+            string path = ShowFolderPickerDialog();
+
+            if (String.IsNullOrEmpty(path)) return;
+            if (!Path.Exists(path)) return;
+
+
+            System.Windows.Controls.Image image = WindowManager.MainWindow!.Workstation.ImageElement.CurrentImage;
+            System.Windows.Media.Imaging.BitmapSource bitmapSource = (System.Windows.Media.Imaging.BitmapSource)image.Source;
+            System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(
+                bitmapSource.PixelWidth,
+                bitmapSource.PixelHeight,
+                System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+
+            System.Drawing.Imaging.BitmapData bitmapData = bitmap.LockBits(
+                new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                System.Drawing.Imaging.ImageLockMode.WriteOnly,
+                bitmap.PixelFormat);
+
+            bitmapSource.CopyPixels(
+                new System.Windows.Int32Rect(0, 0, bitmapSource.PixelWidth, bitmapSource.PixelHeight),
+                bitmapData.Scan0,
+                bitmapData.Height * bitmapData.Stride,
+                bitmapData.Stride);
+
+            bitmap.UnlockBits(bitmapData);
+
+            string filePath = path + "\\image.png";
+            bitmap.Save(filePath);
+
         }
         public static string ShowFolderPickerDialog() {
             var openFileDialog = new OpenFileDialog {

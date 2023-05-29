@@ -41,11 +41,6 @@ namespace Retros {
                     ColorThemes.Add(Activator.CreateInstance(type) as IColorTheme); 
                 }
             });
-
-            foreach(var theme in ColorThemes) {
-                Debugger.Console.Log(theme);
-            }
-
         }
 
         public void SetTheme(IColorTheme colorTheme) {

@@ -75,7 +75,7 @@ namespace Retros
             windowHandle.CreateClientButton(editMenu);
             windowHandle.CreateClientButton(settingsMenu);
 
-            fileMenu.AddOption("Save").SetKeyboardShortcut("Strg + S");
+            fileMenu.AddOption("Save").SetKeyboardShortcut("Strg + S").AddCommand(UIManager.SaveImage);
             fileMenu.AddOption("Open").SetKeyboardShortcut("Strg + O").AddCommand(UIManager.LoadImage);
             editMenu.AddOption("Save Filter").SetKeyboardShortcut("Strg + S + F");
             viewMenu.AddOption("Zoom").SetKeyboardShortcut("Bla bla");

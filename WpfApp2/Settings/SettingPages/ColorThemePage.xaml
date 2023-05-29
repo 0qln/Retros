@@ -8,8 +8,7 @@
       d:DesignHeight="1000" d:DesignWidth="1000"
       Title="ColorTheme">
 
-    <Grid Margin="5"
-          x:Name="MainGrid">
+    <Grid x:Name="MainGrid">
 
         <StackPanel>
             
@@ -26,7 +25,7 @@
                     </ComboBox>
                 </StackPanel>
 
-                    
+                
                 
                 <StackPanel>
                     <TextBlock x:Name="ImportDescription"/>

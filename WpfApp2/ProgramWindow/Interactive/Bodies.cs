@@ -49,50 +49,17 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             resetButton.Click += ResetButton_Click;
             resetButton.Content = "Back to original";
 
-            //grayscale
-            grayscaleSlider.SliderElement.ValueChanged += GrayScaleSliderElement_ValueChanged;
-
-            //blue
-            blueChannelSlider.SliderElement.ValueChanged += BlueChannelButton_Click;
-
-            //red
-            redChannelSlider.SliderElement.ValueChanged += RedChannelButton_Click;
-
-            //green
-            greenChannelSlider.SliderElement.ValueChanged += GreenChannelButton_Click;
-
-            //no red
-            noRedSlider.SliderElement.ValueChanged += NoRedSliderElement_ValueChanged;
-        }
-
-        private void NoRedSliderElement_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-            AddFilterChange(new NoRedChannel(image), noRedSlider.SliderElement.Value / 10);
+            grayscaleSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new GrayScale(image), grayscaleSlider.SliderElement.Value / 10);
+            blueChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyBlueChannel(image), blueChannelSlider.SliderElement.Value / 10);
+            redChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyRedChannel(image), redChannelSlider.SliderElement.Value / 10);
+            greenChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyGreenChannel(image), greenChannelSlider.SliderElement.Value / 10); 
+            noRedSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new NoRedChannel(image), noRedSlider.SliderElement.Value / 10);
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e) {
             image.History.Clear();
             image.GetFilterManager.Clear();
             image.CurrentImage.Source = image.Original.Source.Clone();
-        }
-
-        private void GrayScaleSliderElement_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-            AddFilterChange(new GrayScale(image), grayscaleSlider.SliderElement.Value / 10);
-        }
-
-        private void GreenChannelButton_Click(object sender, RoutedEventArgs e) {
-            AddFilterChange(new OnlyGreenChannel(image), greenChannelSlider.SliderElement.Value / 10);
-        }
-
-        private void RedChannelButton_Click(object sender, RoutedEventArgs e) {
-            AddFilterChange(new OnlyRedChannel(image), redChannelSlider.SliderElement.Value / 10);
-        }
-
-        private void BlueChannelButton_Click(object sender, RoutedEventArgs e) {
-            AddFilterChange(new OnlyBlueChannel(image), blueChannelSlider.SliderElement.Value / 10);
-        }
-
-        private void AddChange(IChange change) {
-
         }
 
         private void AddFilterChange(IFilterChange filter, double value) {

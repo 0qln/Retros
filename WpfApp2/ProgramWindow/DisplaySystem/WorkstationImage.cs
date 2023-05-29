@@ -73,9 +73,11 @@ namespace Retros.ProgramWindow.DisplaySystem {
         }
         public void AddTaskToQueue(Action action) => actionQueue.Enqueue(action);
 
-        public void SetSource(WriteableBitmap source) {
-            Image newImage = new Image { Source = source };
-            ChangeImage(newImage);
+
+        public void SetSource(ImageSource source) {
+            original.Source = source;
+            currentImage.Source = source;
+            ChangeImage(source);
         }
 
         public void ResetCurrent() {
@@ -105,9 +107,10 @@ namespace Retros.ProgramWindow.DisplaySystem {
         private float startBoost => smoothness; /// recomendet for high smoothness (This approximates, will not work for very high values)
         private int imageCount = 1; /// used to set the newest images to the front
 
-        public void ChangeImage(Image newImage) {
+        private void ChangeImage(ImageSource imageSource) {
             //Prepare
             imageCount++;
+            Image newImage = new Image { Source = imageSource };
             newImage.Opacity = 0;
             Helper.SetChildInGrid((currentImage.Parent as Grid)!, newImage, Grid.GetRow(currentImage), Grid.GetColumn(currentImage));
             newImage.Margin = currentImage.Margin;

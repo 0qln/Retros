@@ -47,7 +47,6 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 changes.ForEach(change => {
                     change.Apply();
                 });
-                //image.SetSource(image.DummyImage);
                 image.CurrentImage.Source = image.DummyImage;
             }
         }

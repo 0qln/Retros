@@ -21,6 +21,8 @@ namespace Retros.Settings.Pages
         public DefaultExportPath()
         {
             InitializeComponent();
+
+            UIManager.ColorThemeManager.SetStyle(Title, () => TabDetail.Body.HeadlineStyle("Export Settings"));
         }
 
     }

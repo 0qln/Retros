@@ -120,9 +120,8 @@ namespace Retros.ProgramWindow.Filters
         private double filterIntensity;
         public double FilterIntensity { set => filterIntensity = value; get => filterIntensity; }
 
-        public GrayScale(WorkstationImage image, double filterIntensity = 1) {
+        public GrayScale(WorkstationImage image) {
             this.image = image;
-            this.filterIntensity = filterIntensity;
         }
 
         public void Apply() {
