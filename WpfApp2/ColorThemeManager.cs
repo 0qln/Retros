@@ -66,7 +66,9 @@ namespace Retros {
             }
 
             try { File.WriteAllText(filePath, json); }
-            catch (Exception ex) { Debugger.Console.Log(ex);}
+            catch (Exception ex) { 
+                ///DebugLibrary.Console.Log(ex);
+            }
         }
         public void LoadFromFile(string filePath) {
             filePath = filePath.Replace("\"", "");
@@ -161,7 +163,7 @@ namespace Retros {
                     return new Deserializable(JsonSerializer.Deserialize<Serializable>(json)!);
                 }
                 catch (Exception ex) {
-                    Debugger.Console.Log(ex);
+                    //DebugLibrary.Console.Log(ex);
                     return null;
                 }
             }

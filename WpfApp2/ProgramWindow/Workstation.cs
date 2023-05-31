@@ -19,7 +19,7 @@ namespace Retros.ProgramWindow {
         public FrameworkElement FrameworkElement => border;
 
         // System
-        public WorkstationImage ImageElement = new(defaultPath);
+        public WorkstationImage ImageElement = new();
         public WorkstationTable TableElement = new(MainGrid);
 
         private static string defaultPath => @"C:\Users\User\OneDrive\Bilder\Wallpapers\70547-Kaf-Virtual-YoutuberKaf-Virtual-Youtuber-4k-Ultra.jpg";

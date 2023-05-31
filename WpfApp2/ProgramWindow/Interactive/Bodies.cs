@@ -36,7 +36,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
         public Slider redChannelSlider = new("Red Channel");
         public Slider greenChannelSlider = new("Green Channel");
         public Slider grayscaleSlider = new("Grayscale");
-        public Slider noRedSlider = new("No Red Chnnel");
+        public Slider testBlueSlider = new("TestBlue");
         public FilterDisplay FilterDisplay = new();
 
         public ImageFilter() {
@@ -45,7 +45,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             stackPanel.Children.Add(blueChannelSlider.FrameworkElement);
             stackPanel.Children.Add(redChannelSlider.FrameworkElement);
             stackPanel.Children.Add(greenChannelSlider.FrameworkElement);
-            ///stackPanel.Children.Add(noRedSlider.FrameworkElement);
+            stackPanel.Children.Add(testBlueSlider.FrameworkElement);
             stackPanel.Children.Add(FilterDisplay.FrameworkElement);
 
             UIManager.ColorThemeManager.Set_AC1(b => resetButton.Background = b);
@@ -56,7 +56,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             blueChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyBlueChannel(image), blueChannelSlider.SliderElement.Value / 10);
             redChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyRedChannel(image), redChannelSlider.SliderElement.Value / 10);
             greenChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyGreenChannel(image), greenChannelSlider.SliderElement.Value / 10); 
-            noRedSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new NoRedChannel(image), noRedSlider.SliderElement.Value / 10);
+            testBlueSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new TestBlue(image), testBlueSlider.SliderElement.Value / 10);
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e) {

@@ -12,7 +12,7 @@
           "SharpDX": "4.2.0",
           "System.Drawing.Common": "7.0.0",
           "DebugLibrary": "1.0.0.0",
-          "WpfCustomControlLibrary1": "1.0.0.0",
+          "Utillities": "1.0.0.0",
           "runtimepack.Microsoft.NETCore.App.Runtime.win-x64": "7.0.5",
           "runtimepack.Microsoft.WindowsDesktop.App.Runtime.win-x64": "7.0.5"
         },
@@ -1807,9 +1807,9 @@
           }
         }
       },
-      "WpfCustomControlLibrary1/1.0.0.0": {
+      "Utillities/1.0.0.0": {
         "runtime": {
-          "WpfCustomControlLibrary1.dll": {
+          "Utillities.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
@@ -2588,7 +2588,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "WpfCustomControlLibrary1/1.0.0.0": {
+    "Utillities/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

@@ -9,8 +9,6 @@ using System.Windows;
 using Utillities.Wpf;
 using System.Diagnostics;
 using DebugLibrary.Benchmark;
-using Debugger;
-using Console = Debugger.Console;
 using System.Windows.Threading;
 using System.Drawing.Imaging;
 using System.Drawing;

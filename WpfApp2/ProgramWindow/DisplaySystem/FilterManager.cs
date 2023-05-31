@@ -19,6 +19,7 @@ using System.Threading;
 using System.Windows.Threading;
 using Retros;
 using System.Windows.Navigation;
+using DebugLibrary;
 
 namespace Retros.ProgramWindow.DisplaySystem {
     // Functionality -> Image Filters Tab Body
@@ -29,7 +30,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
         private WorkstationImage image; 
 
         public FilterManager(WorkstationImage image) {
-            timer.Interval = TimeSpan.FromMilliseconds(400);
+            timer.Interval = TimeSpan.FromMilliseconds(250);
             timer.Tick += (s, e) => ApplyChanges();
             timer.Start();
 
@@ -43,13 +44,11 @@ namespace Retros.ProgramWindow.DisplaySystem {
             int j = 0; // strings
 
             while (i < filters.Count) {
-                Debugger.Console.Log(i + ", " + j);
 
                 if (filters[i].GetType().Name != filterStrings[j]) {
                     int tempJ = j;
                     j++;
                     while (filters[i].GetType().Name != filterStrings[j]) {
-                        Debugger.Console.Log(j);
                         j++;
                     }
                     //insert
@@ -72,28 +71,19 @@ namespace Retros.ProgramWindow.DisplaySystem {
         }
 
         public void ApplyChanges() {
-            return;
-            if (filters.Count > 0) {
-                bool changed = false;
-                Measure.Execute(() => {
-                    filters.ForEach(filter => {
-                        if (!filter.Applied && changed == false) {
-                            changed = true;
-                            Debugger.Console.Log("Changed is true, DummyImage = new()");
-                        }
-                            image.DummyImage = new WriteableBitmap((BitmapSource)image.SourceImage.Source);
-                        //if (changed) {
-                            Debugger.Console.Log(filter.GetType().Name);
-                            Measure.Execute(filter.Generate);
-                        //}
-                    });
-                    Debugger.Console.Log("Total");
-                });
-                Debugger.Console.Log("filters: " + filters.Count);
-                if (changed) {
-                }
-                    image.ChangeCurentImage(image.DummyImage);
+            if (filters.Count == 0) {
+                return;
             }
+
+            DebugLibrary.Console.Log(Measure.Execute(() => { 
+                image.DummyImage = new WriteableBitmap(image.ResizedSourceBitmap);
+
+            }).ElapsedMilliseconds);
+            filters.ForEach(filter => {
+                ///filter.Generate();
+                DebugLibrary.Console.Log(Measure.Execute(filter.Generate).ElapsedMilliseconds);
+            });
+            image.ChangeCurentImage(image.DummyImage);
         }
 
         // Could cause bugs, better use the other option 

@@ -153,11 +153,9 @@ namespace Retros.ProgramWindow.Interactive
                 }
 
                 if (IsValid()) {
-                    Debugger.Console.Log("Valid position");
                     parent.InsertItem(this, Mouse.GetPosition(WindowManager.MainWindow));
                 }
                 else {
-                    Debugger.Console.Log("Invalid position");
                     parent.InsertItem(this, startPosition);
                 }
             }

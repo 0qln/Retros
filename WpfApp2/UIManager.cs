@@ -29,7 +29,7 @@ namespace Retros {
         public static void LoadImage() {
             string path = ShowImagePickerDialog();
             if (path != null) {
-                WindowManager.MainWindow!.Workstation.ImageElement.SourceImage = new Image { Source = new BitmapImage(new Uri(path)) };
+                WindowManager.MainWindow!.Workstation.ImageElement.SetSourceImage(new BitmapImage(new Uri(path)));
             }
             WindowManager.MainWindow!.windowHandle!.HideAllMenus();
         }
@@ -39,26 +39,7 @@ namespace Retros {
             if (String.IsNullOrEmpty(path)) return;
             if (!Path.Exists(path)) return;
 
-
-            System.Windows.Controls.Image image = WindowManager.MainWindow!.Workstation.ImageElement.CurrentImage;
-            System.Windows.Media.Imaging.BitmapSource bitmapSource = (System.Windows.Media.Imaging.BitmapSource)image.Source;
-            System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(
-                bitmapSource.PixelWidth,
-                bitmapSource.PixelHeight,
-                System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
-
-            System.Drawing.Imaging.BitmapData bitmapData = bitmap.LockBits(
-                new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
-                System.Drawing.Imaging.ImageLockMode.WriteOnly,
-                bitmap.PixelFormat);
-
-            bitmapSource.CopyPixels(
-                new System.Windows.Int32Rect(0, 0, bitmapSource.PixelWidth, bitmapSource.PixelHeight),
-                bitmapData.Scan0,
-                bitmapData.Height * bitmapData.Stride,
-                bitmapData.Stride);
-
-            bitmap.UnlockBits(bitmapData);
+            System.Drawing.Bitmap bitmap = WindowManager.MainWindow!.Workstation.ImageElement.Render();
 
             string filePath = path + "\\image.png";
             bitmap.Save(filePath);

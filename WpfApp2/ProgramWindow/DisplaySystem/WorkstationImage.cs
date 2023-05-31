@@ -1,6 +1,8 @@
 ﻿using SharpDX.Multimedia;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -24,10 +26,22 @@ namespace Retros.ProgramWindow.DisplaySystem {
             get {
                 return sourceImage;
             }
-            set {
-                sourceImage = value;
-                currentImage = value;
-                DummyImage = new WriteableBitmap((BitmapSource)SourceImage.Source);
+        }
+        public void SetSourceImage(BitmapImage source) {
+            sourceImage.Source = source.Clone();
+
+            WriteableBitmap bitmap = new WriteableBitmap(source);
+            double screenWidth = SystemParameters.PrimaryScreenWidth;
+            double screenHeight = SystemParameters.PrimaryScreenHeight;
+            resizedSourceBitmap = ResizeWritableBitmap(bitmap, (int) screenWidth, (int) screenHeight);
+
+            currentImage.Source = resizedSourceBitmap.Clone();
+            DummyImage = new WriteableBitmap(resizedSourceBitmap);
+        }
+        private WriteableBitmap resizedSourceBitmap;
+        public WriteableBitmap ResizedSourceBitmap {
+            get {
+                return resizedSourceBitmap;
             }
         }
 
@@ -48,7 +62,6 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
 
         public WorkstationImage(string path) {
-
             filterManager = new(this);
 
             StartUpdating();
@@ -64,6 +77,147 @@ namespace Retros.ProgramWindow.DisplaySystem {
             DummyImage = new WriteableBitmap((BitmapSource)SourceImage.Source);
         }
 
+        public WorkstationImage() {
+            filterManager = new(this);
+            StartUpdating();
+            currentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
+            currentImage.Margin = new Thickness(50);
+            imagesGrid.Children.Add(currentImage);
+            currentImage.Effect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
+
+        }
+        public static WriteableBitmap ResizeWritableBitmap(WriteableBitmap originalBitmap, int newWidth, int newHeight) {
+            DebugLibrary.Console.Log(newHeight +", "+ newHeight);
+
+            // Check if resizing is required
+            if (newWidth >= originalBitmap.PixelWidth && newHeight >= originalBitmap.PixelHeight) {
+                return originalBitmap;
+            }
+
+            // Convert the original bitmap to a compatible pixel format (e.g., Pbgra32)
+            FormatConvertedBitmap convertedBitmap = new FormatConvertedBitmap(originalBitmap, PixelFormats.Pbgra32, null, 0);
+
+            // Calculate the aspect ratios
+            double aspectRatioOriginal = (double)originalBitmap.PixelWidth / originalBitmap.PixelHeight;
+            double aspectRatioNew = (double)newWidth / newHeight;
+
+            DebugLibrary.Console.Log(aspectRatioOriginal + " -> " + aspectRatioNew);
+
+            // Determine the scaling factor to use (based on the aspect ratios)
+            double scale = aspectRatioNew >= aspectRatioOriginal ? (double)newHeight / originalBitmap.PixelHeight : (double)newWidth / originalBitmap.PixelWidth;
+
+            // Calculate the new dimensions
+            int scaledWidth = (int)Math.Round(originalBitmap.PixelWidth * scale);
+            int scaledHeight = (int)Math.Round(originalBitmap.PixelHeight * scale);
+
+            // Create a new RenderTargetBitmap with the scaled dimensions
+            RenderTargetBitmap resizedRenderTarget = new RenderTargetBitmap(scaledWidth, scaledHeight, convertedBitmap.DpiX, convertedBitmap.DpiY, PixelFormats.Pbgra32);
+
+            // Create a Transform to apply scaling
+            ScaleTransform transform = new ScaleTransform(scale, scale);
+
+            // Apply the scaling transform to a DrawingVisual
+            DrawingVisual drawingVisual = new DrawingVisual();
+            using (DrawingContext drawingContext = drawingVisual.RenderOpen()) {
+                drawingContext.PushTransform(transform);
+                drawingContext.DrawImage(convertedBitmap, new Rect(0, 0, originalBitmap.PixelWidth, originalBitmap.PixelHeight));
+            }
+
+            // Render the DrawingVisual to the resized RenderTargetBitmap
+            resizedRenderTarget.Render(drawingVisual);
+
+            // Create a new WriteableBitmap with the resized RenderTargetBitmap
+            WriteableBitmap resizedBitmap = new WriteableBitmap(resizedRenderTarget);
+
+            DebugLibrary.Console.Log(originalBitmap.Width + ", " + originalBitmap.Height + ", " + originalBitmap.Width/ originalBitmap.Height);
+            DebugLibrary.Console.Log(resizedBitmap.Width + ", " + resizedBitmap.Height + ", " + resizedBitmap.Width/ resizedBitmap.Height);
+
+            return resizedBitmap;
+        }
+
+        public System.Drawing.Bitmap Render() {
+            System.Windows.Media.Imaging.BitmapSource bitmapSource = (System.Windows.Media.Imaging.BitmapSource)sourceImage.Source;
+            System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(
+                bitmapSource.PixelWidth,
+                bitmapSource.PixelHeight,
+                System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+
+            System.Drawing.Imaging.BitmapData bitmapData = bitmap.LockBits(
+                new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                System.Drawing.Imaging.ImageLockMode.WriteOnly,
+                bitmap.PixelFormat);
+
+            bitmapSource.CopyPixels(
+                new System.Windows.Int32Rect(0, 0, bitmapSource.PixelWidth, bitmapSource.PixelHeight),
+                bitmapData.Scan0,
+                bitmapData.Height * bitmapData.Stride,
+                bitmapData.Stride);
+
+            bitmap.UnlockBits(bitmapData);
+
+            return bitmap;
+        }
+
+        /* Goofy ahhhh resize
+        public WriteableBitmap ResizeWritableBitmap(WriteableBitmap wBitmap, int reqWidth, int reqHeight) {
+            int Stride = wBitmap.PixelWidth * ((wBitmap.Format.BitsPerPixel + 7) / 8);
+            int NumPixels = Stride * wBitmap.PixelHeight;
+            ushort[] ArrayOfPixels = new ushort[NumPixels];
+
+
+            wBitmap.CopyPixels(ArrayOfPixels, Stride, 0);
+
+            int OriWidth = (int)wBitmap.PixelWidth;
+            int OriHeight = (int)wBitmap.PixelHeight;
+
+            double nXFactor = (double)OriWidth / (double)reqWidth;
+            double nYFactor = (double)OriHeight / (double)reqHeight;
+
+            double fraction_x, fraction_y, one_minus_x, one_minus_y;
+            int ceil_x, ceil_y, floor_x, floor_y;
+
+            ushort pix1, pix2, pix3, pix4;
+            int nStride = reqWidth * ((wBitmap.Format.BitsPerPixel + 7) / 8);
+            int nNumPixels = reqWidth * reqHeight;
+            ushort[] newArrayOfPixels = new ushort[nNumPixels];
+
+            for (int y = 0; y < reqHeight; y++) {
+                for (int x = 0; x < reqWidth; x++) {
+
+                    floor_x = (int)Math.Floor(x * nXFactor);
+                    floor_y = (int)Math.Floor(y * nYFactor);
+
+                    ceil_x = floor_x + 1;
+                    if (ceil_x >= OriWidth) ceil_x = floor_x;
+
+                    ceil_y = floor_y + 1;
+                    if (ceil_y >= OriHeight) ceil_y = floor_y;
+
+                    fraction_x = x * nXFactor - floor_x;
+                    fraction_y = y * nYFactor - floor_y;
+
+                    one_minus_x = 1.0 - fraction_x;
+                    one_minus_y = 1.0 - fraction_y;
+
+                    pix1 = ArrayOfPixels[floor_x + floor_y * OriWidth];
+                    pix2 = ArrayOfPixels[ceil_x + floor_y * OriWidth];
+                    pix3 = ArrayOfPixels[floor_x + ceil_y * OriWidth];
+                    pix4 = ArrayOfPixels[ceil_x + ceil_y * OriWidth];
+
+                    ushort g1 = (ushort)(one_minus_x * pix1 + fraction_x * pix2);
+                    ushort g2 = (ushort)(one_minus_x * pix3 + fraction_x * pix4);
+                    ushort g = (ushort)(one_minus_y * (double)(g1) + fraction_y * (double)(g2));
+                    newArrayOfPixels[y * reqWidth + x] = g;
+                }
+            }
+
+            WriteableBitmap newWBitmap = new WriteableBitmap(reqWidth, reqHeight, 96, 96, PixelFormats.Gray16, null);
+            Int32Rect Imagerect = new Int32Rect(0, 0, reqWidth, reqHeight);
+            int newStride = reqWidth * ((PixelFormats.Gray16.BitsPerPixel + 7) / 8);
+            newWBitmap.WritePixels(Imagerect, newArrayOfPixels, newStride, 0);
+            return newWBitmap;
+        }
+        */
 
         private void StartUpdating() {
             actionTimer.Interval = WindowManager.Framerate;
@@ -162,7 +316,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 var timer = new DispatcherTimer();
                 timer.Interval = TimeSpan.FromMilliseconds(interval);
                 timer.Tick += (s, e) => {
-                    float val = ExtendedMath.LinearStep(t, smoothness, 0, totalInterpolationTime);
+                    float val = ExtendedMath.RootStep(t, smoothness, 0, totalInterpolationTime);
                     newImage.Opacity = val;
                     dp_tValues.Add(val);
 
@@ -178,6 +332,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 };
                 timer.Start();
             }
+
+
         }
 
     }
