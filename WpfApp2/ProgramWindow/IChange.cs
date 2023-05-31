@@ -7,9 +7,11 @@ using System.Windows.Media.Imaging;
 
 namespace Retros.ProgramWindow {
     public interface IChange {
-        //public WriteableBitmap Bitmap { get; }
         public void Generate();
         public bool Applied { get; }
+        //public delegate void ChangeEventHandler();
+        //public event ChangeEventHandler ChangeEvent;
+
     }
 
     public interface IFilterChange {

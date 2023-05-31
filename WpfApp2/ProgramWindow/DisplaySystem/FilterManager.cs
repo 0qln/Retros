@@ -70,8 +70,18 @@ namespace Retros.ProgramWindow.DisplaySystem {
             filterTypes.Clear();
         }
 
+        private bool justRemoved = false;
+        private bool changed = false;
         public void ApplyChanges() {
+            if (!changed) {
+                return;
+            }
+
             if (filters.Count == 0) {
+                if (justRemoved) {
+                    image.ChangeCurentImage(image.ResizedSourceBitmap);
+                    justRemoved = false;
+                }
                 return;
             }
 
@@ -84,6 +94,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 DebugLibrary.Console.Log(Measure.Execute(filter.Generate).ElapsedMilliseconds);
             });
             image.ChangeCurentImage(image.DummyImage);
+
+            changed = false;
         }
 
         // Could cause bugs, better use the other option 
@@ -94,6 +106,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
             filterTypes.Add(changeType);
             filters.Add((IChange) Activator.CreateInstance(changeType, image)!);
+            changed = true;
+
             return true;
         }
         public bool AddChange(IChange change) {
@@ -103,6 +117,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
             filterTypes.Add(change.GetType());
             filters.Add(change);
+            changed = true;
+
             return true;
         }
         public bool AddChange(IFilterChange filterChange) {
@@ -112,11 +128,14 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
             filterTypes.Add(filterChange.GetType());
             filters.Add((IChange)filterChange);
+            changed = true;
+
             return true;
         }
 
         public void SetFilterIntensity(IFilterChange filter, double value) {
             GetFilter(filter).FilterIntensity = value;
+            changed = true;
         }
 
         public void RemoveChange(Type changeType) {
@@ -124,12 +143,16 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
             filters.Remove(filters.First(c=> changeType == c.GetType()));
             filterTypes.Remove(changeType);
+            changed = true;
+            justRemoved = true;
         }
         public void RemoveChange(IChange change) {
             if (!ContainsChange(change)) return;
 
             filters.Remove(GetChange(change));
             filterTypes.Remove(change.GetType());
+            changed = true;
+            justRemoved = true;
         }
 
         public IFilterChange GetFilter(IFilterChange filter) {

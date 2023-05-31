@@ -11,45 +11,6 @@ using System.Windows.Media.Imaging;
 
 namespace Retros.ProgramWindow.Filters {
 
-    // NEEERD
-    public class NoRedChannel : IChange, IFilterChange {
-        private WorkstationImage image;
-        private double filterIntensity;
-        public double FilterIntensity {
-            set {
-                filterIntensity = value;
-                applied = false;
-            }
-            get => filterIntensity;
-        }
-        private bool applied = false;
-        public bool Applied => applied;
-
-        public NoRedChannel(WorkstationImage image) {
-            this.image = image;
-        }
-
-        public void Generate() {
-            int bytesPerPixel = (image.DummyImage.Format.BitsPerPixel + 7) / 8;
-            byte[] pixelData = new byte[image.DummyImage.PixelWidth * image.DummyImage.PixelHeight * bytesPerPixel];
-            image.DummyImage.CopyPixels(pixelData, image.DummyImage.PixelWidth * bytesPerPixel, 0);
-            int pixelHeight = image.DummyImage.PixelHeight;
-            int pixelWidth = image.DummyImage.PixelWidth;
-
-            Parallel.For(0, pixelHeight, y => {
-                Parallel.For(0, pixelWidth, x => {
-                    int index = (y * pixelWidth + x) * bytesPerPixel;
-                    pixelData[index + 2] = (byte)(pixelData[index + 2] * (1 - filterIntensity));    // Red
-                });
-            });
-
-            image.DummyImage.WritePixels(new Int32Rect(0, 0, image.DummyImage.PixelWidth, image.DummyImage.PixelHeight), pixelData, image.DummyImage.PixelWidth * bytesPerPixel, 0);
-
-            applied = true;
-        }
-    }
-    // ----
-
     public class OnlyRedChannel : IChange, IFilterChange {
         private WorkstationImage image;
         private double filterIntensity;
@@ -200,11 +161,9 @@ namespace Retros.ProgramWindow.Filters {
                         byte* row = pixelData + (y * stride);
                         Parallel.For(0, pixelWidth, x => {
                             int index = x * bytesPerPixel;
-
-                            pixelData[index + 0] = (byte)(255 * (1 - filterIntensity));    // Green
+                            pixelData[index + 0] = (byte)(255 * (1 - filterIntensity));
                         });
                     });
-
                 }
             }
             finally {
@@ -219,6 +178,8 @@ namespace Retros.ProgramWindow.Filters {
     public class GrayScale : IChange, IFilterChange {
         private WorkstationImage image;
         private double filterIntensity;
+        private bool applied = false;
+
         public double FilterIntensity {
             set {
                 filterIntensity = value;
@@ -226,12 +187,13 @@ namespace Retros.ProgramWindow.Filters {
             }
             get => filterIntensity;
         }
-        private bool applied = false;
         public bool Applied => applied;
 
         public GrayScale(WorkstationImage image) {
             this.image = image;
         }
+
+
 
         public void Generate() {
             int bytesPerPixel = (image.DummyImage.Format.BitsPerPixel + 7) / 8;

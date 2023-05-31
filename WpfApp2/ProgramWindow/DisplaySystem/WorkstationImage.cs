@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -15,6 +16,8 @@ using Utillities.Wpf;
 namespace Retros.ProgramWindow.DisplaySystem {
     public partial class WorkstationImage : IFrameworkElement {
         public FrameworkElement FrameworkElement => CurrentImage;
+
+        private Image? fallBackImage;
 
         private Image currentImage = new();
         public Image CurrentImage {
@@ -279,6 +282,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
         private int imageCount = 1; /// used to set the newest images to the front
 
         public void ChangeCurentImage(ImageSource imageSource) {
+            __Execute__ChangeCurentImage(imageSource); return;
             AddTaskToQueue(() => __Execute__ChangeCurentImage(imageSource));
         }
         private void __Execute__ChangeCurentImage(ImageSource imageSource) {
@@ -302,7 +306,12 @@ namespace Retros.ProgramWindow.DisplaySystem {
                     i++;
                     if (i >= dp_tValues.Count) {
                         newImage.Effect = currentImage.Effect;
-                        (currentImage.Parent as Grid)!.Children.Remove(currentImage);
+                        currentImage.Effect = null;
+
+                        if (fallBackImage != null) (fallBackImage.Parent as Grid)!.Children.Remove(fallBackImage);
+                        fallBackImage = currentImage;
+                        Canvas.SetZIndex(fallBackImage, 0);
+
                         currentImage = newImage;
                         imageCount--;
                         timer.Stop();
