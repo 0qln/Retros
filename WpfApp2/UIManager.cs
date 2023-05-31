@@ -29,7 +29,7 @@ namespace Retros {
         public static void LoadImage() {
             string path = ShowImagePickerDialog();
             if (path != null) {
-                WindowManager.MainWindow!.Workstation.ImageElement.SetSource(new BitmapImage(new Uri(path)));
+                WindowManager.MainWindow!.Workstation.ImageElement.SourceImage = new Image { Source = new BitmapImage(new Uri(path)) };
             }
             WindowManager.MainWindow!.windowHandle!.HideAllMenus();
         }

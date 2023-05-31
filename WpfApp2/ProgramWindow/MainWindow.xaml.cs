@@ -53,7 +53,9 @@ namespace Retros
             Helper.SetChildInGrid(WorkStationImageGrid, Workstation.ImageElement.Grid, 0, 0);
 
             Workstation.TableElement.AddTab(new ImageFilterTab(new ImageFilter(), new DefaultHandle("Filters")));
+            Workstation.TableElement.AddTab(new TestTab(new Test(), new DefaultHandle("Testing")));
             Workstation.TableElement.SelectTab(0);
+
 
             Shadow.Width = shadowRectWidth;
             Shadow.Effect = new DropShadowEffect { BlurRadius = 25, ShadowDepth = 10, Color = Colors.Black, Opacity = 0.80, Direction = 180 };

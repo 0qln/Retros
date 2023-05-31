@@ -1,19 +1,14 @@
-﻿using System;
+﻿using SharpDX.Multimedia;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
-using Utillities.Wpf;
-using Utillities;
-using System.Windows.Media.Imaging;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Threading;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using Utillities;
+using Utillities.Wpf;
 
 namespace Retros.ProgramWindow.DisplaySystem {
     public partial class WorkstationImage : IFrameworkElement {
@@ -22,10 +17,19 @@ namespace Retros.ProgramWindow.DisplaySystem {
         private Image currentImage = new();
         public Image CurrentImage {
             get => currentImage;
-            set => currentImage = value;
+            //set => currentImage = value;
         }
-        private Image original = new();
-        public Image Original => original;
+        private Image sourceImage = new();
+        public Image SourceImage {
+            get {
+                return sourceImage;
+            }
+            set {
+                sourceImage = value;
+                currentImage = value;
+                DummyImage = new WriteableBitmap((BitmapSource)SourceImage.Source);
+            }
+        }
 
         public WriteableBitmap DummyImage { get; set; }
 
@@ -55,9 +59,9 @@ namespace Retros.ProgramWindow.DisplaySystem {
             imagesGrid.Children.Add(currentImage);
             currentImage.Effect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
 
-            Helper.SetImageSource(original, path);
+            Helper.SetImageSource(sourceImage, path);
 
-            DummyImage = new WriteableBitmap((BitmapSource)Original.Source);
+            DummyImage = new WriteableBitmap((BitmapSource)SourceImage.Source);
         }
 
 
@@ -71,23 +75,27 @@ namespace Retros.ProgramWindow.DisplaySystem {
             };
             actionTimer.Start();
         }
-        public void AddTaskToQueue(Action action) => actionQueue.Enqueue(action);
+        private void AddTaskToQueue(Action action) => actionQueue.Enqueue(action);
 
-
+        /*
         public void SetSource(ImageSource source) {
-            original.Source = source;
+            sourceImage.Source = source;
             currentImage.Source = source;
-            ChangeImage(source);
+            DummyImage = new WriteableBitmap((BitmapSource)SourceImage.Source);
         }
+        */
 
         public void ResetCurrent() {
-            currentImage.Source = original.Source.Clone();
+            AddTaskToQueue(__Execute__ResetCurrent);
+        }
+        private void __Execute__ResetCurrent() {
+            currentImage.Source = sourceImage.Source.Clone();
         }
 
 
         private List<float> dp_tValues = new(); /// caches the opacity curve
         private bool isCalculated = false;
-        private int smoothness = 2;
+        private int smoothness = 1;
         public int InterpolationSmoothness {
             get => smoothness;
             set {
@@ -95,7 +103,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 isCalculated = false;
             }
         }
-        private float totalInterpolationTime = 100;
+        private float totalInterpolationTime = 90;
         public float TotalInterpolationTime {
             get => totalInterpolationTime;
             set {
@@ -104,10 +112,22 @@ namespace Retros.ProgramWindow.DisplaySystem {
             }
         }
         private float interval = 6.94444444444f; /// time between ticks
-        private float startBoost => smoothness; /// recomendet for high smoothness (This approximates, will not work for very high values)
+        private bool enableStartboost = true;
+        private float startBoost { get {
+                if (enableStartboost) {
+                    return smoothness;
+                }
+                else {
+                    return 0;
+                }
+            }
+        } /// recomendet for high smoothness (This approximates, will not work for very high values)
         private int imageCount = 1; /// used to set the newest images to the front
 
-        private void ChangeImage(ImageSource imageSource) {
+        public void ChangeCurentImage(ImageSource imageSource) {
+            AddTaskToQueue(() => __Execute__ChangeCurentImage(imageSource));
+        }
+        private void __Execute__ChangeCurentImage(ImageSource imageSource) {
             //Prepare
             imageCount++;
             Image newImage = new Image { Source = imageSource };

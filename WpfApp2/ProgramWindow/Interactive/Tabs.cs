@@ -45,7 +45,10 @@ namespace Retros.ProgramWindow.Interactive.Tabs {
 
     public class ImageFilterTab : Tab {
         public ImageFilterTab(Body body, Handle handle) : base(body, handle) { }
+    }
 
+    public class TestTab : Tab {
+        public TestTab(Body body, Handle handle) : base(body, handle) { }
     }
 
     public class PixelSortingTab : Tab {

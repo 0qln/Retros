@@ -4,10 +4,13 @@ using Utillities.Wpf;
 
 using Retros.ProgramWindow.DisplaySystem;
 using Retros.ProgramWindow.Filters;
+using System;
+using System.Threading.Tasks;
 
 // Bodies Manage the Tab body UIElements and functionality
 namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
     public abstract class Body {
+        protected StackPanel stackPanel = new();
         protected Grid mainGrid = new();
         protected Border border = new();
         public FrameworkElement FrameworkElement => border;
@@ -16,6 +19,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             UIManager.ColorThemeManager.Set_BC1(newBrush => border.BorderBrush = newBrush);
             border.Child = mainGrid;
             border.BorderThickness = new Thickness(1);
+            Helper.SetChildInGrid(mainGrid, stackPanel, 0, 0);
         }
 
         public void Hide() => mainGrid.Visibility = Visibility.Collapsed;
@@ -23,9 +27,8 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
     }
 
 
-    public partial class ImageFilter : Body {
-        WorkstationImage image = WindowManager.MainWindow!.Workstation.ImageElement; // TODO
-        private StackPanel stackPanel = new();
+    public class ImageFilter : Body {
+        private readonly WorkstationImage image = WindowManager.MainWindow!.Workstation.ImageElement;
 
         public Button resetButton = new();
 
@@ -34,16 +37,16 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
         public Slider greenChannelSlider = new("Green Channel");
         public Slider grayscaleSlider = new("Grayscale");
         public Slider noRedSlider = new("No Red Chnnel");
-
+        public FilterDisplay FilterDisplay = new();
 
         public ImageFilter() {
-            Helper.SetChildInGrid(mainGrid, stackPanel, 0, 0);
             stackPanel.Children.Add(resetButton);
             stackPanel.Children.Add(grayscaleSlider.FrameworkElement);
             stackPanel.Children.Add(blueChannelSlider.FrameworkElement);
             stackPanel.Children.Add(redChannelSlider.FrameworkElement);
             stackPanel.Children.Add(greenChannelSlider.FrameworkElement);
-            stackPanel.Children.Add(noRedSlider.FrameworkElement);
+            ///stackPanel.Children.Add(noRedSlider.FrameworkElement);
+            stackPanel.Children.Add(FilterDisplay.FrameworkElement);
 
             UIManager.ColorThemeManager.Set_AC1(b => resetButton.Background = b);
             resetButton.Click += ResetButton_Click;
@@ -59,15 +62,21 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
         private void ResetButton_Click(object sender, RoutedEventArgs e) {
             image.History.Clear();
             image.GetFilterManager.Clear();
-            image.CurrentImage.Source = image.Original.Source.Clone();
+            image.CurrentImage.Source = image.SourceImage.Source.Clone();
         }
 
         private void AddFilterChange(IFilterChange filter, double value) {
             if (value == 0) {
                 image.GetFilterManager.RemoveChange((IChange) filter);
+                FilterDisplay.RemoveItem(filter.GetType().Name);
             }
-            else if (!image.GetFilterManager.AddChange(filter)) {
-                image.GetFilterManager.SetFilterIntensity(filter, value);
+            else {
+                if (image.GetFilterManager.AddChange(filter)) {
+                    FilterDisplay.AddItem(filter.GetType().Name);
+                }
+                else {
+                    image.GetFilterManager.SetFilterIntensity(filter, value);
+                }
             }
         }
     }
@@ -81,6 +90,25 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             Helper.SetChildInGrid(mainGrid, textBlock, 0, 0);
         }
 
+    }
+
+
+    public class Test : Body {
+        private static WorkstationImage image = WindowManager.MainWindow!.Workstation.ImageElement;
+        private static float filterIntensity;
+
+        public Test() {
+            ///Debugger.Console.ClearAll();
+
+            Button normal = new Button { Content = "Execute normal" };
+            ///normal.Click += (s, e) => DebugLibrary.Benchmark.Measure.Execute(Compute);
+            
+            Button gpu = new Button { Content = "Execute on GPU" };
+            ///gpu.Click += (s, e) => DebugLibrary.Benchmark.Measure.Execute(PerformVectorAddition());
+
+            stackPanel.Children.Add(normal);
+            stackPanel.Children.Add(gpu);
+        }
     }
 
 
