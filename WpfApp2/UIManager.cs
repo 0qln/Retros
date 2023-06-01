@@ -39,11 +39,9 @@ namespace Retros {
             if (String.IsNullOrEmpty(path)) return;
             if (!Path.Exists(path)) return;
 
-            System.Drawing.Bitmap bitmap = WindowManager.MainWindow!.Workstation.ImageElement.Render();
-
+            using System.Drawing.Bitmap bitmap = WindowManager.MainWindow!.Workstation.ImageElement.Render();
             string filePath = path + "\\image.png";
             bitmap.Save(filePath);
-
         }
         public static string ShowFolderPickerDialog() {
             var openFileDialog = new OpenFileDialog {

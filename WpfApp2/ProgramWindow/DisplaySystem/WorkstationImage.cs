@@ -17,36 +17,27 @@ namespace Retros.ProgramWindow.DisplaySystem {
     public partial class WorkstationImage : IFrameworkElement {
         public FrameworkElement FrameworkElement => CurrentImage;
 
-        private Image? fallBackImage;
-
         private Image currentImage = new();
-        public Image CurrentImage {
-            get => currentImage;
-            //set => currentImage = value;
-        }
-        private Image sourceImage = new();
-        public Image SourceImage {
-            get {
-                return sourceImage;
-            }
-        }
-        public void SetSourceImage(BitmapImage source) {
-            sourceImage.Source = source.Clone();
+        public Image CurrentImage => currentImage;
 
-            WriteableBitmap bitmap = new WriteableBitmap(source);
+        private Image sourceImage = new();
+        public Image SourceImage => sourceImage;
+        
+        public void SetSourceImage(BitmapImage source) {
+            sourceImage.Source = source;
+
             double screenWidth = SystemParameters.PrimaryScreenWidth;
             double screenHeight = SystemParameters.PrimaryScreenHeight;
-            resizedSourceBitmap = ResizeWritableBitmap(bitmap, (int) screenWidth, (int) screenHeight);
+            resizedSourceBitmap = ResizeWritableBitmap(source, (int) screenWidth, (int) screenHeight);
 
             currentImage.Source = resizedSourceBitmap.Clone();
             DummyImage = new WriteableBitmap(resizedSourceBitmap);
+
+            fallBackImage = null;
         }
+
         private WriteableBitmap resizedSourceBitmap;
-        public WriteableBitmap ResizedSourceBitmap {
-            get {
-                return resizedSourceBitmap;
-            }
-        }
+        public WriteableBitmap ResizedSourceBitmap => resizedSourceBitmap;
 
         public WriteableBitmap DummyImage { get; set; }
 
@@ -69,15 +60,12 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
             StartUpdating();
 
-            Helper.SetImageSource(currentImage, path);
             currentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
             currentImage.Margin = new Thickness(50);
-            imagesGrid.Children.Add(currentImage);
             currentImage.Effect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
+            imagesGrid.Children.Add(currentImage); //
 
-            Helper.SetImageSource(sourceImage, path);
-
-            DummyImage = new WriteableBitmap((BitmapSource)SourceImage.Source);
+            SetSourceImage(new BitmapImage(new Uri(path)));
         }
 
         public WorkstationImage() {
@@ -89,12 +77,12 @@ namespace Retros.ProgramWindow.DisplaySystem {
             currentImage.Effect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
 
         }
-        public static WriteableBitmap ResizeWritableBitmap(WriteableBitmap originalBitmap, int newWidth, int newHeight) {
+        public static WriteableBitmap ResizeWritableBitmap(BitmapImage originalBitmap, int newWidth, int newHeight) {
             DebugLibrary.Console.Log(newHeight +", "+ newHeight);
 
             // Check if resizing is required
             if (newWidth >= originalBitmap.PixelWidth && newHeight >= originalBitmap.PixelHeight) {
-                return originalBitmap;
+                return new WriteableBitmap(originalBitmap);
             }
 
             // Convert the original bitmap to a compatible pixel format (e.g., Pbgra32)
@@ -157,7 +145,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 bitmapData.Stride);
 
             bitmap.UnlockBits(bitmapData);
-
+            
             return bitmap;
         }
 
@@ -280,13 +268,13 @@ namespace Retros.ProgramWindow.DisplaySystem {
             }
         } /// recomendet for high smoothness (This approximates, will not work for very high values)
         private int imageCount = 1; /// used to set the newest images to the front
+        private Image? fallBackImage;
 
         public void ChangeCurentImage(ImageSource imageSource) {
-            __Execute__ChangeCurentImage(imageSource); return;
             AddTaskToQueue(() => __Execute__ChangeCurentImage(imageSource));
         }
         private void __Execute__ChangeCurentImage(ImageSource imageSource) {
-            //Prepare
+            // Prepare
             imageCount++;
             Image newImage = new Image { Source = imageSource };
             newImage.Opacity = 0;
@@ -295,7 +283,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
             Canvas.SetZIndex(newImage, 10);
             Canvas.SetZIndex(currentImage, 10 / imageCount);
 
-            //Interpolate
+            // Interpolate
             if (isCalculated) {
                 int i = (int)startBoost;
                 var timer = new DispatcherTimer();
@@ -308,9 +296,12 @@ namespace Retros.ProgramWindow.DisplaySystem {
                         newImage.Effect = currentImage.Effect;
                         currentImage.Effect = null;
 
+
                         if (fallBackImage != null) (fallBackImage.Parent as Grid)!.Children.Remove(fallBackImage);
                         fallBackImage = currentImage;
                         Canvas.SetZIndex(fallBackImage, 0);
+                        fallBackImage.Opacity = 1;
+                        
 
                         currentImage = newImage;
                         imageCount--;
