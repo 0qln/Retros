@@ -17,12 +17,67 @@ namespace Retros.ProgramWindow.DisplaySystem {
     public partial class WorkstationImage : IFrameworkElement {
         public FrameworkElement FrameworkElement => CurrentImage;
 
+        /// <summary>
+        /// Used to display the current image.
+        /// </summary>
         private Image currentImage = new();
         public Image CurrentImage => currentImage;
 
+        /// <summary>
+        /// Chaches the source image.
+        /// </summary>
         private Image sourceImage = new();
         public Image SourceImage => sourceImage;
+        private Uri source;
         
+        /// <summary>
+        /// Acts as the source image for the runtime image.
+        /// </summary>
+        private WriteableBitmap resizedSourceBitmap;
+        public WriteableBitmap ResizedSourceBitmap => resizedSourceBitmap;
+
+        /// <summary>
+        /// Works as a computation/backend image for the filters to work on.
+        /// </summary>
+        public WriteableBitmap DummyImage { get; set; }
+
+
+        private Grid imagesGrid = new();
+        public Grid Grid => imagesGrid;
+
+        DispatcherTimer actionTimer = new();
+        Queue<Action> actionQueue = new();
+
+        public ChangeHistory History => changeHistory;
+        private ChangeHistory changeHistory = new();
+
+        public ImageChangeManager GetFilterManager => filterManager;
+        private ImageChangeManager filterManager;
+
+
+        public WorkstationImage(string path) {
+            source = new Uri(path);
+            filterManager = new(this);
+
+            StartUpdating();
+
+            currentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
+            currentImage.Margin = new Thickness(50);
+            currentImage.Effect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
+            imagesGrid.Children.Add(currentImage); //
+
+            SetSourceImage(new BitmapImage(source));
+        }
+
+        public WorkstationImage() {
+            filterManager = new(this);
+            StartUpdating();
+            currentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
+            currentImage.Margin = new Thickness(50);
+            imagesGrid.Children.Add(currentImage);
+            currentImage.Effect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
+
+        }
         public void SetSourceImage(BitmapImage source) {
             sourceImage.Source = source;
 
@@ -36,47 +91,6 @@ namespace Retros.ProgramWindow.DisplaySystem {
             fallBackImage = null;
         }
 
-        private WriteableBitmap resizedSourceBitmap;
-        public WriteableBitmap ResizedSourceBitmap => resizedSourceBitmap;
-
-        public WriteableBitmap DummyImage { get; set; }
-
-
-        private Grid imagesGrid = new();
-        public Grid Grid => imagesGrid;
-
-        DispatcherTimer actionTimer = new();
-        Queue<Action> actionQueue = new();
-
-        public ChangeHistory History => changeHistory;
-        private ChangeHistory changeHistory = new();
-
-        public FilterManager GetFilterManager => filterManager;
-        private FilterManager filterManager;
-
-
-        public WorkstationImage(string path) {
-            filterManager = new(this);
-
-            StartUpdating();
-
-            currentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
-            currentImage.Margin = new Thickness(50);
-            currentImage.Effect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
-            imagesGrid.Children.Add(currentImage); //
-
-            SetSourceImage(new BitmapImage(new Uri(path)));
-        }
-
-        public WorkstationImage() {
-            filterManager = new(this);
-            StartUpdating();
-            currentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
-            currentImage.Margin = new Thickness(50);
-            imagesGrid.Children.Add(currentImage);
-            currentImage.Effect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
-
-        }
         public static WriteableBitmap ResizeWritableBitmap(BitmapImage originalBitmap, int newWidth, int newHeight) {
             DebugLibrary.Console.Log(newHeight +", "+ newHeight);
 
@@ -127,7 +141,12 @@ namespace Retros.ProgramWindow.DisplaySystem {
         }
 
         public System.Drawing.Bitmap Render() {
-            System.Windows.Media.Imaging.BitmapSource bitmapSource = (System.Windows.Media.Imaging.BitmapSource)sourceImage.Source;
+            WriteableBitmap writeableBitmap = 
+                filterManager.ApplyChanges(
+                    new WriteableBitmap(
+                        new BitmapImage(source)));
+
+            System.Windows.Media.Imaging.BitmapSource bitmapSource = writeableBitmap;
             System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(
                 bitmapSource.PixelWidth,
                 bitmapSource.PixelHeight,
@@ -240,7 +259,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
         private List<float> dp_tValues = new(); /// caches the opacity curve
         private bool isCalculated = false;
-        private int smoothness = 1;
+        private static int smoothness = 1;
         public int InterpolationSmoothness {
             get => smoothness;
             set {
@@ -248,7 +267,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 isCalculated = false;
             }
         }
-        private float totalInterpolationTime = 90;
+        private static float totalInterpolationTime = 250; /// reccomendet to have this the same as the interval in which the filters are applied
         public float TotalInterpolationTime {
             get => totalInterpolationTime;
             set {
@@ -269,6 +288,10 @@ namespace Retros.ProgramWindow.DisplaySystem {
         } /// recomendet for high smoothness (This approximates, will not work for very high values)
         private int imageCount = 1; /// used to set the newest images to the front
         private Image? fallBackImage;
+        public delegate float InterpolationFuntionHandler(float t);
+        public InterpolationFuntionHandler InterpolationFuntion = (t) => ExtendedMath.RootStep(ExtendedMath.RootStep(t, smoothness, 0, totalInterpolationTime));
+
+
 
         public void ChangeCurentImage(ImageSource imageSource) {
             AddTaskToQueue(() => __Execute__ChangeCurentImage(imageSource));
@@ -316,7 +339,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 var timer = new DispatcherTimer();
                 timer.Interval = TimeSpan.FromMilliseconds(interval);
                 timer.Tick += (s, e) => {
-                    float val = ExtendedMath.RootStep(t, smoothness, 0, totalInterpolationTime);
+                    //float val = InterpolationFuntion(t);
+                    float val = ExtendedMath.RootStep(ExtendedMath.RootStep(t, smoothness, 0, totalInterpolationTime));
                     newImage.Opacity = val;
                     dp_tValues.Add(val);
 
@@ -335,7 +359,6 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
 
         }
-
     }
 }
 

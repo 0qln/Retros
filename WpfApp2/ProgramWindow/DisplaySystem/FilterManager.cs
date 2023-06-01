@@ -23,14 +23,15 @@ using DebugLibrary;
 
 namespace Retros.ProgramWindow.DisplaySystem {
     // Functionality -> Image Filters Tab Body
-    public class FilterManager {
-        private HashSet<Type> filterTypes = new(); 
-        private List<IChange> filters = new();
+    public class ImageChangeManager {
+        private HashSet<Type> changeTypes = new(); 
+        private List<IChange> changes = new();
         private DispatcherTimer timer = new();
-        private WorkstationImage image; 
+        private WorkstationImage image;
+        private TimeSpan Interval = TimeSpan.FromMilliseconds(250);
 
-        public FilterManager(WorkstationImage image) {
-            timer.Interval = TimeSpan.FromMilliseconds(250);
+        public ImageChangeManager(WorkstationImage image) {
+            timer.Interval = Interval;
             timer.Tick += (s, e) => ApplyChanges();
             timer.Start();
 
@@ -38,23 +39,23 @@ namespace Retros.ProgramWindow.DisplaySystem {
         }
 
         public void Order(List<string> filterStrings) {
-            if (filterStrings.Count != filters.Count) return;
+            if (filterStrings.Count != changes.Count) return;
 
             int i = 0; // types
             int j = 0; // strings
 
-            while (i < filters.Count) {
+            while (i < changes.Count) {
 
-                if (filters[i].GetType().Name != filterStrings[j]) {
+                if (changes[i].GetType().Name != filterStrings[j]) {
                     int tempJ = j;
                     j++;
-                    while (filters[i].GetType().Name != filterStrings[j]) {
+                    while (changes[i].GetType().Name != filterStrings[j]) {
                         j++;
                     }
                     //insert
-                    var tempI = filters[i];
-                    filters.RemoveAt(i);
-                    filters.Insert(j, tempI);
+                    var tempI = changes[i];
+                    changes.RemoveAt(i);
+                    changes.Insert(j, tempI);
 
                     j = tempJ;
                 }
@@ -66,8 +67,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
         }
 
         public void Clear() {
-            filters.Clear();
-            filterTypes.Clear();
+            changes.Clear();
+            changeTypes.Clear();
         }
 
         private bool justRemoved = false;
@@ -77,7 +78,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 return;
             }
 
-            if (filters.Count == 0) {
+            if (changes.Count == 0) {
                 if (justRemoved) {
                     image.ChangeCurentImage(image.ResizedSourceBitmap);
                     justRemoved = false;
@@ -87,15 +88,20 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
             DebugLibrary.Console.Log(Measure.Execute(() => { 
                 image.DummyImage = new WriteableBitmap(image.ResizedSourceBitmap);
-
             }).ElapsedMilliseconds);
-            filters.ForEach(filter => {
+            changes.ForEach(filter => {
                 ///filter.Generate();
                 DebugLibrary.Console.Log(Measure.Execute(filter.Generate).ElapsedMilliseconds);
             });
             image.ChangeCurentImage(image.DummyImage);
 
             changed = false;
+        }
+        public WriteableBitmap ApplyChanges(WriteableBitmap bitmap) {
+            changes.ForEach(filter => {
+                filter.Generate(bitmap);
+            });
+            return bitmap;
         }
 
         // Could cause bugs, better use the other option 
@@ -104,8 +110,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 return false;
             }
 
-            filterTypes.Add(changeType);
-            filters.Add((IChange) Activator.CreateInstance(changeType, image)!);
+            changeTypes.Add(changeType);
+            changes.Add((IChange) Activator.CreateInstance(changeType, image)!);
             changed = true;
 
             return true;
@@ -115,19 +121,19 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 return false;
             }
 
-            filterTypes.Add(change.GetType());
-            filters.Add(change);
+            changeTypes.Add(change.GetType());
+            changes.Add(change);
             changed = true;
 
             return true;
         }
-        public bool AddChange(IFilterChange filterChange) {
+        public bool AddFilter(IFilterChange filterChange) {
             if (ContainsFilter(filterChange)) {
                 return false;
             }
 
-            filterTypes.Add(filterChange.GetType());
-            filters.Add((IChange)filterChange);
+            changeTypes.Add(filterChange.GetType());
+            changes.Add((IChange)filterChange);
             changed = true;
 
             return true;
@@ -141,41 +147,41 @@ namespace Retros.ProgramWindow.DisplaySystem {
         public void RemoveChange(Type changeType) {
             if (!ContainsChange(changeType)) return;
 
-            filters.Remove(filters.First(c=> changeType == c.GetType()));
-            filterTypes.Remove(changeType);
+            changes.Remove(changes.First(c=> changeType == c.GetType()));
+            changeTypes.Remove(changeType);
             changed = true;
             justRemoved = true;
         }
         public void RemoveChange(IChange change) {
             if (!ContainsChange(change)) return;
 
-            filters.Remove(GetChange(change));
-            filterTypes.Remove(change.GetType());
+            changes.Remove(GetChange(change));
+            changeTypes.Remove(change.GetType());
             changed = true;
             justRemoved = true;
         }
 
         public IFilterChange GetFilter(IFilterChange filter) {
-            if (filters.Count > 0) return (IFilterChange)filters.First(c => c.GetType() == filter.GetType());
+            if (changes.Count > 0) return (IFilterChange)changes.First(c => c.GetType() == filter.GetType());
             return null!;
         }
         public IChange GetChange(IChange change) {
-            if (filters.Count > 0) return filters.First(c => c.GetType() == change.GetType());
+            if (changes.Count > 0) return changes.First(c => c.GetType() == change.GetType());
             return null!;
         }
         public IChange GetChange(Type changeType) {
-            if (filters.Count > 0) return filters.First(c => c.GetType() == changeType);
+            if (changes.Count > 0) return changes.First(c => c.GetType() == changeType);
             return null!;
                     
         }
         public bool ContainsChange(IChange change) {
-            return filterTypes.Contains(change.GetType());
+            return changeTypes.Contains(change.GetType());
         }
         public bool ContainsFilter(IFilterChange filter) {
-            return filterTypes.Contains(((IChange)filter).GetType());
+            return changeTypes.Contains(((IChange)filter).GetType());
         }
         public bool ContainsChange(Type type) {
-            return filterTypes.Contains(type);
+            return changeTypes.Contains(type);
         }
     }
 }

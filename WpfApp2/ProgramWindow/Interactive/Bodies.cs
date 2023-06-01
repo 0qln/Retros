@@ -71,7 +71,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
                 FilterDisplay.RemoveItem(filter.GetType().Name);
             }
             else {
-                if (image.GetFilterManager.AddChange(filter)) {
+                if (image.GetFilterManager.AddFilter(filter)) {
                     FilterDisplay.AddItem(filter.GetType().Name);
                 }
                 else {
