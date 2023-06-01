@@ -266,7 +266,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 isCalculated = false;
             }
         }
-        private static float totalInterpolationTime = 250; /// reccomendet to have this the same as the interval in which the filters are applied
+        private static float totalInterpolationTime = 150; /// reccomendet to have this the same as the interval in which the filters are applied
         public float TotalInterpolationTime {
             get => totalInterpolationTime;
             set {

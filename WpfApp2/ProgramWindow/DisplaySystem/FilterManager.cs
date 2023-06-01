@@ -64,6 +64,9 @@ namespace Retros.ProgramWindow.DisplaySystem {
                     j++;
                 }
             }
+
+            changed = true;
+            ApplyChanges();
         }
 
         public void Clear() {
