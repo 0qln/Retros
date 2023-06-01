@@ -53,11 +53,11 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             resetButton.Click += ResetButton_Click;
             resetButton.Content = "Back to original";
 
-            grayscaleSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new GrayScale(image), grayscaleSlider.SliderElement.Value / 10);
-            blueChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyBlueChannel(image), blueChannelSlider.SliderElement.Value / 10);
-            redChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyRedChannel(image), redChannelSlider.SliderElement.Value / 10);
-            greenChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyGreenChannel(image), greenChannelSlider.SliderElement.Value / 10); 
-            testBlueSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new TestBlue(image), testBlueSlider.SliderElement.Value / 10);
+            grayscaleSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new GrayScale(), grayscaleSlider.SliderElement.Value / 10);
+            blueChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyBlueChannel(), blueChannelSlider.SliderElement.Value / 10);
+            redChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyRedChannel(), redChannelSlider.SliderElement.Value / 10);
+            greenChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyGreenChannel(), greenChannelSlider.SliderElement.Value / 10); 
+            testBlueSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new TestBlue(), testBlueSlider.SliderElement.Value / 10);
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e) {

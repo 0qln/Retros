@@ -61,7 +61,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
             StartUpdating();
 
             currentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
-            currentImage.Margin = new Thickness(50);
+            _margin = new Thickness(50);
+            currentImage.Margin = _margin;
             currentImage.Effect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
             imagesGrid.Children.Add(currentImage); //
 
@@ -254,6 +255,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
         }
 
 
+        private Thickness _margin;
         private List<float> dp_tValues = new(); /// caches the opacity curve
         private bool isCalculated = false;
         private static int smoothness = 1;
@@ -287,8 +289,6 @@ namespace Retros.ProgramWindow.DisplaySystem {
         public delegate float InterpolationFuntionHandler(float t);
         public InterpolationFuntionHandler InterpolationFuntion = (t) => ExtendedMath.RootStep(ExtendedMath.RootStep(t, smoothness, 0, totalInterpolationTime));
 
-
-
         public void ChangeCurentImage(ImageSource imageSource) {
             AddTaskToQueue(() => __Execute__ChangeCurentImage(imageSource));
         }
@@ -298,12 +298,17 @@ namespace Retros.ProgramWindow.DisplaySystem {
             Image newImage = new Image { Source = imageSource };
             newImage.Opacity = 0;
             Helper.SetChildInGrid((currentImage.Parent as Grid)!, newImage, Grid.GetRow(currentImage), Grid.GetColumn(currentImage));
-            newImage.Margin = currentImage.Margin;
+            //newImage.Margin = new Thickness(
+            //currentImage.Margin.Left + 10 * imageCount, 
+            //CurrentImage.Margin.Top + 10 * imageCount, 
+            //currentImage.Margin.Right - 10 * imageCount, 
+            //CurrentImage.Margin.Bottom - 10 * imageCount);
+            newImage.Margin = _margin;
             Canvas.SetZIndex(newImage, 10);
             Canvas.SetZIndex(currentImage, 10 / imageCount);
 
             // Interpolate
-            if (isCalculated) {
+            if (isCalculated) { // isCalculated
                 int i = (int)startBoost;
                 var timer = new DispatcherTimer();
                 timer.Interval = TimeSpan.FromMilliseconds(interval);
@@ -316,6 +321,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
                         currentImage.Effect = null;
                         (currentImage.Parent as Grid)!.Children.Remove(currentImage);
                         currentImage = newImage;
+                        currentImage.Margin = _margin;
                         imageCount--;
                         timer.Stop();
                     }
@@ -328,8 +334,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 var timer = new DispatcherTimer();
                 timer.Interval = TimeSpan.FromMilliseconds(interval);
                 timer.Tick += (s, e) => {
-                    //float val = InterpolationFuntion(t);
-                    float val = ExtendedMath.RootStep(ExtendedMath.RootStep(t, smoothness, 0, totalInterpolationTime));
+                    isCalculated = true;
+                    float val = InterpolationFuntion(t);
                     newImage.Opacity = val;
                     dp_tValues.Add(val);
 

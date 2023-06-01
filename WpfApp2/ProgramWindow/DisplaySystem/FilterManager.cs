@@ -28,7 +28,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
         private List<IChange> changes = new();
         private DispatcherTimer timer = new();
         private WorkstationImage image;
-        private TimeSpan Interval = TimeSpan.FromMilliseconds(250);
+        private TimeSpan Interval = TimeSpan.FromMilliseconds(100);
 
         public ImageChangeManager(WorkstationImage image) {
             timer.Interval = Interval;
