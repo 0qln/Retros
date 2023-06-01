@@ -89,8 +89,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
             image.DummyImage = new WriteableBitmap(image.ResizedSourceBitmap);
             
             changes.ForEach(filter => {
-                filter.Generate();
-                ///DebugLibrary.Console.Log(Measure.Execute(filter.Generate).ElapsedMilliseconds);
+                filter.Generate(image.DummyImage);
             });
             image.ChangeCurentImage(image.DummyImage);
 
