@@ -26,9 +26,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
         /// <summary>
         /// Chaches the source image.
         /// </summary>
-        private Image sourceImage = new();
-        public Image SourceImage => sourceImage;
         private Uri source;
+        public Uri Source => source;
         
         /// <summary>
         /// Acts as the source image for the runtime image.
@@ -66,7 +65,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
             currentImage.Effect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
             imagesGrid.Children.Add(currentImage); //
 
-            SetSourceImage(new BitmapImage(source));
+            SetSourceImage(source);
         }
 
         public WorkstationImage() {
@@ -78,12 +77,12 @@ namespace Retros.ProgramWindow.DisplaySystem {
             currentImage.Effect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
 
         }
-        public void SetSourceImage(BitmapImage source) {
-            sourceImage.Source = source;
+        public void SetSourceImage(Uri source) {
+            this.source = source;
 
             double screenWidth = SystemParameters.PrimaryScreenWidth;
             double screenHeight = SystemParameters.PrimaryScreenHeight;
-            resizedSourceBitmap = ResizeWritableBitmap(source, (int) screenWidth, (int) screenHeight);
+            resizedSourceBitmap = ResizeWritableBitmap(new BitmapImage(source), (int) screenWidth, (int) screenHeight);
 
             currentImage.Source = resizedSourceBitmap.Clone();
             DummyImage = new WriteableBitmap(resizedSourceBitmap);
@@ -253,7 +252,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
             AddTaskToQueue(__Execute__ResetCurrent);
         }
         private void __Execute__ResetCurrent() {
-            currentImage.Source = sourceImage.Source.Clone();
+            currentImage.Source = new BitmapImage(source);
         }
 
 

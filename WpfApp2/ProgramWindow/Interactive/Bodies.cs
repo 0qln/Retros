@@ -6,6 +6,7 @@ using Retros.ProgramWindow.DisplaySystem;
 using Retros.ProgramWindow.Filters;
 using System;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 // Bodies Manage the Tab body UIElements and functionality
 namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
@@ -62,7 +63,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
         private void ResetButton_Click(object sender, RoutedEventArgs e) {
             image.History.Clear();
             image.GetFilterManager.Clear();
-            image.CurrentImage.Source = image.SourceImage.Source.Clone();
+            image.ResetCurrent();
         }
 
         private void AddFilterChange(IFilterChange filter, double value) {
