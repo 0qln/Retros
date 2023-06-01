@@ -2,7 +2,9 @@
 using Retros.ProgramWindow.DisplaySystem;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -286,6 +288,24 @@ namespace Retros.ProgramWindow.Filters {
 
 
         public void Generate() {
+            /* Sadly, the clean approach is about 3 times as slow :(
+                image.DummyImage.IteratePixels(
+                    (r, g, b, x, y) => {
+                        byte gray = (byte)(0.299 * r + 0.587 * g + 0.114 * b);
+                        return (byte)((r * (1-filterIntensity)) + (gray * filterIntensity));
+                    }, 
+                    (r, g, b, x, y) => {
+                        byte gray = (byte)(0.299 * r + 0.587 * g + 0.114 * b);
+                        return (byte)((g * (1 - filterIntensity)) + (gray * filterIntensity));
+                    }, 
+                    (r, g, b, x, y) => {
+                        byte gray = (byte)(0.299 * r + 0.587 * g + 0.114 * b);
+                        return (byte)((b * (1 - filterIntensity)) + (gray * filterIntensity));
+                    }
+                );
+                applied = true;
+            */
+
             int bytesPerPixel = (image.DummyImage.Format.BitsPerPixel + 7) / 8;
             int pixelHeight = image.DummyImage.PixelHeight;
             int pixelWidth = image.DummyImage.PixelWidth;
@@ -307,14 +327,12 @@ namespace Retros.ProgramWindow.Filters {
                         Parallel.For(0, pixelWidth, x =>
                         {
                             int index = x * bytesPerPixel;
-
-                            byte gray = (byte)(0.299 * row[index + 2] + 0.587 * row[index + 1] + 0.114 * row[index + 0]);  // (`0.299`, `0.587`, `0.114`) is ITU-R BT.709 standard
-                            row[index + 2] = (byte)((gray * filterIntensity) + (row[index + 2] * (1 - filterIntensity)));     // Red
-                            row[index + 1] = (byte)((gray * filterIntensity) + (row[index + 1] * (1 - filterIntensity)));     // Green
-                            row[index + 0] = (byte)((gray * filterIntensity) + (row[index + 0] * (1 - filterIntensity)));     // Blue
+                            byte gray = (byte)(0.299 * row[index + 2] + 0.587 * row[index + 1] + 0.114 * row[index + 0]);   // (`0.299`, `0.587`, `0.114`) is ITU-R BT.709 standard
+                            row[index + 2] = (byte)((gray * filterIntensity) + (row[index + 2] * (1 - filterIntensity)));   // Red
+                            row[index + 1] = (byte)((gray * filterIntensity) + (row[index + 1] * (1 - filterIntensity)));   // Green
+                            row[index + 0] = (byte)((gray * filterIntensity) + (row[index + 0] * (1 - filterIntensity)));   // Blue
                         });
                     });
-
                 }
             }
             finally {
@@ -323,6 +341,7 @@ namespace Retros.ProgramWindow.Filters {
             }
 
             applied = true;
+
         }
         public void Generate(WriteableBitmap bitmap) {
             int bytesPerPixel = (bitmap.Format.BitsPerPixel + 7) / 8;

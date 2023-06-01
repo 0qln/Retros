@@ -86,12 +86,11 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 return;
             }
 
-            DebugLibrary.Console.Log(Measure.Execute(() => { 
-                image.DummyImage = new WriteableBitmap(image.ResizedSourceBitmap);
-            }).ElapsedMilliseconds);
+            image.DummyImage = new WriteableBitmap(image.ResizedSourceBitmap);
+            
             changes.ForEach(filter => {
-                ///filter.Generate();
-                DebugLibrary.Console.Log(Measure.Execute(filter.Generate).ElapsedMilliseconds);
+                filter.Generate();
+                ///DebugLibrary.Console.Log(Measure.Execute(filter.Generate).ElapsedMilliseconds);
             });
             image.ChangeCurentImage(image.DummyImage);
 

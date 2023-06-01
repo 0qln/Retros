@@ -86,8 +86,6 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
             currentImage.Source = resizedSourceBitmap.Clone();
             DummyImage = new WriteableBitmap(resizedSourceBitmap);
-
-            fallBackImage = null;
         }
 
         public static WriteableBitmap ResizeWritableBitmap(BitmapImage originalBitmap, int newWidth, int newHeight) {
@@ -286,7 +284,6 @@ namespace Retros.ProgramWindow.DisplaySystem {
             }
         } /// recomendet for high smoothness (This approximates, will not work for very high values)
         private int imageCount = 1; /// used to set the newest images to the front
-        private Image? fallBackImage;
         public delegate float InterpolationFuntionHandler(float t);
         public InterpolationFuntionHandler InterpolationFuntion = (t) => ExtendedMath.RootStep(ExtendedMath.RootStep(t, smoothness, 0, totalInterpolationTime));
 
@@ -317,14 +314,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
                     if (i >= dp_tValues.Count) {
                         newImage.Effect = currentImage.Effect;
                         currentImage.Effect = null;
-
-
-                        if (fallBackImage != null) (fallBackImage.Parent as Grid)!.Children.Remove(fallBackImage);
-                        fallBackImage = currentImage;
-                        Canvas.SetZIndex(fallBackImage, 0);
-                        fallBackImage.Opacity = 1;
-                        
-
+                        (currentImage.Parent as Grid)!.Children.Remove(currentImage);
                         currentImage = newImage;
                         imageCount--;
                         timer.Stop();
@@ -346,6 +336,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
                     t += interval;
                     if (t >= totalInterpolationTime) {
                         newImage.Effect = currentImage.Effect;
+                        currentImage.Effect = null;
                         (currentImage.Parent as Grid)!.Children.Remove(currentImage);
                         currentImage = newImage;
                         imageCount--;
