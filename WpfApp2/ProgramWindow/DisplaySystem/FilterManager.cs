@@ -66,6 +66,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 }
             }
 
+            filterStrings.ForEach(DebugLibrary.Console.Log);
+
             changed = true;
             ApplyChanges();
         }

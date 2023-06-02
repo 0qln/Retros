@@ -103,9 +103,9 @@ namespace Retros.ProgramWindow.Interactive
             int index = items.IndexOf(item);
             if (index <= 0) return;
 
-            DebugLibrary.Console.ClearAll();
-            items.ForEach(DebugLibrary.Console.Log);
-            DebugLibrary.Console.Log("-");
+            //DebugLibrary.Console.ClearAll();
+            //items.ForEach(DebugLibrary.Console.Log);
+            //DebugLibrary.Console.Log("-");
 
             items.RemoveAt(index);
             items.Insert(index-1, item);
@@ -113,7 +113,9 @@ namespace Retros.ProgramWindow.Interactive
             StackPanel.Children.RemoveAt(index);
             StackPanel.Children.Insert(index - 1, item.FrameworkElement);
 
-            items.ForEach(DebugLibrary.Console.Log);
+            //items.ForEach(DebugLibrary.Console.Log);
+
+            InvokeItemListChanged();
         }
 
 
@@ -144,7 +146,7 @@ namespace Retros.ProgramWindow.Interactive
 
                 bIncreaseHierachy.MinWidth = 20;
                 bIncreaseHierachy.Click += (s, e) => { parent.IncreaseHierachy(this); };
-                bIncreaseHierachy.Content = "⮮⮭";
+                bIncreaseHierachy.Content = "⮭";
                 bIncreaseHierachy.MaxHeight = 20;
                 bIncreaseHierachy.Style = WindowHandle.ClientButtonStyle();
                 bIncreaseHierachy.FontSize = 15;
