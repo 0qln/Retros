@@ -23,6 +23,14 @@ namespace Retros.Settings.Pages {
             UIManager.ColorThemeManager.SetStyle(Headline, () => TabDetail.Body.HeadlineStyle(Title));
             UIManager.ColorThemeManager.SetStyle(Backdrop_Shadow_CheckBox, TabDetail.Body.CheckBoxStyle);
             UIManager.ColorThemeManager.SetStyle(Backdrop_Shadow_Text, () => TabDetail.Body.TextblockStyle("Enable backdrop shadow"));
+
+            Backdrop_Shadow_CheckBox.Checked += ToggleSahdow;
+            Backdrop_Shadow_CheckBox.Unchecked += ToggleSahdow;
         }
+
+        private void ToggleSahdow(object sender, RoutedEventArgs e) {
+            SettingsManager.InvokeorkstationImageShadow(Backdrop_Shadow_CheckBox.IsChecked.Value);
+        }
+
     }
 }

@@ -15,6 +15,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Utillities;
 using Utillities.Wpf;
+using Retros.Settings;
+using System.Windows.Automation;
 
 namespace Retros.ProgramWindow.DisplaySystem {
     public partial class WorkstationImage : IFrameworkElement {
@@ -52,8 +54,10 @@ namespace Retros.ProgramWindow.DisplaySystem {
             currentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
             _margin = new Thickness(50);
             currentImage.Margin = _margin;
-            currentImage.Effect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
-            imagesGrid.Children.Add(currentImage); //
+            SettingsManager.WorkstationImageShadow += (enabled) => { 
+                if (enabled.HasValue && enabled.Value) currentImage.Effect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 }; 
+            };
+            imagesGrid.Children.Add(currentImage);
 
             StartUpdating();
             SetSourceImage(source);
@@ -64,7 +68,10 @@ namespace Retros.ProgramWindow.DisplaySystem {
             currentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
             currentImage.Margin = new Thickness(50);
             imagesGrid.Children.Add(currentImage);
-            currentImage.Effect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
+            SettingsManager.WorkstationImageShadow += (enabled) => {
+                if (enabled) currentImage.Effect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
+                else currentImage.Effect = null;
+            };
         }
 
 
