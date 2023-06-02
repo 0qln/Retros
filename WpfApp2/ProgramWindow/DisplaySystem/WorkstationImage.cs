@@ -2,6 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
@@ -16,59 +19,45 @@ using Utillities.Wpf;
 namespace Retros.ProgramWindow.DisplaySystem {
     public partial class WorkstationImage : IFrameworkElement {
         public FrameworkElement FrameworkElement => CurrentImage;
-
-        /// <summary>
-        /// Used to display the current image.
-        /// </summary>
+        private WriteableBitmap resizedSourceBitmap;
         private Image currentImage = new();
+        private Uri source;
+        private Grid imagesGrid = new();
+        private ChangeHistory changeHistory = new();
+        private ImageChangeManager filterManager;
+        private DispatcherTimer actionTimer = new();
+        private Queue<Action> actionQueue = new();
+
+
+        /// <summary>Used to display the current image.</summary>
         public Image CurrentImage => currentImage;
 
-        /// <summary>
-        /// Chaches the source image.
-        /// </summary>
-        private Uri source;
+        /// <summary>Chaches the source image.</summary>
         public Uri Source => source;
         
-        /// <summary>
-        /// Acts as the source image for the runtime image.
-        /// </summary>
-        private WriteableBitmap resizedSourceBitmap;
+        /// <summary>Acts as the source image for the runtime image.</summary>
         public WriteableBitmap ResizedSourceBitmap => resizedSourceBitmap;
 
-        /// <summary>
-        /// Works as a computation/backend image for the filters to work on.
-        /// </summary>
+        /// <summary>Works as a computation/backend image for the filters to work on.</summary>
         public WriteableBitmap DummyImage { get; set; }
 
-
-        private Grid imagesGrid = new();
         public Grid Grid => imagesGrid;
-
-        DispatcherTimer actionTimer = new();
-        Queue<Action> actionQueue = new();
-
         public ChangeHistory History => changeHistory;
-        private ChangeHistory changeHistory = new();
-
         public ImageChangeManager GetFilterManager => filterManager;
-        private ImageChangeManager filterManager;
 
 
         public WorkstationImage(string path) {
             source = new Uri(path);
             filterManager = new(this);
-
-            StartUpdating();
-
             currentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
             _margin = new Thickness(50);
             currentImage.Margin = _margin;
             currentImage.Effect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
             imagesGrid.Children.Add(currentImage); //
 
+            StartUpdating();
             SetSourceImage(source);
         }
-
         public WorkstationImage() {
             filterManager = new(this);
             StartUpdating();
@@ -76,8 +65,9 @@ namespace Retros.ProgramWindow.DisplaySystem {
             currentImage.Margin = new Thickness(50);
             imagesGrid.Children.Add(currentImage);
             currentImage.Effect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
-
         }
+
+
         public void SetSourceImage(Uri source) {
             this.source = source;
 
@@ -139,24 +129,29 @@ namespace Retros.ProgramWindow.DisplaySystem {
         }
 
         public System.Drawing.Bitmap Render() {
+            // Get the image Source
             WriteableBitmap writeableBitmap = 
                 filterManager.ApplyChanges(
                     new WriteableBitmap(
                         new BitmapImage(source)));
 
-            currentImage = new Image { Source = writeableBitmap };
+            // Default the pixel format
+            WriteableBitmap formattedBitmap = SwitchPixelFormat(writeableBitmap, System.Windows.Media.PixelFormats.Bgra32);
 
-            System.Windows.Media.Imaging.BitmapSource bitmapSource = writeableBitmap;
+            // Create the bitmap
+            System.Windows.Media.Imaging.BitmapSource bitmapSource = formattedBitmap;
             System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(
                 bitmapSource.PixelWidth,
                 bitmapSource.PixelHeight,
-                System.Drawing.Imaging.PixelFormat.DontCare);
+                GetSwappedPixelFormats()[bitmapSource.Format]);
 
+            // Create the bitmapData
             System.Drawing.Imaging.BitmapData bitmapData = bitmap.LockBits(
                 new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
                 System.Drawing.Imaging.ImageLockMode.WriteOnly,
                 bitmap.PixelFormat);
 
+            // Copy the bixels of the bitmapData to the bitmap
             bitmapSource.CopyPixels(
                 new System.Windows.Int32Rect(0, 0, bitmapSource.PixelWidth, bitmapSource.PixelHeight),
                 bitmapData.Scan0,
@@ -167,6 +162,83 @@ namespace Retros.ProgramWindow.DisplaySystem {
             
             return bitmap;
         }
+
+        public static Image ToImage(System.Drawing.Bitmap bitmap) {
+            BitmapSource bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                bitmap.GetHbitmap(),
+                IntPtr.Zero,
+                Int32Rect.Empty,
+                BitmapSizeOptions.FromEmptyOptions());
+
+            return new Image { Source = bitmapSource };
+        }
+
+        public static WriteableBitmap SwitchPixelFormat(WriteableBitmap originalBitmap, System.Windows.Media.PixelFormat newPixelFormat) {
+            // Convert WriteableBitmap to Bitmap
+            System.Drawing.Bitmap bitmap;
+            using (MemoryStream stream = new MemoryStream()) {
+                BitmapEncoder encoder = new BmpBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(originalBitmap));
+                encoder.Save(stream);
+                bitmap = new (stream);
+            }
+
+            // Create a new Bitmap with the desired pixel format
+            System.Drawing.Bitmap newBitmap = new System.Drawing.Bitmap(bitmap.Width, bitmap.Height, GetEqualPixelFormat(newPixelFormat));
+
+            // Copy pixel values from the original Bitmap to the new Bitmap
+            using (System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(newBitmap)) {
+                graphics.DrawImage(bitmap, new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height));
+            }
+
+            // Convert Bitmap back to WriteableBitmap
+            BitmapSource bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                newBitmap.GetHbitmap(),
+                IntPtr.Zero,
+                System.Windows.Int32Rect.Empty,
+                BitmapSizeOptions.FromEmptyOptions());
+
+            WriteableBitmap newWriteableBitmap = new WriteableBitmap(bitmapSource);
+
+            // Dispose the intermediary Bitmap
+            bitmap.Dispose();
+            newBitmap.Dispose();
+
+            return newWriteableBitmap;
+        }
+        public static Dictionary<System.Drawing.Imaging.PixelFormat, System.Windows.Media.PixelFormat> GetEqualPixelFormats() {
+            Dictionary<System.Drawing.Imaging.PixelFormat, System.Windows.Media.PixelFormat> equalFormats = new Dictionary<System.Drawing.Imaging.PixelFormat, System.Windows.Media.PixelFormat>();
+
+            equalFormats[System.Drawing.Imaging.PixelFormat.Format1bppIndexed] = System.Windows.Media.PixelFormats.Indexed1;
+            equalFormats[System.Drawing.Imaging.PixelFormat.Format4bppIndexed] = System.Windows.Media.PixelFormats.Indexed4;
+            equalFormats[System.Drawing.Imaging.PixelFormat.Format8bppIndexed] = System.Windows.Media.PixelFormats.Indexed8;
+
+            equalFormats[System.Drawing.Imaging.PixelFormat.Format16bppRgb555] = System.Windows.Media.PixelFormats.Bgr555;
+            equalFormats[System.Drawing.Imaging.PixelFormat.Format16bppRgb565] = System.Windows.Media.PixelFormats.Bgr565;
+
+            equalFormats[System.Drawing.Imaging.PixelFormat.Format24bppRgb] = System.Windows.Media.PixelFormats.Bgr24;
+            equalFormats[System.Drawing.Imaging.PixelFormat.Format32bppRgb] = System.Windows.Media.PixelFormats.Bgr32;
+            equalFormats[System.Drawing.Imaging.PixelFormat.Format48bppRgb] = System.Windows.Media.PixelFormats.Rgb48;
+
+            equalFormats[System.Drawing.Imaging.PixelFormat.Format32bppArgb] = System.Windows.Media.PixelFormats.Bgra32;
+            equalFormats[System.Drawing.Imaging.PixelFormat.Format64bppArgb] = System.Windows.Media.PixelFormats.Rgba64;
+
+            equalFormats[System.Drawing.Imaging.PixelFormat.Format32bppPArgb] = System.Windows.Media.PixelFormats.Pbgra32;
+
+            equalFormats[System.Drawing.Imaging.PixelFormat.Format16bppGrayScale] = System.Windows.Media.PixelFormats.Gray16;
+
+            return equalFormats;
+        }
+        public static Dictionary<System.Windows.Media.PixelFormat, System.Drawing.Imaging.PixelFormat> GetSwappedPixelFormats() {
+            Dictionary<System.Windows.Media.PixelFormat, System.Drawing.Imaging.PixelFormat> swappedFormats = new Dictionary<System.Windows.Media.PixelFormat, System.Drawing.Imaging.PixelFormat>();
+            Dictionary<System.Drawing.Imaging.PixelFormat, System.Windows.Media.PixelFormat> originalFormats = GetEqualPixelFormats();
+            foreach (var kvp in originalFormats) {
+                swappedFormats[kvp.Value] = kvp.Key;
+            }
+            return swappedFormats;
+        }
+        public static System.Windows.Media.PixelFormat GetEqualPixelFormat(System.Drawing.Imaging.PixelFormat oldFormat) => GetEqualPixelFormats()[oldFormat];
+        public static System.Drawing.Imaging.PixelFormat GetEqualPixelFormat(System.Windows.Media.PixelFormat oldFormat) => GetSwappedPixelFormats()[oldFormat];
 
         /* Goofy ahhhh resize
         public WriteableBitmap ResizeWritableBitmap(WriteableBitmap wBitmap, int reqWidth, int reqHeight) {
