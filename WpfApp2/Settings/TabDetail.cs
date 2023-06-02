@@ -16,9 +16,9 @@ namespace Retros.Settings {
         public Header _Header;
         public Body _Body;
 
-        public TabDetail(string name, Page page) {
-            _Header = new (name);
+        public TabDetail(Page page) {
             _Body = new (page);
+            _Header = new (page.Title);
         }
     }
 
@@ -99,6 +99,7 @@ namespace Retros.Settings {
 
             public Body(Page page) {
                 mainGrid.Children.Add(pageFrame);
+                mainGrid.Margin = new Thickness(20);
                 pageFrame.Content = page;
             }
 
@@ -159,6 +160,15 @@ namespace Retros.Settings {
                 return style;
             }
 
+            public static Style CheckBoxStyle() {
+                Style style = new Style(typeof(CheckBox));
+                style.Setters.Add(new Setter(CheckBox.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
+                style.Setters.Add(new Setter(CheckBox.BackgroundProperty, UIManager.ColorThemeManager.Current.BG6));
+                style.Setters.Add(new Setter(CheckBox.BorderBrushProperty, UIManager.ColorThemeManager.Current.BC1));
+                style.Setters.Add(new Setter(CheckBox.VerticalAlignmentProperty, VerticalAlignment.Center));
+
+                return style;
+            }
             public static Style TextblockStyle(string content) {
                 Style style = new Style(typeof(TextBlock));
                 style.Setters.Add(new Setter(TextBlock.MarginProperty, new Thickness(0, 5, 0, 0)));

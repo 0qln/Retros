@@ -1,4 +1,5 @@
 ﻿using Retros.Settings;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Shell;
 using Utillities.Wpf;
-using Retros.Settings.Pages;
 
 namespace Retros {
     public partial class SettingsWindow : Window {
@@ -41,10 +41,8 @@ namespace Retros {
 
             Loaded += (s, e) => {
                 Tab appearance = new Tab("Appearance");
-                appearance.AddDetail(new TabDetail("Color Theme", new ColorTheme()));
-
-                Tab export = new Tab("Export");
-                export.AddDetail(new TabDetail("Default Export Path", new DefaultExportPath()));
+                appearance.AddDetail(new TabDetail(new Settings.Pages.ColorTheme()));
+                appearance.AddDetail(new TabDetail(new Settings.Pages.WorkstationImageSettingsPage()));
 
 
                 appearance._Body.Show();
