@@ -40,7 +40,7 @@ namespace Retros.ProgramWindow.Interactive
         }
 
         public void RemoveItem(string name) {
-            Item item = items.Find(item => item.TextBlock.Text == name)!;
+            Item item = items.Find(item => item.tbName.Text == name)!;
             if (item == null) return;
             items.Remove(item);
             StackPanel.Children.Remove(item.FrameworkElement);
@@ -76,10 +76,17 @@ namespace Retros.ProgramWindow.Interactive
             }
 
             items.Remove(item);
-            items.Insert(index, item);
+            if (items.Count == 0) {
+                items.Add(item);
+            }
+            else {
+                items.Insert(index, item);
+            }
 
-            WindowManager.MainWindow!.MainCanvas.Children.Remove(item.FrameworkElement);
+            if (item.FrameworkElement.Parent is StackPanel) (item.FrameworkElement.Parent as StackPanel)!.Children.Remove(item.FrameworkElement);
+            else (item.FrameworkElement.Parent as Canvas)!.Children.Remove(item.FrameworkElement);
             StackPanel.Children.Insert(index, item.FrameworkElement);
+            
 
             InvokeItemListChanged();
         }
@@ -87,34 +94,45 @@ namespace Retros.ProgramWindow.Interactive
 
         private void InvokeItemListChanged() {
             List<string> list = new();
-            items.ForEach(item => list.Add(item.TextBlock.Text));
+            items.ForEach(item => list.Add(item.tbName.Text));
             WindowManager.MainWindow!.Workstation.ImageElement.GetFilterManager.Order(list);
         }
 
 
 
         private class Item : IFrameworkElement {
-            public FrameworkElement FrameworkElement => MainGrid;
-            public Grid MainGrid = new();
-            public TextBlock TextBlock = new();
             private FilterDisplay parent;
+            
+            public FrameworkElement FrameworkElement => MainGrid;
+            public Grid MainGrid { get; } = new();
+            public Button bIncreaseHierachy { get; } = new();
+            public TextBlock tbName { get; } = new();
+
 
             public Item(string name, FilterDisplay parent) {
                 this.parent = parent;
 
-                TextBlock.Text = name;
-                TextBlock.FontSize = 14;
-                UIManager.ColorThemeManager.Set_BG3(b => TextBlock.Background = b);
-                UIManager.ColorThemeManager.Set_FC1(b => TextBlock.Foreground = b);
-                MainGrid.Children.Add(TextBlock);
+                UIManager.ColorThemeManager.Set_BG3(b => tbName.Background = b);
+                UIManager.ColorThemeManager.Set_FC1(b => tbName.Foreground = b);
+                tbName.Text = name;
+                tbName.FontSize = 14;
 
-                FrameworkElement.PreviewMouseLeftButtonDown += (s, e) => StartDrag();
-                FrameworkElement.PreviewMouseLeftButtonUp += (s, e) => StopDrag();
+                bIncreaseHierachy.MinWidth = 20;
+
+                Helper.AddColumn(MainGrid, 1, GridUnitType.Auto);
+                Helper.AddColumn(MainGrid, 1, GridUnitType.Star);
+                Helper.SetChildInGrid(MainGrid, tbName, 0, 1);
+                Helper.SetChildInGrid(MainGrid, bIncreaseHierachy, 0, 0);
+                tbName.PreviewMouseLeftButtonDown += (s, e) => StartDrag();
+                tbName.PreviewMouseLeftButtonUp += (s, e) => StopDrag();
             }
 
 
+            
+
+
             public Point GetCenteredPosition() {
-                var a = MainGrid.TransformToAncestor(WindowManager.MainWindow.MainCanvas).Transform(new Point(0, 0));
+                var a = MainGrid.TransformToAncestor(WindowManager.MainWindow!.MainCanvas).Transform(new Point(0, 0));
                 var b = MainGrid.ActualWidth;
                 var c = MainGrid.ActualHeight;
 
@@ -153,6 +171,7 @@ namespace Retros.ProgramWindow.Interactive
                 }
 
                 if (IsValid()) {
+                    //DebugLibrary.Console.Log();
                     parent.InsertItem(this, Mouse.GetPosition(WindowManager.MainWindow));
                 }
                 else {
@@ -172,7 +191,7 @@ namespace Retros.ProgramWindow.Interactive
                     }
                 }
 
-                if (!WindowManager.MainWindow.MainCanvas.IsMouseOver
+                if (!WindowManager.MainWindow!.MainCanvas.IsMouseOver
                     || Mouse.LeftButton != MouseButtonState.Pressed) 
                     StopDrag();
             }

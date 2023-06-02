@@ -275,7 +275,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
             }
         }
         private float interval = 6.94444444444f; /// time between ticks
-        private bool enableStartboost = true;
+        private bool enableStartboost = false;
         private float startBoost { get {
                 if (enableStartboost) {
                     return smoothness;
