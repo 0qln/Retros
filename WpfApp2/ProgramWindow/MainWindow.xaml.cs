@@ -29,7 +29,8 @@ namespace Retros
         public WindowHandle? windowHandle;
 
         // UI
-        public Workstation Workstation = new();
+        public Workstation SelectedWorkstation;
+        public List<Workstation> Workstations = new();
         private const double shadowRectWidth = 5;
 
 
@@ -45,16 +46,20 @@ namespace Retros
 
 
             //UI
+            Workstation workstation = new();
+            Workstations.Add(workstation);
+            SelectedWorkstation = workstation;
+
             WorkStationGrid.RowDefinitions[0].Height = new(windowHandle.Height);
             UIManager.ColorThemeManager.Set_BG2(b => WorkStationGrid.Background = b);
-            Helper.SetChildInGrid(WorkStationGrid, Workstation.FrameworkElement, 1, 0);
+            Helper.SetChildInGrid(WorkStationGrid, workstation.FrameworkElement, 1, 0);
 
             UIManager.ColorThemeManager.Set_BG1(b => WorkStationImageGrid.Background = b);
-            Helper.SetChildInGrid(WorkStationImageGrid, Workstation.ImageElement.Grid, 0, 0);
+            Helper.SetChildInGrid(WorkStationImageGrid, workstation.ImageElement.Grid, 0, 0);
 
-            Workstation.TableElement.AddTab(new ImageFilterTab(new ImageFilter(), new DefaultHandle("Filters")));
-            Workstation.TableElement.AddTab(new TestTab(new Test(), new DefaultHandle("Testing")));
-            Workstation.TableElement.SelectTab(0);
+            workstation.TableElement.AddTab(new ImageFilterTab(new ImageFilter(workstation.ImageElement), new DefaultHandle("Filters")));
+            workstation.TableElement.AddTab(new TestTab(new Test(workstation.ImageElement), new DefaultHandle("Testing")));
+            workstation.TableElement.SelectTab(0);
 
 
             Shadow.Width = shadowRectWidth;
@@ -77,8 +82,8 @@ namespace Retros
             windowHandle.CreateClientButton(editMenu);
             windowHandle.CreateClientButton(settingsMenu);
 
-            fileMenu.AddOption("Save").SetKeyboardShortcut("Strg + S").AddCommand(UIManager.SaveImage);
-            fileMenu.AddOption("Open").SetKeyboardShortcut("Strg + O").AddCommand(UIManager.LoadImage);
+            fileMenu.AddOption("Save").SetKeyboardShortcut("Strg + S").AddCommand(() => UIManager.SaveImage(SelectedWorkstation.ImageElement));
+            fileMenu.AddOption("Open").SetKeyboardShortcut("Strg + O").AddCommand(() => UIManager.LoadImage(SelectedWorkstation.ImageElement));
             editMenu.AddOption("Save Filter").SetKeyboardShortcut("Strg + S + F");
             viewMenu.AddOption("Zoom").SetKeyboardShortcut("Bla bla");
             settingsMenu.AddOption("Change Layout").SetKeyboardShortcut("Strg + LShift + L");

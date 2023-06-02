@@ -144,11 +144,13 @@ namespace Retros.ProgramWindow.DisplaySystem {
                     new WriteableBitmap(
                         new BitmapImage(source)));
 
+            currentImage = new Image { Source = writeableBitmap };
+
             System.Windows.Media.Imaging.BitmapSource bitmapSource = writeableBitmap;
             System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(
                 bitmapSource.PixelWidth,
                 bitmapSource.PixelHeight,
-                System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                System.Drawing.Imaging.PixelFormat.DontCare);
 
             System.Drawing.Imaging.BitmapData bitmapData = bitmap.LockBits(
                 new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),

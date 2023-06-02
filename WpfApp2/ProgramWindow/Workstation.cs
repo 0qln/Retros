@@ -22,7 +22,7 @@ namespace Retros.ProgramWindow {
         public WorkstationImage ImageElement = new(defaultPath);
         public WorkstationTable TableElement = new(MainGrid);
 
-        private static string defaultPath => @"C:\Users\User\OneDrive\Bilder\Wallpapers\70547-Kaf-Virtual-YoutuberKaf-Virtual-Youtuber-4k-Ultra.jpg";
+        private static string defaultPath => @"C:\Users\User\OneDrive\Bilder\alexandre-cabanel-fallen-angel-1847-obelisk-art-history.png";
 
         public Workstation() {
             // Init Border

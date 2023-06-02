@@ -19,6 +19,7 @@ using Retros;
 using System.Windows.Media.Imaging;
 using Retros.ProgramWindow;
 using System.IO.Pipes;
+using Retros.ProgramWindow.DisplaySystem;
 
 namespace Retros {
     public static class UIManager {
@@ -26,20 +27,20 @@ namespace Retros {
         private static ColorThemeManager colorThemeManager = new(new ColorThemes.DefaultDark());
         public static string SettingsIconPath => "pack://application:,,,/settings5.png";
 
-        public static void LoadImage() {
+        public static void LoadImage(WorkstationImage image) {
             string path = ShowImagePickerDialog();
             if (!String.IsNullOrEmpty(path)) {
-                WindowManager.MainWindow!.Workstation.ImageElement.SetSourceImage(new Uri(path));
+                image.SetSourceImage(new Uri(path));
             }
             WindowManager.MainWindow!.windowHandle!.HideAllMenus();
         }
-        public static void SaveImage() {
+        public static void SaveImage(WorkstationImage image) {
             string path = ShowFolderPickerDialog();
 
             if (String.IsNullOrEmpty(path)) return;
             if (!Path.Exists(path)) return;
 
-            using System.Drawing.Bitmap bitmap = WindowManager.MainWindow!.Workstation.ImageElement.Render();
+            using System.Drawing.Bitmap bitmap = image.Render();
             string filePath = path + "\\image.png";
             bitmap.Save(filePath);
         }

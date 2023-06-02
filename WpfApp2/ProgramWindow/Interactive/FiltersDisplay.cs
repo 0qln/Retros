@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Retros.ProgramWindow.DisplaySystem;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -21,13 +22,15 @@ namespace Retros.ProgramWindow.Interactive
 {
     public class FilterDisplay : IFrameworkElement
     {
+        private List<Item> items = new();
+        private readonly WorkstationImage image;
+
         public FrameworkElement FrameworkElement => StackPanel;
         public StackPanel StackPanel = new();
 
-        private List<Item> items = new();
 
-        public FilterDisplay() {
-            ///for (int i = 0; i < 10; i++) AddItem("Item" + i.ToString());
+        public FilterDisplay(WorkstationImage image) {
+            this.image = image;
             StackPanel.VerticalAlignment = VerticalAlignment.Top;
         }
 
@@ -116,7 +119,7 @@ namespace Retros.ProgramWindow.Interactive
         private void InvokeItemListChanged() {
             List<string> list = new();
             items.ForEach(item => list.Add(item.tbName.Text));
-            WindowManager.MainWindow!.Workstation.ImageElement.GetFilterManager.Order(list);
+            image.GetFilterManager.Order(list);
         }
 
         private class Item : IFrameworkElement {

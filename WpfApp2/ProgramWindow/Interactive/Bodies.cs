@@ -11,12 +11,15 @@ using System.Windows.Media.Imaging;
 // Bodies Manage the Tab body UIElements and functionality
 namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
     public abstract class Body {
+        protected readonly WorkstationImage image;
+
         protected StackPanel stackPanel = new();
         protected Grid mainGrid = new();
         protected Border border = new();
         public FrameworkElement FrameworkElement => border;
 
-        public Body() {
+        public Body(WorkstationImage image) {
+            this.image = image;
             UIManager.ColorThemeManager.Set_BC1(newBrush => border.BorderBrush = newBrush);
             border.Child = mainGrid;
             border.BorderThickness = new Thickness(1);
@@ -29,8 +32,6 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
 
 
     public class ImageFilter : Body {
-        private readonly WorkstationImage image = WindowManager.MainWindow!.Workstation.ImageElement;
-
         public Button resetButton = new();
 
         public Slider blueChannelSlider = new("Blue Channel");
@@ -38,9 +39,11 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
         public Slider greenChannelSlider = new("Green Channel");
         public Slider grayscaleSlider = new("Grayscale");
         public Slider testBlueSlider = new("TestBlue");
-        public FilterDisplay FilterDisplay = new();
+        public FilterDisplay FilterDisplay;
 
-        public ImageFilter() {
+        public ImageFilter(WorkstationImage image) : base(image) {
+            FilterDisplay = new(image);
+
             stackPanel.Children.Add(resetButton);
             stackPanel.Children.Add(grayscaleSlider.FrameworkElement);
             stackPanel.Children.Add(blueChannelSlider.FrameworkElement);
@@ -85,7 +88,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
 
     public class PixelSorting : Body {
 
-        public PixelSorting() {
+        public PixelSorting(WorkstationImage image) : base(image) {
             TextBlock textBlock = new();
             textBlock.Text = "PixelSorting";
             Helper.SetChildInGrid(mainGrid, textBlock, 0, 0);
@@ -95,10 +98,9 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
 
 
     public class Test : Body {
-        private static WorkstationImage image = WindowManager.MainWindow!.Workstation.ImageElement;
         private static float filterIntensity;
 
-        public Test() {
+        public Test(WorkstationImage image) : base(image) {
             ///Debugger.Console.ClearAll();
 
             Button normal = new Button { Content = "Execute normal" };
@@ -115,7 +117,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
 
     public class Export : Body {
 
-        public Export() {
+        public Export(WorkstationImage image) : base(image) {
 
         }
     }
@@ -124,7 +126,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
 
     public class Import : Body {
 
-        public Import() {
+        public Import(WorkstationImage image) : base(image) {
 
         }
     }
