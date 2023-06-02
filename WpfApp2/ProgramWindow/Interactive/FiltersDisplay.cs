@@ -28,7 +28,7 @@ namespace Retros.ProgramWindow.Interactive
 
         public FilterDisplay() {
             ///for (int i = 0; i < 10; i++) AddItem("Item" + i.ToString());
-
+            StackPanel.VerticalAlignment = VerticalAlignment.Top;
         }
 
         public void AddItem(string name) {
@@ -56,6 +56,13 @@ namespace Retros.ProgramWindow.Interactive
 
 
         private void InsertItem(Item item, Point newPosition) {
+            if (items.Count == 1) {
+                if (item.FrameworkElement.Parent is StackPanel) (item.FrameworkElement.Parent as StackPanel)!.Children.Remove(item.FrameworkElement);
+                else (item.FrameworkElement.Parent as Canvas)!.Children.Remove(item.FrameworkElement);
+                StackPanel.Children.Add(item.FrameworkElement);
+                return;
+            }
+
             int index = StackPanel.Children.Count-1;
             for (int i = 0; i < StackPanel.Children.Count; i++) {
                 // if d<0 -> the cursor is above this item
@@ -87,8 +94,26 @@ namespace Retros.ProgramWindow.Interactive
             else (item.FrameworkElement.Parent as Canvas)!.Children.Remove(item.FrameworkElement);
             StackPanel.Children.Insert(index, item.FrameworkElement);
             
-
             InvokeItemListChanged();
+        }
+
+        private void IncreaseHierachy(Item item) {
+            if (items.Count == 1) return;
+
+            int index = items.IndexOf(item);
+            if (index <= 0) return;
+
+            DebugLibrary.Console.ClearAll();
+            items.ForEach(DebugLibrary.Console.Log);
+            DebugLibrary.Console.Log("-");
+
+            items.RemoveAt(index);
+            items.Insert(index-1, item);
+
+            StackPanel.Children.RemoveAt(index);
+            StackPanel.Children.Insert(index - 1, item.FrameworkElement);
+
+            items.ForEach(DebugLibrary.Console.Log);
         }
 
 
@@ -97,8 +122,6 @@ namespace Retros.ProgramWindow.Interactive
             items.ForEach(item => list.Add(item.tbName.Text));
             WindowManager.MainWindow!.Workstation.ImageElement.GetFilterManager.Order(list);
         }
-
-
 
         private class Item : IFrameworkElement {
             private FilterDisplay parent;
@@ -112,23 +135,33 @@ namespace Retros.ProgramWindow.Interactive
             public Item(string name, FilterDisplay parent) {
                 this.parent = parent;
 
-                UIManager.ColorThemeManager.Set_BG3(b => tbName.Background = b);
+                UIManager.ColorThemeManager.Set_BG6(b => tbName.Background = b);
                 UIManager.ColorThemeManager.Set_FC1(b => tbName.Foreground = b);
                 tbName.Text = name;
                 tbName.FontSize = 14;
+                tbName.PreviewMouseLeftButtonDown += (s, e) => StartDrag();
+                tbName.PreviewMouseLeftButtonUp += (s, e) => StopDrag();
 
                 bIncreaseHierachy.MinWidth = 20;
+                bIncreaseHierachy.Click += (s, e) => { parent.IncreaseHierachy(this); };
+                bIncreaseHierachy.Content = "⮮⮭";
+                bIncreaseHierachy.MaxHeight = 20;
+                bIncreaseHierachy.Style = WindowHandle.ClientButtonStyle();
+                bIncreaseHierachy.FontSize = 15;
+                bIncreaseHierachy.Margin = new Thickness(0);
 
                 Helper.AddColumn(MainGrid, 1, GridUnitType.Auto);
                 Helper.AddColumn(MainGrid, 1, GridUnitType.Star);
                 Helper.SetChildInGrid(MainGrid, tbName, 0, 1);
                 Helper.SetChildInGrid(MainGrid, bIncreaseHierachy, 0, 0);
-                tbName.PreviewMouseLeftButtonDown += (s, e) => StartDrag();
-                tbName.PreviewMouseLeftButtonUp += (s, e) => StopDrag();
+                MainGrid.MaxHeight = 25;
+                UIManager.ColorThemeManager.Set_BG3(b => MainGrid.Background = b);
             }
 
 
-            
+            public override string ToString() {
+                return tbName.Text;
+            }
 
 
             public Point GetCenteredPosition() {

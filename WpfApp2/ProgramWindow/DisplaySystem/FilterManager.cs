@@ -20,6 +20,7 @@ using System.Windows.Threading;
 using Retros;
 using System.Windows.Navigation;
 using DebugLibrary;
+using static System.Net.WebRequestMethods;
 
 namespace Retros.ProgramWindow.DisplaySystem {
     // Functionality -> Image Filters Tab Body
@@ -88,20 +89,15 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 }
                 return;
             }
-
-            image.DummyImage = new WriteableBitmap(image.ResizedSourceBitmap);
             
-            changes.ForEach(filter => {
-                filter.Generate(image.DummyImage);
-            });
-            image.ChangeCurentImage(image.DummyImage);
+            image.ChangeCurentImage (ApplyChanges (new WriteableBitmap (image.ResizedSourceBitmap)));
 
             changed = false;
         }
         public WriteableBitmap ApplyChanges(WriteableBitmap bitmap) {
-            changes.ForEach(filter => {
-                filter.Generate(bitmap);
-            });
+            for (int i = changes.Count - 1; i >= 0; i--) {
+                changes[i].Generate(bitmap);
+            }
             return bitmap;
         }
 
