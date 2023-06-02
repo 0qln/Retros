@@ -103,17 +103,11 @@ namespace Retros.ProgramWindow.Interactive
             int index = items.IndexOf(item);
             if (index <= 0) return;
 
-            //DebugLibrary.Console.ClearAll();
-            //items.ForEach(DebugLibrary.Console.Log);
-            //DebugLibrary.Console.Log("-");
-
             items.RemoveAt(index);
             items.Insert(index-1, item);
 
             StackPanel.Children.RemoveAt(index);
             StackPanel.Children.Insert(index - 1, item.FrameworkElement);
-
-            //items.ForEach(DebugLibrary.Console.Log);
 
             InvokeItemListChanged();
         }
