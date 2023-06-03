@@ -6,7 +6,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:SelectionBox}">
-                    <Grid>
+                    <Grid x:Name="_mainGrid">
                         <Border x:Name="_border"
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
