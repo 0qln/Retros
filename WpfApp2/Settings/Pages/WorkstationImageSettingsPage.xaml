@@ -6,21 +6,38 @@
       xmlns:local="clr-namespace:Retros.Settings.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Workstation Image">
+      Title="Workstation Image Shadow">
 
     <Grid>
         <Grid x:Name="MainGrid">
 
             <StackPanel>
 
-                <TextBlock x:Name="Headline"/>
+                <TextBlock x:Name="Headline" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=Title}"/>
 
                 <StackPanel x:Name="MainStackpanel">
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock x:Name="Backdrop_Shadow_Text"/>
-                        <CheckBox x:Name="Backdrop_Shadow_CheckBox"/>
+                        <TextBlock x:Name="Enable_Text" Text="Enable backdrop shadow"/>
+                        <CheckBox x:Name="Enable_CheckBox"/>
                     </StackPanel>
+
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="BlurRadius_Text"/>
+                        <TextBox x:Name="BlurRadius_Value"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="ShadowDepth_Text"/>
+                        <TextBox x:Name="ShadowDepth_Value"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="Opacity_Text"/>
+                        <Slider x:Name="Opacity_Slider" Orientation="Horizontal"/>
+                    </StackPanel>
+
 
                 </StackPanel>
 

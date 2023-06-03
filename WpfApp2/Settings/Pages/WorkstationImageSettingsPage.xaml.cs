@@ -20,16 +20,19 @@ namespace Retros.Settings.Pages {
     public partial class WorkstationImageSettingsPage : Page {
         public WorkstationImageSettingsPage() {
             InitializeComponent();
-            UIManager.ColorThemeManager.SetStyle(Headline, () => TabDetail.Body.HeadlineStyle(Title));
-            UIManager.ColorThemeManager.SetStyle(Backdrop_Shadow_CheckBox, TabDetail.Body.CheckBoxStyle);
-            UIManager.ColorThemeManager.SetStyle(Backdrop_Shadow_Text, () => TabDetail.Body.TextblockStyle("Enable backdrop shadow"));
+            UIManager.ColorThemeManager.SetStyle(Headline, TabDetail.Body.HeadlineStyle);
 
-            Backdrop_Shadow_CheckBox.Checked += ToggleSahdow;
-            Backdrop_Shadow_CheckBox.Unchecked += ToggleSahdow;
+            UIManager.ColorThemeManager.SetStyle(Enable_Text, TabDetail.Body.TextblockStyle);
+            UIManager.ColorThemeManager.SetStyle(Enable_CheckBox, TabDetail.Body.CheckBoxStyle);
+
+            //UIManager.ColorThemeManager.SetStyle(BlurRadius_Text, () => TabDetail);
+
+            Enable_CheckBox.Checked += ToggleSahdow;
+            Enable_CheckBox.Unchecked += ToggleSahdow;
         }
 
         private void ToggleSahdow(object sender, RoutedEventArgs e) {
-            SettingsManager.InvokeorkstationImageShadow(Backdrop_Shadow_CheckBox.IsChecked.Value);
+            SettingsManager.WorkstationImageShadow.InvokeEnabled(Enable_CheckBox.IsChecked.Value);
         }
 
     }

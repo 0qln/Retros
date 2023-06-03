@@ -44,7 +44,6 @@ namespace Retros {
                 appearance.AddDetail(new TabDetail(new Settings.Pages.ColorTheme()));
                 appearance.AddDetail(new TabDetail(new Settings.Pages.WorkstationImageSettingsPage()));
 
-
                 appearance._Body.Show();
             };
             

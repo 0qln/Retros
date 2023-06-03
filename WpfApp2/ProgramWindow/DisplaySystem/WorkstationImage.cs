@@ -33,6 +33,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
         /// <summary>Used to display the current image.</summary>
         public Image CurrentImage => currentImage;
+        private DropShadowEffect dropShadowEffect;
 
         /// <summary>Chaches the source image.</summary>
         public Uri Source => source;
@@ -54,9 +55,17 @@ namespace Retros.ProgramWindow.DisplaySystem {
             currentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
             _margin = new Thickness(50);
             currentImage.Margin = _margin;
-            SettingsManager.WorkstationImageShadow += (enabled) => { 
-                if (enabled.HasValue && enabled.Value) currentImage.Effect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 }; 
+            
+            dropShadowEffect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
+            SettingsManager.WorkstationImageShadow.BlurRadius += (value) => dropShadowEffect.BlurRadius = value;
+            SettingsManager.WorkstationImageShadow.ShadowDepth += (value) => dropShadowEffect.ShadowDepth = value;
+            SettingsManager.WorkstationImageShadow.Opacity += (value) => dropShadowEffect.Opacity = value;
+            SettingsManager.WorkstationImageShadow.Direction += (value) => dropShadowEffect.Direction = value;
+            SettingsManager.WorkstationImageShadow.Enabled += (enabled) => {
+                if (enabled) currentImage.Effect = dropShadowEffect;
+                else currentImage.Effect = null;
             };
+
             imagesGrid.Children.Add(currentImage);
 
             StartUpdating();
@@ -68,8 +77,13 @@ namespace Retros.ProgramWindow.DisplaySystem {
             currentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
             currentImage.Margin = new Thickness(50);
             imagesGrid.Children.Add(currentImage);
-            SettingsManager.WorkstationImageShadow += (enabled) => {
-                if (enabled) currentImage.Effect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
+            dropShadowEffect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
+            SettingsManager.WorkstationImageShadow.BlurRadius += (value) => dropShadowEffect.BlurRadius = value;
+            SettingsManager.WorkstationImageShadow.ShadowDepth += (value) => dropShadowEffect.ShadowDepth = value;
+            SettingsManager.WorkstationImageShadow.Opacity += (value) => dropShadowEffect.Opacity = value;
+            SettingsManager.WorkstationImageShadow.Direction += (value) => dropShadowEffect.Direction = value;
+            SettingsManager.WorkstationImageShadow.Enabled += (enabled) => {
+                if (enabled) currentImage.Effect = dropShadowEffect;
                 else currentImage.Effect = null;
             };
         }

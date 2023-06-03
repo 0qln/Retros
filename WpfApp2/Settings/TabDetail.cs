@@ -103,7 +103,7 @@ namespace Retros.Settings {
                 pageFrame.Content = page;
             }
 
-            public static Style ButtonStyle(string name) {
+            public static Style ButtonStyle() {
                 Style style = new Style(typeof(Button));
 
                 style.Setters.Add(new Setter(Button.PaddingProperty, new Thickness(10, 0, 10, 0)));
@@ -113,8 +113,8 @@ namespace Retros.Settings {
                 style.Setters.Add(new Setter(Button.BorderThicknessProperty, new Thickness(1)));
                 style.Setters.Add(new Setter(Button.HorizontalAlignmentProperty, HorizontalAlignment.Left));
                 style.Setters.Add(new Setter(Button.VerticalAlignmentProperty, VerticalAlignment.Center));
-                style.Setters.Add(new Setter(Button.HeightProperty, 25.0));
-                style.Setters.Add(new Setter(Button.ContentProperty, new TextBlock { Text = name, Margin = new Thickness(10, 0, 10, 0) } ));
+                style.Setters.Add(new Setter(Button.HeightProperty, 20.0));
+                style.Setters.Add(new Setter(Button.ContentProperty, new TextBlock { Text="HEEIJLKEAJ", Margin = new Thickness(10, 0, 10, 0) } ));
 
 
                 ControlTemplate userButtonTemplate = new ControlTemplate(typeof(Button));
@@ -143,12 +143,11 @@ namespace Retros.Settings {
                 return style;
             }
 
-            public static Style HeadlineStyle(string text) {
+            public static Style HeadlineStyle() {
                 Style style = new Style(typeof(TextBlock));
                 style.Setters.Add(new Setter(TextBlock.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
                 style.Setters.Add(new Setter(TextBlock.BackgroundProperty, UIManager.ColorThemeManager.Current.BG6));
                 style.Setters.Add(new Setter(TextBlock.FontWeightProperty, FontWeights.SemiBold));
-                style.Setters.Add(new Setter(TextBlock.TextProperty, text));
                 style.Setters.Add(new Setter(TextBlock.FontSizeProperty, 30.0));
 
                 return style;
@@ -156,7 +155,9 @@ namespace Retros.Settings {
 
             public static Style ComboboxStyle() {
                 Style style = new Style(typeof(ComboBox));
-                style.Setters.Add(new Setter(ComboBox.BackgroundProperty, UIManager.ColorThemeManager.Current.BG2));
+                style.Setters.Add(new Setter(ComboBox.HeightProperty, 20.0));
+                style.Setters.Add(new Setter(ComboBox.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
+                style.Setters.Add(new Setter(ComboBox.BackgroundProperty, UIManager.ColorThemeManager.Current.BG6));
                 return style;
             }
 
@@ -169,12 +170,11 @@ namespace Retros.Settings {
 
                 return style;
             }
-            public static Style TextblockStyle(string content) {
+            public static Style TextblockStyle() {
                 Style style = new Style(typeof(TextBlock));
                 style.Setters.Add(new Setter(TextBlock.MarginProperty, new Thickness(0, 5, 0, 0)));
                 style.Setters.Add(new Setter(TextBlock.BackgroundProperty, UIManager.ColorThemeManager.Current.BG2));
                 style.Setters.Add(new Setter(TextBlock.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
-                style.Setters.Add(new Setter(TextBlock.TextProperty, content));
                 style.Setters.Add(new Setter(TextBlock.FontSizeProperty, 13.0));
                 style.Setters.Add(new Setter(TextBlock.FontStyleProperty, FontStyles.Italic));
                 style.Setters.Add(new Setter(TextBlock.TextWrappingProperty, TextWrapping.Wrap));
@@ -182,14 +182,12 @@ namespace Retros.Settings {
                 return style;
             }
 
-            public static Style TextboxStyle(string content = "") {
+            public static Style TextboxStyle() {
                 Style style = new Style(typeof(TextBox));
                 style.Setters.Add(new Setter(TextBox.MinWidthProperty, 100.0));
-                style.Setters.Add(new Setter(TextBox.MarginProperty, new Thickness(10, 0, 0, 0)));
                 style.Setters.Add(new Setter(TextBox.BackgroundProperty, UIManager.ColorThemeManager.Current.BG1));
                 style.Setters.Add(new Setter(TextBox.ForegroundProperty, UIManager.ColorThemeManager.Current.FC2));
                 style.Setters.Add(new Setter(TextBox.MaxLinesProperty, 1));
-                style.Setters.Add(new Setter(TextBox.TextProperty, content));
                 style.Setters.Add(new Setter(TextBox.TextWrappingProperty, TextWrapping.Wrap));
 
                 return style;
