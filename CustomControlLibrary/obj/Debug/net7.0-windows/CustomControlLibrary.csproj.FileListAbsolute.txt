@@ -1,0 +1,17 @@
+D:\Programmmieren\Projects\Retros\Retros\CustomControlLibrary\bin\Debug\net7.0-windows\CustomControlLibrary.deps.json
+D:\Programmmieren\Projects\Retros\Retros\CustomControlLibrary\bin\Debug\net7.0-windows\CustomControlLibrary.dll
+D:\Programmmieren\Projects\Retros\Retros\CustomControlLibrary\bin\Debug\net7.0-windows\CustomControlLibrary.pdb
+D:\Programmmieren\Projects\Retros\Retros\CustomControlLibrary\obj\Debug\net7.0-windows\CustomControlLibrary.csproj.AssemblyReference.cache
+D:\Programmmieren\Projects\Retros\Retros\CustomControlLibrary\obj\Debug\net7.0-windows\GeneratedInternalTypeHelper.g.cs
+D:\Programmmieren\Projects\Retros\Retros\CustomControlLibrary\obj\Debug\net7.0-windows\CustomControlLibrary_MarkupCompile.cache
+D:\Programmmieren\Projects\Retros\Retros\CustomControlLibrary\obj\Debug\net7.0-windows\CustomControlLibrary_MarkupCompile.lref
+D:\Programmmieren\Projects\Retros\Retros\CustomControlLibrary\obj\Debug\net7.0-windows\Themes\Generic.baml
+D:\Programmmieren\Projects\Retros\Retros\CustomControlLibrary\obj\Debug\net7.0-windows\CustomControlLibrary.g.resources
+D:\Programmmieren\Projects\Retros\Retros\CustomControlLibrary\obj\Debug\net7.0-windows\CustomControlLibrary.GeneratedMSBuildEditorConfig.editorconfig
+D:\Programmmieren\Projects\Retros\Retros\CustomControlLibrary\obj\Debug\net7.0-windows\CustomControlLibrary.AssemblyInfoInputs.cache
+D:\Programmmieren\Projects\Retros\Retros\CustomControlLibrary\obj\Debug\net7.0-windows\CustomControlLibrary.AssemblyInfo.cs
+D:\Programmmieren\Projects\Retros\Retros\CustomControlLibrary\obj\Debug\net7.0-windows\CustomControlLibrary.csproj.CoreCompileInputs.cache
+D:\Programmmieren\Projects\Retros\Retros\CustomControlLibrary\obj\Debug\net7.0-windows\CustomControlLibrary.dll
+D:\Programmmieren\Projects\Retros\Retros\CustomControlLibrary\obj\Debug\net7.0-windows\refint\CustomControlLibrary.dll
+D:\Programmmieren\Projects\Retros\Retros\CustomControlLibrary\obj\Debug\net7.0-windows\CustomControlLibrary.pdb
+D:\Programmmieren\Projects\Retros\Retros\CustomControlLibrary\obj\Debug\net7.0-windows\ref\CustomControlLibrary.dll

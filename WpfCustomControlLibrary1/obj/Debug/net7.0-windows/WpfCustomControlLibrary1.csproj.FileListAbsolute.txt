@@ -1,0 +1,17 @@
+D:\Programmmieren\Projects\Retros\Retros\WpfCustomControlLibrary1\bin\Debug\net7.0-windows\WpfCustomControlLibrary1.deps.json
+D:\Programmmieren\Projects\Retros\Retros\WpfCustomControlLibrary1\bin\Debug\net7.0-windows\WpfCustomControlLibrary1.dll
+D:\Programmmieren\Projects\Retros\Retros\WpfCustomControlLibrary1\bin\Debug\net7.0-windows\WpfCustomControlLibrary1.pdb
+D:\Programmmieren\Projects\Retros\Retros\WpfCustomControlLibrary1\obj\Debug\net7.0-windows\WpfCustomControlLibrary1.csproj.AssemblyReference.cache
+D:\Programmmieren\Projects\Retros\Retros\WpfCustomControlLibrary1\obj\Debug\net7.0-windows\GeneratedInternalTypeHelper.g.cs
+D:\Programmmieren\Projects\Retros\Retros\WpfCustomControlLibrary1\obj\Debug\net7.0-windows\WpfCustomControlLibrary1_MarkupCompile.cache
+D:\Programmmieren\Projects\Retros\Retros\WpfCustomControlLibrary1\obj\Debug\net7.0-windows\WpfCustomControlLibrary1_MarkupCompile.lref
+D:\Programmmieren\Projects\Retros\Retros\WpfCustomControlLibrary1\obj\Debug\net7.0-windows\Themes\Generic.baml
+D:\Programmmieren\Projects\Retros\Retros\WpfCustomControlLibrary1\obj\Debug\net7.0-windows\WpfCustomControlLibrary1.g.resources
+D:\Programmmieren\Projects\Retros\Retros\WpfCustomControlLibrary1\obj\Debug\net7.0-windows\WpfCustomControlLibrary1.GeneratedMSBuildEditorConfig.editorconfig
+D:\Programmmieren\Projects\Retros\Retros\WpfCustomControlLibrary1\obj\Debug\net7.0-windows\WpfCustomControlLibrary1.AssemblyInfoInputs.cache
+D:\Programmmieren\Projects\Retros\Retros\WpfCustomControlLibrary1\obj\Debug\net7.0-windows\WpfCustomControlLibrary1.AssemblyInfo.cs
+D:\Programmmieren\Projects\Retros\Retros\WpfCustomControlLibrary1\obj\Debug\net7.0-windows\WpfCustomControlLibrary1.csproj.CoreCompileInputs.cache
+D:\Programmmieren\Projects\Retros\Retros\WpfCustomControlLibrary1\obj\Debug\net7.0-windows\WpfCustomControlLibrary1.dll
+D:\Programmmieren\Projects\Retros\Retros\WpfCustomControlLibrary1\obj\Debug\net7.0-windows\refint\WpfCustomControlLibrary1.dll
+D:\Programmmieren\Projects\Retros\Retros\WpfCustomControlLibrary1\obj\Debug\net7.0-windows\WpfCustomControlLibrary1.pdb
+D:\Programmmieren\Projects\Retros\Retros\WpfCustomControlLibrary1\obj\Debug\net7.0-windows\ref\WpfCustomControlLibrary1.dll

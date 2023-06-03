@@ -11,7 +11,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Retros.ProgramWindow.Filters {
+namespace Retros.ProgramWindow {
 
     public class OnlyRedChannel : IChange, IFilterChange {
         private double filterIntensity;
@@ -42,7 +42,7 @@ namespace Retros.ProgramWindow.Filters {
 
                     // Modify the pixel values directly in the pixel buffer
                     Parallel.For(0, pixelHeight, y => {
-                        byte* row = pixelData + (y * stride);
+                        byte* row = pixelData + y * stride;
                         Parallel.For(0, pixelWidth, x => {
                             int index = (y * pixelWidth + x) * bytesPerPixel;
                             pixelData[index + 1] = (byte)(pixelData[index + 1] * (1 - filterIntensity));    // Green
@@ -88,11 +88,11 @@ namespace Retros.ProgramWindow.Filters {
 
                     // Modify the pixel values directly in the pixel buffer
                     Parallel.For(0, pixelHeight, y => {
-                        byte* row = pixelData + (y * stride);
+                        byte* row = pixelData + y * stride;
                         Parallel.For(0, pixelWidth, x => {
                             int index = (y * pixelWidth + x) * bytesPerPixel;
-                            pixelData[index + 2] = (byte)(pixelData[index + 2] * (1 - (filterIntensity)));    // Red
-                            pixelData[index + 0] = (byte)(pixelData[index + 0] * (1 - (filterIntensity)));    // Blue
+                            pixelData[index + 2] = (byte)(pixelData[index + 2] * (1 - filterIntensity));    // Red
+                            pixelData[index + 0] = (byte)(pixelData[index + 0] * (1 - filterIntensity));    // Blue
                         });
                     });
                 }
@@ -135,7 +135,7 @@ namespace Retros.ProgramWindow.Filters {
 
                     // Modify the pixel values directly in the pixel buffer
                     Parallel.For(0, pixelHeight, y => {
-                        byte* row = pixelData + (y * stride);
+                        byte* row = pixelData + y * stride;
                         Parallel.For(0, pixelWidth, x => {
                             int index = (y * pixelWidth + x) * bytesPerPixel;
                             pixelData[index + 2] = (byte)(pixelData[index + 2] * (1 - filterIntensity));    // Red
@@ -184,7 +184,7 @@ namespace Retros.ProgramWindow.Filters {
 
                     // Modify the pixel values directly in the pixel buffer
                     Parallel.For(0, pixelHeight, y => {
-                        byte* row = pixelData + (y * stride);
+                        byte* row = pixelData + y * stride;
                         Parallel.For(0, pixelWidth, x => {
                             int index = x * bytesPerPixel;
                             row[index + 0] = (byte)(255 * (1 - filterIntensity));
@@ -231,7 +231,7 @@ namespace Retros.ProgramWindow.Filters {
 
                     // Modify the pixel values directly in the pixel buffer
                     Parallel.For(0, pixelHeight, y => {
-                        byte* row = pixelData + (y * stride);
+                        byte* row = pixelData + y * stride;
                         Parallel.For(0, pixelWidth, x => {
                             int index = x * bytesPerPixel;
 
@@ -240,9 +240,9 @@ namespace Retros.ProgramWindow.Filters {
                             byte b = row[index + 0];
                             byte gray = (byte)(0.299 * r + 0.587 * g + 0.114 * b);  // (`0.299`, `0.587`, `0.114`) is ITU-R BT.709 standard
 
-                            row[index + 2] = (byte)((gray * filterIntensity) + (r * (1 - filterIntensity)));     // Red
-                            row[index + 1] = (byte)((gray * filterIntensity) + (g * (1 - filterIntensity)));     // Green
-                            row[index + 0] = (byte)((gray * filterIntensity) + (b * (1 - filterIntensity)));     // Blue
+                            row[index + 2] = (byte)(gray * filterIntensity + r * (1 - filterIntensity));     // Red
+                            row[index + 1] = (byte)(gray * filterIntensity + g * (1 - filterIntensity));     // Green
+                            row[index + 0] = (byte)(gray * filterIntensity + b * (1 - filterIntensity));     // Blue
                         });
                     });
 

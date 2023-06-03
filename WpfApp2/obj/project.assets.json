@@ -1346,6 +1346,19 @@
         "runtime": {
           "lib/netstandard1.3/System.Xml.XDocument.dll": {}
         }
+      },
+      "CustomControlLibrary/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "compile": {
+          "bin/placeholder/CustomControlLibrary.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/CustomControlLibrary.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.WindowsDesktop.App.WPF"
+        ]
       }
     },
     "net7.0-windows7.0/win-x64": {
@@ -2967,6 +2980,19 @@
         "runtime": {
           "lib/netstandard1.3/System.Xml.XDocument.dll": {}
         }
+      },
+      "CustomControlLibrary/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "compile": {
+          "bin/placeholder/CustomControlLibrary.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/CustomControlLibrary.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.WindowsDesktop.App.WPF"
+        ]
       }
     }
   },
@@ -7119,10 +7145,16 @@
         "system.xml.xdocument.4.3.0.nupkg.sha512",
         "system.xml.xdocument.nuspec"
       ]
+    },
+    "CustomControlLibrary/1.0.0": {
+      "type": "project",
+      "path": "../CustomControlLibrary/CustomControlLibrary.csproj",
+      "msbuildProject": "../CustomControlLibrary/CustomControlLibrary.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net7.0-windows7.0": [
+      "CustomControlLibrary >= 1.0.0",
       "SharpDX >= 4.2.0",
       "System.Drawing.Common >= 7.0.0"
     ]
@@ -7158,7 +7190,11 @@
       "frameworks": {
         "net7.0-windows7.0": {
           "targetAlias": "net7.0-windows",
-          "projectReferences": {}
+          "projectReferences": {
+            "D:\\Programmmieren\\Projects\\Retros\\Retros\\CustomControlLibrary\\CustomControlLibrary.csproj": {
+              "projectPath": "D:\\Programmmieren\\Projects\\Retros\\Retros\\CustomControlLibrary\\CustomControlLibrary.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

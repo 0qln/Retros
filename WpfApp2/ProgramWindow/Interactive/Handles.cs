@@ -13,7 +13,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Handles {
         protected Border border = new();
         protected StackPanel stackPanel = new();
         protected TextBlock name = new();
-        protected System.Windows.Controls.Image icon = new();
+        protected Image icon = new();
 
         public FrameworkElement FrameworkElement => border;
 

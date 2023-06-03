@@ -493,3 +493,5 @@ D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x6
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\Settings\Pages\WorkstationImageSettingsPage.g.cs
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\Settings\Pages\ColorThemePage.baml
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\Settings\Pages\WorkstationImageSettingsPage.baml
+D:\Programmmieren\Projects\Retros\Retros\WpfApp2\bin\Debug\net7.0-windows\win-x64\CustomControlLibrary.dll
+D:\Programmmieren\Projects\Retros\Retros\WpfApp2\bin\Debug\net7.0-windows\win-x64\CustomControlLibrary.pdb

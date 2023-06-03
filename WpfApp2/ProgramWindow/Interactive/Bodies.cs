@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using Utillities.Wpf;
 
 using Retros.ProgramWindow.DisplaySystem;
-using Retros.ProgramWindow.Filters;
+using Retros.ProgramWindow;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -59,7 +59,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             grayscaleSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new GrayScale(), grayscaleSlider.SliderElement.Value / 10);
             blueChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyBlueChannel(), blueChannelSlider.SliderElement.Value / 10);
             redChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyRedChannel(), redChannelSlider.SliderElement.Value / 10);
-            greenChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyGreenChannel(), greenChannelSlider.SliderElement.Value / 10); 
+            greenChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyGreenChannel(), greenChannelSlider.SliderElement.Value / 10);
             testBlueSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new TestBlue(), testBlueSlider.SliderElement.Value / 10);
         }
 
@@ -71,7 +71,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
 
         private void AddFilterChange(IFilterChange filter, double value) {
             if (value == 0) {
-                image.GetFilterManager.RemoveChange((IChange) filter);
+                image.GetFilterManager.RemoveChange((IChange)filter);
                 FilterDisplay.RemoveItem(filter.GetType().Name);
             }
             else {
@@ -105,7 +105,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
 
             Button normal = new Button { Content = "Execute normal" };
             ///normal.Click += (s, e) => DebugLibrary.Benchmark.Measure.Execute(Compute);
-            
+
             Button gpu = new Button { Content = "Execute on GPU" };
             ///gpu.Click += (s, e) => DebugLibrary.Benchmark.Measure.Execute(PerformVectorAddition());
 

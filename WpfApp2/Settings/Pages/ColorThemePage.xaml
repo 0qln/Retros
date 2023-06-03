@@ -4,56 +4,60 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Retros.Settings"
+      xmlns:n="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
       mc:Ignorable="d" 
       d:DesignHeight="1000" d:DesignWidth="1000"
       Title="Color Theme">
 
-    <Grid x:Name="MainGrid">
+        <Grid x:Name="MainGrid">
 
-        <StackPanel>
-
-            <TextBlock x:Name="Headline" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=Title}"/>
-        
             <StackPanel x:Name="MainStackpanel">
 
-                
-                <StackPanel Orientation="Horizontal" x:Name="Change_StackPanel">
-                    <Button x:Name="ChangeButton" Click="ChangeButton_Click" HorizontalAlignment="Left">
-                        <Button.Content>
-                            <TextBlock Text="Change" Margin="10, 0, 10, 0"/>
-                        </Button.Content>
-                    </Button>
-                </StackPanel>
+                <TextBlock x:Name="Headline" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=Title}"/>
 
-                
-                
-                <StackPanel>
-                    <TextBlock x:Name="ImportDescription" Text="Enter the location of the folder, that the .json file will be safed to: "/>
-                    <StackPanel Orientation="Horizontal">
-                        <Button x:Name="ImportButton" Click="Import_Click">
-                            <Button.Content>
-                                <TextBlock Text="Import" Margin="10, 0, 10, 0"/>
-                            </Button.Content>
-                        </Button>
-                        <TextBox x:Name="ImportText"/>
+                <Canvas x:Name="_canvas" Height="{Binding ActualHeight, ElementName=SubStackpanel}">
+                    <StackPanel x:Name="SubStackpanel">
+
+                    <StackPanel Orientation="Horizontal" x:Name="Change_StackPanel">
+                            <Button x:Name="ChangeButton" Click="ChangeButton_Click" HorizontalAlignment="Left">
+                                <Button.Content>
+                                    <TextBlock Text="Change" Margin="10, 0, 10, 0"/>
+                                </Button.Content>
+                            </Button>
+                            <!-- SelectionBox -->
+                        <n:SelectionBox Background="White" Width="100" Height="200"/>
                     </StackPanel>
-                </StackPanel>
 
-                <StackPanel>
-                    <TextBlock x:Name="ExportDescription" Text="Enter the location of your .json file: "/>
-                    <StackPanel Orientation="Horizontal">
-                        <Button x:Name="ExportButton" Click="Export_Click">
-                            <Button.Content>
-                                <TextBlock Text="Export" Margin="10, 0, 10, 0"/>
-                            </Button.Content>
-                        </Button>
-                        <TextBox x:Name="ExportText"/>
+
+
+                        <StackPanel>
+                            <TextBlock x:Name="ImportDescription" Text="Enter the location of the folder, that the .json file will be safed to: "/>
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="ImportButton" Click="Import_Click">
+                                    <Button.Content>
+                                        <TextBlock Text="Import" Margin="10, 0, 10, 0"/>
+                                    </Button.Content>
+                                </Button>
+                                <TextBox x:Name="ImportText"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <TextBlock x:Name="ExportDescription" Text="Enter the location of your .json file: "/>
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="ExportButton" Click="Export_Click">
+                                    <Button.Content>
+                                        <TextBlock Text="Export" Margin="10, 0, 10, 0"/>
+                                    </Button.Content>
+                                </Button>
+                                <TextBox x:Name="ExportText"/>
+                            </StackPanel>
+                        </StackPanel>
+
                     </StackPanel>
-                </StackPanel>
-                    
+                </Canvas>
 
-            </StackPanel>
-            
         </StackPanel>
-    </Grid>
+            
+        </Grid>
 </Page>

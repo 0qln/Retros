@@ -1,0 +1,4 @@
+D:\Programmmieren\Projects\Retros\Retros\ControlLibrary\obj\Debug\net7.0-windows\ControlLibrary.csproj.AssemblyReference.cache
+D:\Programmmieren\Projects\Retros\Retros\ControlLibrary\obj\Debug\net7.0-windows\GeneratedInternalTypeHelper.g.cs
+D:\Programmmieren\Projects\Retros\Retros\ControlLibrary\obj\Debug\net7.0-windows\ControlLibrary_MarkupCompile.cache
+D:\Programmmieren\Projects\Retros\Retros\ControlLibrary\obj\Debug\net7.0-windows\ControlLibrary_MarkupCompile.lref

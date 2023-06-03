@@ -10,7 +10,7 @@ using System.Text.Json.Serialization;
 using System.CodeDom;
 
 namespace Retros.ColorThemes {
-    public class DefaultDark: IColorTheme {
+    public class DefaultDark : IColorTheme {
         public string Name { get; } = "DefaultDark";
 
         public Brush FC1 { get; } = Helper.StringToSolidColorBrush("#FFFFFF", 1);
@@ -38,7 +38,7 @@ namespace Retros.ColorThemes {
         public Brush BCh3 { get; } = Helper.StringToSolidColorBrush("#000000", 0);
     }
 
-    public class Test: IColorTheme {
+    public class Test : IColorTheme {
         public string Name { get; } = "Test";
 
         public Brush FC1 { get; } = Helper.StringToSolidColorBrush("#FFFFFF", 1);

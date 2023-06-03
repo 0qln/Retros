@@ -10,9 +10,6 @@
 
 
     <Canvas x:Name="MainCanvas">
-        <!--TextBlock x:Name="WindowTitle" Text="Settings" FontSize="23"-->
-
-
         <Grid x:Name="MainGrid"
               Height="{Binding ActualHeight, ElementName=MainCanvas}"
               Width="{Binding ActualWidth, ElementName=MainCanvas}">
@@ -34,8 +31,8 @@
                     <StackPanel x:Name="SettingsList">
 
                         <!--Padding because of the windowhandle-->
-                        <Grid x:Name="SettingsList_Padding">
-                        </Grid>
+                        <Grid x:Name="SettingsList_Padding"/>
+
 
                     </StackPanel>
 

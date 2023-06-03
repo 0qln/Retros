@@ -14,9 +14,9 @@ using System.Drawing.Imaging;
 using System.Drawing;
 using System.Windows.Media.Imaging;
 using System.Security.RightsManagement;
+using Retros.ProgramWindow.DisplaySystem;
 using Retros.ProgramWindow.Interactive.Tabs.Bodies;
 using Retros.ProgramWindow.Interactive.Tabs.Handles;
-using Retros.ProgramWindow.DisplaySystem;
 
 namespace Retros.ProgramWindow.Interactive.Tabs {
     public abstract class Tab {

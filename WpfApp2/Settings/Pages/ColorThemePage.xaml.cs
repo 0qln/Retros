@@ -19,11 +19,12 @@ using Utillities.Wpf;
 namespace Retros.Settings.Pages {
     public partial class ColorTheme : Page
     {
-        private SelectionBox<TextBlock> ThemeSelection = new();
+        private SelectionBox_OLD<TextBlock> ThemeSelection;
 
         public ColorTheme()
         {
             InitializeComponent();
+
 
             UIManager.ColorThemeManager.SetStyle(Headline, TabDetail.Body.HeadlineStyle);
             UIManager.ColorThemeManager.SetStyle(ChangeButton, TabDetail.Body.ButtonStyle);
@@ -36,8 +37,12 @@ namespace Retros.Settings.Pages {
 
             UpdateAvailableThemes();
 
-            Change_StackPanel.Children.Add(ThemeSelection.FrameworkElement);
-            Change_StackPanel.ClipToBounds = false;
+            ThemeSelection = new(_canvas);
+            Binding binding = new Binding("ActualWidth") { Source = ChangeButton };
+            ThemeSelection.FrameworkElement.SetBinding(FrameworkElement.MarginProperty, binding);
+
+            ChangeButton.Loaded += (s, e) => 
+            DebugLibrary.Console.Log(ChangeButton.ActualWidth);
         }
 
         public void UpdateAvailableThemes() {
