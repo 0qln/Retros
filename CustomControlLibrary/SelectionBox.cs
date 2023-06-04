@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -62,7 +63,7 @@ namespace CustomControlLibrary {
         //Options
         public Brush OptionsBackground {
             get => (Brush)GetValue(OptionsBackgroundProperty);
-            set { 
+            set {
                 SetValue(OptionsBackgroundProperty, value);
                 foreach (Button option in _options!.Children) {
                     option.Background = value;
@@ -72,9 +73,9 @@ namespace CustomControlLibrary {
         }
         public static readonly DependencyProperty OptionsBackgroundProperty =
             DependencyProperty.Register(
-                "OptionsBackground", 
-                typeof(Brush), 
-                typeof(SelectionBox), 
+                "OptionsBackground",
+                typeof(Brush),
+                typeof(SelectionBox),
                 new PropertyMetadata(Brushes.CornflowerBlue));
 
         public Brush OptionsBorderBrush {
@@ -125,13 +126,38 @@ namespace CustomControlLibrary {
                 typeof(SelectionBox),
                 new PropertyMetadata(Brushes.White));
 
+        private Dictionary<DependencyProperty, object> Properties = new();
+        private Dictionary<DependencyProperty, object> GetProperties() {
+            AddProperty(OptionBoxBorderBrushProperty, OptionBoxBorderBrush);
+            AddProperty(OptionBoxBorderThicknessProperty, OptionBoxBorderThickness);
+            AddProperty(OptionsBackgroundProperty, OptionsBackground);
+            AddProperty(OptionsBorderBrushProperty, OptionsBorderBrush);
+            AddProperty(OptionsBorderThicknessProperty, OptionsBorderThickness);
+            AddProperty(OptionsTextBrushProperty, OptionsTextBrush);
+            return Properties;
+        }
+        private void AddProperty(DependencyProperty key, object value) {
+            if (!Properties.ContainsKey(key)) {
+                Properties.Add(key, value);
+            }
+            else if (Properties[key] == value) {
+                Properties[key] = value;
+            }
+        }
+
 
         public new Style Style {
             get => base.Style;
             set {
                 DebugLibrary.Console.Log("Style changed");
                 base.Style = value;
+                GetProperties();
+                OptionBoxBorderBrush = (Brush)GetValue(value, OptionBoxBorderBrushProperty)!;
+                OptionBoxBorderThickness = (Thickness)GetValue(value, OptionBoxBorderThicknessProperty)!;
                 OptionsBackground = (Brush)GetValue(value, OptionsBackgroundProperty)!;
+                OptionsBorderBrush = (Brush)GetValue(value, OptionsBorderBrushProperty)!;
+                OptionsBorderThickness = (Thickness)GetValue(value, OptionsBorderThicknessProperty)!;
+                OptionsTextBrush = (Brush)GetValue(value, OptionsTextBrushProperty)!;
             }
         }
 
@@ -152,9 +178,23 @@ namespace CustomControlLibrary {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(SelectionBox), new FrameworkPropertyMetadata(typeof(SelectionBox)));
         }
 
-        private static object? GetValue(Style style, DependencyProperty property) {
-            return 
-            ((Setter)style.Setters.First(
+        private object? GetValue(Style style, DependencyProperty property) {
+            bool hasProperty = false;
+            foreach (Setter setter in style.Setters) {
+                if (setter.Property == property) {
+                    hasProperty = true;
+                }
+            }
+            if (!hasProperty) {
+                // Target property not found in the style
+                if (property.OwnerType == typeof(SelectionBox)) {
+                    // Has the property, but is not defined in style
+                    // Return this DependencyProperty
+                    return Properties[property];
+                }
+            }
+
+            return ((Setter)style.Setters.First(
                 s => (s as Setter)!.Property == property
             )).Value;
         }
@@ -252,7 +292,7 @@ namespace CustomControlLibrary {
             return button;
         }
 
-        private void UpdateOptionButtonVisuals () {
+        private void UpdateOptionButtonVisuals() {
             foreach (Button option in _options!.Children) {
                 option.Background = OptionsBackground;
                 option.BorderBrush = OptionsBorderBrush;

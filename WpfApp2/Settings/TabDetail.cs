@@ -160,7 +160,7 @@ namespace Retros.Settings {
             public static Style SelectionBoxStyle() {
                 Style style = new Style(typeof(SelectionBox));
                 style.Setters.Add(new Setter(SelectionBox.OptionsTextBrushProperty, UIManager.ColorThemeManager.Current.FC1));
-                style.Setters.Add(new Setter(SelectionBox.OptionsBackgroundProperty, UIManager.ColorThemeManager.Current.BG2));
+                style.Setters.Add(new Setter(SelectionBox.OptionsBackgroundProperty, UIManager.ColorThemeManager.Current.BG1));
                 style.Setters.Add(new Setter(SelectionBox.OptionsBorderThicknessProperty, new Thickness(1.0)));
                 style.Setters.Add(new Setter(SelectionBox.BackgroundProperty, UIManager.ColorThemeManager.Current.BG1));
                 style.Setters.Add(new Setter(SelectionBox.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
