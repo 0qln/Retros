@@ -6,4 +6,13 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="DebugLibrary">
+      <HintPath>..\..\..\..\Github\Projects\DebugLibrary\DebugLibrary\bin\Release\net7.0\DebugLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Utillities">
+      <HintPath>..\..\..\Utillities\Release\Utillities.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

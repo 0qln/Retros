@@ -19,8 +19,6 @@ using Utillities.Wpf;
 namespace Retros.Settings.Pages {
     public partial class ColorTheme : Page
     {
-        private SelectionBox_OLD<TextBlock> ThemeSelection;
-
         public ColorTheme()
         {
             InitializeComponent();
@@ -37,12 +35,8 @@ namespace Retros.Settings.Pages {
 
             UpdateAvailableThemes();
 
-            ThemeSelection = new(_canvas);
-            Binding binding = new Binding("ActualWidth") { Source = ChangeButton };
-            ThemeSelection.FrameworkElement.SetBinding(FrameworkElement.MarginProperty, binding);
 
-            ChangeButton.Loaded += (s, e) => 
-            DebugLibrary.Console.Log(ChangeButton.ActualWidth);
+            _selectionBox.Loaded += (s,e) => _selectionBox.AddOption("New Option");
         }
 
         public void UpdateAvailableThemes() {

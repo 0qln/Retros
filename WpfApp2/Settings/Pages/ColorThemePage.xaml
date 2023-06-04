@@ -25,7 +25,7 @@
                                 </Button.Content>
                             </Button>
                             <!-- SelectionBox -->
-                        <n:SelectionBox Background="White" Width="100" Height="200"/>
+                        <n:SelectionBox x:Name="_selectionBox" Background="White" Height="20"/>
                     </StackPanel>
 
 

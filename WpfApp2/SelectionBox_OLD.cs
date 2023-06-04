@@ -94,8 +94,6 @@ namespace Retros {
             }
 
             private void Toggle() {
-                DebugLibrary.Console.Log($"Collapsed: {_parent.IsCollapsed}");
-
                 _parent.Toggle();
 
                 if (_parent.IsCollapsed) {

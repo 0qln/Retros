@@ -7,8 +7,36 @@
   "targets": {
     ".NETCoreApp,Version=v7.0": {
       "CustomControlLibrary/1.0.0": {
+        "dependencies": {
+          "DebugLibrary": "1.0.0.0",
+          "Utillities": "1.0.0.0"
+        },
         "runtime": {
           "CustomControlLibrary.dll": {}
+        }
+      },
+      "DebugLibrary/1.0.0.0": {
+        "runtime": {
+          "DebugLibrary.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Utillities/1.0.0.0": {
+        "runtime": {
+          "Utillities.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "CommandLibrary/1.0.0.0": {
+        "runtime": {
+          "CommandLibrary.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }
@@ -16,6 +44,21 @@
   "libraries": {
     "CustomControlLibrary/1.0.0": {
       "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "DebugLibrary/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Utillities/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CommandLibrary/1.0.0.0": {
+      "type": "reference",
       "serviceable": false,
       "sha512": ""
     }
