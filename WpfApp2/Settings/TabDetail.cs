@@ -162,7 +162,11 @@ namespace Retros.Settings {
                 style.Setters.Add(new Setter(SelectionBox.OptionsTextBrushProperty, UIManager.ColorThemeManager.Current.FC1));
                 style.Setters.Add(new Setter(SelectionBox.OptionsBackgroundProperty, UIManager.ColorThemeManager.Current.BG1));
                 style.Setters.Add(new Setter(SelectionBox.OptionsBorderThicknessProperty, new Thickness(1.0)));
+                style.Setters.Add(new Setter(SelectionBox.OptionsBorderBrushProperty, UIManager.ColorThemeManager.Current.BC1));
+                style.Setters.Add(new Setter(SelectionBox.OptionBoxBorderBrushProperty, UIManager.ColorThemeManager.Current.BC2));
                 style.Setters.Add(new Setter(SelectionBox.BackgroundProperty, UIManager.ColorThemeManager.Current.BG1));
+                style.Setters.Add(new Setter(SelectionBox.BorderBrushProperty, UIManager.ColorThemeManager.Current.BC2));
+                style.Setters.Add(new Setter(SelectionBox.BorderThicknessProperty, new Thickness(1)));
                 style.Setters.Add(new Setter(SelectionBox.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
                 style.Setters.Add(new Setter(SelectionBox.HeightProperty, 20.0));
 
