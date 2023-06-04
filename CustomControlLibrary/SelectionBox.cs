@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Utillities.Wpf;
 
 namespace CustomControlLibrary {
     /// <summary>
@@ -46,6 +35,75 @@ namespace CustomControlLibrary {
     ///
     /// </summary>
     public class SelectionBox : Control {
+        //Option Box
+        public Brush OptionBoxBorderBrush {
+            get => (Brush)GetValue(OptionBoxBorderBrushProperty);
+            set => SetValue(OptionBoxBorderBrushProperty, value);
+        }
+        public static readonly DependencyProperty OptionBoxBorderBrushProperty =
+            DependencyProperty.Register(
+                "OptionBoxBorderBrush",
+                typeof(Brush),
+                typeof(SelectionBox),
+                new PropertyMetadata(Brushes.Transparent));
+
+        public Thickness OptionBoxBorderThickness {
+            get => (Thickness)GetValue(OptionBoxBorderThicknessProperty);
+            set => SetValue(OptionBoxBorderThicknessProperty, value);
+        }
+        public static readonly DependencyProperty OptionBoxBorderThicknessProperty =
+            DependencyProperty.Register(
+                "OptionBoxBorderThickness",
+                typeof(Thickness),
+                typeof(SelectionBox),
+                new PropertyMetadata(new Thickness(1)));
+
+        //Options
+        public Brush OptionsBackground {
+            get => (Brush)GetValue(OptionsBackgroundProperty);
+            set => SetValue(OptionsBackgroundProperty, value);
+        }
+        public static readonly DependencyProperty OptionsBackgroundProperty =
+            DependencyProperty.Register(
+                "OptionsBackground", 
+                typeof(Brush), 
+                typeof(SelectionBox), 
+                new PropertyMetadata(Brushes.White));
+
+        public Brush OptionsBorderBrush {
+            get => (Brush)GetValue(OptionsBorderBrushProperty);
+            set => SetValue(OptionsBorderBrushProperty, value);
+        }
+        public static readonly DependencyProperty OptionsBorderBrushProperty =
+            DependencyProperty.Register(
+                "OptionsBorderBrush",
+                typeof(Brush),
+                typeof(SelectionBox),
+                new PropertyMetadata(Brushes.Transparent));
+
+        public Thickness OptionsBorderThickness {
+            get => (Thickness)GetValue(OptionsBorderThicknessProperty);
+            set => SetValue(OptionsBorderThicknessProperty, value);
+        }
+        public static readonly DependencyProperty OptionsBorderThicknessProperty =
+            DependencyProperty.Register(
+                "OptionsBorderThickness",
+                typeof(Thickness),
+                typeof(SelectionBox),
+                new PropertyMetadata(new Thickness(1)));
+
+        public Brush OptionsTextBrush {
+            get => (Brush)GetValue(OptionsTextBrushProperty);
+            set => SetValue(OptionsTextBrushProperty, value);
+        }
+        public static readonly DependencyProperty OptionsTextBrushProperty =
+            DependencyProperty.Register(
+                "OptionsTextBrush",
+                typeof(Brush),
+                typeof(SelectionBox),
+                new PropertyMetadata(Brushes.White));
+
+
         private Popup? _popup;
         private Button? _toggleButton;
         private TextBlock? _textText;
@@ -55,6 +113,7 @@ namespace CustomControlLibrary {
         private StackPanel? _options;
 
         public bool IsCollapsed => _isCollapsed;
+        public string? Selected => _textText!.Text;
 
 
         static SelectionBox() {
@@ -67,7 +126,7 @@ namespace CustomControlLibrary {
 
             _toggleButton = GetTemplateChild("_toggleButton") as Button;
             if (_toggleButton != null) {
-                _toggleButton.Click += Button_Click;
+                _toggleButton.Click += (s, e) => Toggle();
             }
 
             _popup = GetTemplateChild("_popup") as Popup;
@@ -81,11 +140,13 @@ namespace CustomControlLibrary {
 
             Loaded += delegate {
                 if (_toggleButton is not null && _popup is not null) {
+                    Window.GetWindow(_toggleButton).LocationChanged += (s, e) => UpadteOptionsPosition();
+                }
+            };
 
-                    var adornerLayer = AdornerLayer.GetAdornerLayer(_toggleButton);
-                    adornerLayer.Add(new PoppupAdorner(_toggleButton));
-
-                    Window.GetWindow(_toggleButton).LocationChanged += (s,e) => UpadteOptionsPosition();
+            Window.GetWindow(_toggleButton).Deactivated += (s, e) => {
+                if (!IsCollapsed) {
+                    Toggle();
                 }
             };
         }
@@ -102,7 +163,7 @@ namespace CustomControlLibrary {
         }
 
 
-        private void Button_Click(object sender, RoutedEventArgs e) {
+        public void Toggle() {
             if (_arrowText is null
                 || _popup is null) return;
 
@@ -117,42 +178,54 @@ namespace CustomControlLibrary {
                 _arrowText.Text = "⮝";
                 _popup.IsOpen = false;
             }
-
-            DebugLibrary.Console.Log($"Collapsed: {IsCollapsed}");
         }
+
+
+        public void ChooseOption(string option) {
+            if (_textText is null ||
+                !_optionSet.Contains(option)) return;
+            _textText.Text = option;
+
+            Toggle();
+        }
+
 
         public void AddOption(string newOption) {
             if (_optionSet.Contains(newOption)
                 || _options == null) return;
 
             _optionSet.Add(newOption);
-            _options.Children.Add(new Button {
-                Content = newOption
-            });
+            var newButton = new Button { Content = newOption };
+            newButton.Click += (s, e) => ChooseOption(newOption);
+            _options.Children.Add(newButton);
         }
-    }
 
-    // Adorners must subclass the abstract base class Adorner.
-    internal class PoppupAdorner : Adorner {
-        // Be sure to call the base class constructor.
-        public PoppupAdorner(UIElement adornedElement) : base(adornedElement) { }
 
-        // A common way to implement an adorner's rendering behavior is to override the OnRender
-        // method, which is called by the layout system as part of a rendering pass.
-        protected override void OnRender(DrawingContext drawingContext) {
-            Rect adornedElementRect = new Rect(this.AdornedElement.DesiredSize);
+        private Button GetNewOptionButton(string name) {
+            Button button = new Button {
+                Content = name,
+                Background = OptionsBackground,
+                BorderBrush = OptionsBorderBrush,
+                BorderThickness = OptionsBorderThickness,
+                Foreground = OptionsTextBrush
+            };
 
-            // Some arbitrary drawing implements.
-            SolidColorBrush renderBrush = new SolidColorBrush(Colors.Green);
-            renderBrush.Opacity = 0.2;
-            Pen renderPen = new Pen(new SolidColorBrush(Colors.Navy), 1.5);
-            double renderRadius = 5.0;
+            return button;
+        }
 
-            // Draw a circle at each corner.
-            drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.TopLeft, renderRadius, renderRadius);
-            drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.TopRight, renderRadius, renderRadius);
-            drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.BottomLeft, renderRadius, renderRadius);
-            drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.BottomRight, renderRadius, renderRadius);
+
+        public void RemoveOption(string option) {
+            if (!_optionSet.Contains(option)) return;
+
+            _optionSet.Remove(option);
+            Button? optionButton = null;
+            foreach (Button child in _options!.Children) {
+                if (child.Content.ToString() == option) {
+                    optionButton = child;
+                    break;
+                }
+            }
+            _options.Children.Remove(optionButton);
         }
     }
 

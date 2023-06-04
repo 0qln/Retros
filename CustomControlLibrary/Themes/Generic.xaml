@@ -22,14 +22,15 @@
                                             <ColumnDefinition Width="{Binding ActualHeight, ElementName=_mainGrid}"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <TextBlock x:Name="_textText" Text="Test Text"
-                                                       Grid.Column="0"
-                                                       VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="_textText"
+                                                   Grid.Column="0"
+                                                   VerticalAlignment="Center"/>
 
-                                        <TextBlock x:Name="_arrowText" Text="⮟"
-                                                       Grid.Column="1"
-                                                       VerticalAlignment="Center"
-                                                       HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="_arrowText"
+                                                   Text="⮟"
+                                                   Grid.Column="1"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"/>
                                     </Grid>
                                 </Button.Content>
                             </Button>
@@ -38,9 +39,12 @@
                         <Popup x:Name="_popup"
                                IsOpen="False"
                                Placement="Bottom"
-                               PlacementTarget="{Binding ElementName=_border}">
+                               PlacementTarget="{Binding ElementName=_border}"
+                               PopupAnimation="Slide"
+                               AllowsTransparency="True">
 
-                            <Border Background="White">
+                            <Border BorderBrush="{TemplateBinding OptionBoxBorderBrush}"
+                                    BorderThickness="{TemplateBinding OptionBoxBorderThickness}">
                                 <StackPanel x:Name="_options"/>
                             </Border>
                         </Popup>

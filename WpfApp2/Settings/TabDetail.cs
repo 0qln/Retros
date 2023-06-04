@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CustomControlLibrary;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -149,6 +150,13 @@ namespace Retros.Settings {
                 style.Setters.Add(new Setter(TextBlock.BackgroundProperty, UIManager.ColorThemeManager.Current.BG6));
                 style.Setters.Add(new Setter(TextBlock.FontWeightProperty, FontWeights.SemiBold));
                 style.Setters.Add(new Setter(TextBlock.FontSizeProperty, 30.0));
+
+                return style;
+            }
+
+            public static Style SelectionBoxStyle() {
+                Style style = new Style(typeof(SelectionBox));
+                style.Setters.Add(new Setter(SelectionBox.OptionsTextBrushProperty, UIManager.ColorThemeManager.Current.FC1));
 
                 return style;
             }

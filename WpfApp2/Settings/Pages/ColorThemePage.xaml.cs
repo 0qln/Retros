@@ -33,22 +33,24 @@ namespace Retros.Settings.Pages {
             UIManager.ColorThemeManager.SetStyle(ImportDescription, TabDetail.Body.TextblockStyle);
             UIManager.ColorThemeManager.SetStyle(ExportDescription, TabDetail.Body.TextblockStyle);
 
+            ThemeSelectionBox.Loaded += (s,e) =>
             UpdateAvailableThemes();
 
-
-            _selectionBox.Loaded += (s,e) => _selectionBox.AddOption("New Option");
         }
 
         public void UpdateAvailableThemes() {
-            ///ThemeSelection.Items.Clear();
-            ///UIManager.ColorThemeManager.ColorThemes.ForEach(theme =>  ThemeSelection.Items.Add(theme.Name));
+            UIManager.ColorThemeManager.ColorThemes.ForEach(theme => ThemeSelectionBox.AddOption(theme.Name));
         }
 
         private void ChangeButton_Click(object sender, RoutedEventArgs e) {
-            ///var selected = ThemeSelection.SelectedIndex;
-            ///if (selected == -1) return;
+            var selected = ThemeSelectionBox.Selected;
+            var selectedTheme = 
+                UIManager.ColorThemeManager.ColorThemes.Find(
+                theme => theme.Name == selected);
 
-            ///UIManager.ColorThemeManager.SetTheme(UIManager.ColorThemeManager.ColorThemes[selected]);
+            if (selectedTheme != null) {
+                UIManager.ColorThemeManager.SetTheme(selectedTheme);
+            }
         }
 
         private void Import_Click(object sender, RoutedEventArgs e) {
