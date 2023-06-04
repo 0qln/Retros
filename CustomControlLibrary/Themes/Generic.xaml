@@ -13,7 +13,8 @@
                                     Width="{Binding ActualWidth, ElementName=_buttonGrid}"
                                     Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}">
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    Foreground="{TemplateBinding Foreground}">
 
                                 <Button.Content>
                                     <Grid x:Name="_buttonGrid">
@@ -44,7 +45,8 @@
                                AllowsTransparency="True">
 
                             <Border BorderBrush="{TemplateBinding OptionBoxBorderBrush}"
-                                    BorderThickness="{TemplateBinding OptionBoxBorderThickness}">
+                                    BorderThickness="{TemplateBinding OptionBoxBorderThickness}"
+                                    Background="{TemplateBinding OptionsBackground}">
                                 <StackPanel x:Name="_options"/>
                             </Border>
                         </Popup>

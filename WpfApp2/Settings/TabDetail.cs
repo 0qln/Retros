@@ -7,7 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using System.Xml.Linq;
 using Utillities.Wpf;
 
@@ -115,10 +118,10 @@ namespace Retros.Settings {
                 style.Setters.Add(new Setter(Button.HorizontalAlignmentProperty, HorizontalAlignment.Left));
                 style.Setters.Add(new Setter(Button.VerticalAlignmentProperty, VerticalAlignment.Center));
                 style.Setters.Add(new Setter(Button.HeightProperty, 20.0));
-                style.Setters.Add(new Setter(Button.ContentProperty, new TextBlock { Text="HEEIJLKEAJ", Margin = new Thickness(10, 0, 10, 0) } ));
+                style.Setters.Add(new Setter(Button.ContentProperty, new TextBlock { Margin = new Thickness(10, 0, 10, 0) } ));
 
 
-                ControlTemplate userButtonTemplate = new ControlTemplate(typeof(Button));
+                ControlTemplate buttonTemplate = new ControlTemplate(typeof(Button));
                 FrameworkElementFactory borderFactory = new FrameworkElementFactory(typeof(Border));
                 borderFactory.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Button.BackgroundProperty));
                 borderFactory.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Button.BorderBrushProperty));
@@ -130,14 +133,14 @@ namespace Retros.Settings {
 
                 borderFactory.AppendChild(contentPresenterFactory);
 
-                userButtonTemplate.VisualTree = borderFactory;
+                buttonTemplate.VisualTree = borderFactory;
 
                 Trigger mouseOverTrigger = new Trigger { Property = Button.IsMouseOverProperty, Value = true };
                 mouseOverTrigger.Setters.Add(new Setter(Button.BackgroundProperty, UIManager.ColorThemeManager.Current.BGh1));
 
-                userButtonTemplate.Triggers.Add(mouseOverTrigger);
+                buttonTemplate.Triggers.Add(mouseOverTrigger);
 
-                style.Setters.Add(new Setter(Button.TemplateProperty, userButtonTemplate));
+                style.Setters.Add(new Setter(Button.TemplateProperty, buttonTemplate));
 
                 style.Seal();
 
@@ -157,27 +160,21 @@ namespace Retros.Settings {
             public static Style SelectionBoxStyle() {
                 Style style = new Style(typeof(SelectionBox));
                 style.Setters.Add(new Setter(SelectionBox.OptionsTextBrushProperty, UIManager.ColorThemeManager.Current.FC1));
+                style.Setters.Add(new Setter(SelectionBox.OptionsBackgroundProperty, UIManager.ColorThemeManager.Current.BG2));
+                style.Setters.Add(new Setter(SelectionBox.OptionsBorderThicknessProperty, new Thickness(1.0)));
+                style.Setters.Add(new Setter(SelectionBox.BackgroundProperty, UIManager.ColorThemeManager.Current.BG1));
+                style.Setters.Add(new Setter(SelectionBox.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
+                style.Setters.Add(new Setter(SelectionBox.HeightProperty, 20.0));
 
-                return style;
-            }
-
-            public static Style ComboboxStyle() {
-                Style style = new Style(typeof(ComboBox));
-                style.Setters.Add(new Setter(ComboBox.HeightProperty, 20.0));
-                style.Setters.Add(new Setter(ComboBox.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
-                style.Setters.Add(new Setter(ComboBox.BackgroundProperty, UIManager.ColorThemeManager.Current.BG6));
                 return style;
             }
 
             public static Style CheckBoxStyle() {
-                Style style = new Style(typeof(CheckBox));
-                style.Setters.Add(new Setter(CheckBox.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
-                style.Setters.Add(new Setter(CheckBox.BackgroundProperty, UIManager.ColorThemeManager.Current.BG6));
-                style.Setters.Add(new Setter(CheckBox.BorderBrushProperty, UIManager.ColorThemeManager.Current.BC1));
-                style.Setters.Add(new Setter(CheckBox.VerticalAlignmentProperty, VerticalAlignment.Center));
+                Style style = new Style(typeof (CheckBox));
 
                 return style;
             }
+
             public static Style TextblockStyle() {
                 Style style = new Style(typeof(TextBlock));
                 style.Setters.Add(new Setter(TextBlock.MarginProperty, new Thickness(0, 5, 0, 0)));

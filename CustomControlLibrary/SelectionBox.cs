@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -61,18 +62,29 @@ namespace CustomControlLibrary {
         //Options
         public Brush OptionsBackground {
             get => (Brush)GetValue(OptionsBackgroundProperty);
-            set => SetValue(OptionsBackgroundProperty, value);
+            set { 
+                SetValue(OptionsBackgroundProperty, value);
+                foreach (Button option in _options!.Children) {
+                    option.Background = value;
+                }
+                DebugLibrary.Console.Log("BG changed");
+            }
         }
         public static readonly DependencyProperty OptionsBackgroundProperty =
             DependencyProperty.Register(
                 "OptionsBackground", 
                 typeof(Brush), 
                 typeof(SelectionBox), 
-                new PropertyMetadata(Brushes.White));
+                new PropertyMetadata(Brushes.CornflowerBlue));
 
         public Brush OptionsBorderBrush {
             get => (Brush)GetValue(OptionsBorderBrushProperty);
-            set => SetValue(OptionsBorderBrushProperty, value);
+            set {
+                SetValue(OptionsBorderBrushProperty, value);
+                foreach (Button option in _options!.Children) {
+                    option.BorderBrush = value;
+                }
+            }
         }
         public static readonly DependencyProperty OptionsBorderBrushProperty =
             DependencyProperty.Register(
@@ -83,7 +95,12 @@ namespace CustomControlLibrary {
 
         public Thickness OptionsBorderThickness {
             get => (Thickness)GetValue(OptionsBorderThicknessProperty);
-            set => SetValue(OptionsBorderThicknessProperty, value);
+            set {
+                SetValue(OptionsBorderThicknessProperty, value);
+                foreach (Button option in _options!.Children) {
+                    option.BorderThickness = value;
+                }
+            }
         }
         public static readonly DependencyProperty OptionsBorderThicknessProperty =
             DependencyProperty.Register(
@@ -94,7 +111,12 @@ namespace CustomControlLibrary {
 
         public Brush OptionsTextBrush {
             get => (Brush)GetValue(OptionsTextBrushProperty);
-            set => SetValue(OptionsTextBrushProperty, value);
+            set {
+                SetValue(OptionsTextBrushProperty, value);
+                foreach (Button option in _options!.Children) {
+                    option.Foreground = value;
+                }
+            }
         }
         public static readonly DependencyProperty OptionsTextBrushProperty =
             DependencyProperty.Register(
@@ -102,6 +124,16 @@ namespace CustomControlLibrary {
                 typeof(Brush),
                 typeof(SelectionBox),
                 new PropertyMetadata(Brushes.White));
+
+
+        public new Style Style {
+            get => base.Style;
+            set {
+                DebugLibrary.Console.Log("Style changed");
+                base.Style = value;
+                OptionsBackground = (Brush)GetValue(value, OptionsBackgroundProperty)!;
+            }
+        }
 
 
         private Popup? _popup;
@@ -118,6 +150,13 @@ namespace CustomControlLibrary {
 
         static SelectionBox() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(SelectionBox), new FrameworkPropertyMetadata(typeof(SelectionBox)));
+        }
+
+        private static object? GetValue(Style style, DependencyProperty property) {
+            return 
+            ((Setter)style.Setters.First(
+                s => (s as Setter)!.Property == property
+            )).Value;
         }
 
         public override void OnApplyTemplate() {
@@ -195,7 +234,7 @@ namespace CustomControlLibrary {
                 || _options == null) return;
 
             _optionSet.Add(newOption);
-            var newButton = new Button { Content = newOption };
+            var newButton = GetNewOptionButton(newOption);
             newButton.Click += (s, e) => ChooseOption(newOption);
             _options.Children.Add(newButton);
         }
@@ -211,6 +250,15 @@ namespace CustomControlLibrary {
             };
 
             return button;
+        }
+
+        private void UpdateOptionButtonVisuals () {
+            foreach (Button option in _options!.Children) {
+                option.Background = OptionsBackground;
+                option.BorderBrush = OptionsBorderBrush;
+                option.Foreground = OptionsTextBrush;
+                option.BorderThickness = OptionsBorderThickness;
+            }
         }
 
 

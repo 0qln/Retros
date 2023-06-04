@@ -32,10 +32,10 @@ namespace Retros.Settings.Pages {
             UIManager.ColorThemeManager.SetStyle(ExportText, TabDetail.Body.TextboxStyle);
             UIManager.ColorThemeManager.SetStyle(ImportDescription, TabDetail.Body.TextblockStyle);
             UIManager.ColorThemeManager.SetStyle(ExportDescription, TabDetail.Body.TextblockStyle);
+            ThemeSelectionBox.Loaded += (s,e) => UIManager.ColorThemeManager.SetStyle(ThemeSelectionBox, TabDetail.Body.SelectionBoxStyle);
+            
 
-            ThemeSelectionBox.Loaded += (s,e) =>
-            UpdateAvailableThemes();
-
+            ThemeSelectionBox.Loaded += (s,e) => UpdateAvailableThemes();            
         }
 
         public void UpdateAvailableThemes() {

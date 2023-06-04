@@ -12,6 +12,7 @@ using System.IO;
 using Utillities.Wpf;
 using System.Diagnostics.Contracts;
 using System.Reflection;
+using CustomControlLibrary;
 
 namespace Retros {
     public class ColorThemeManager {
@@ -110,8 +111,13 @@ namespace Retros {
 
         public delegate Style DStyle();
         public void SetStyle(FrameworkElement element, DStyle style) {
-            element.Style = style();
-            ThemeChanged += () => { element.Style = style(); };
+            if (element is SelectionBox) {
+                ThemeChanged += delegate { (element as SelectionBox)!.Style = style(); };
+            }
+            else {
+                ThemeChanged += delegate { element.Style = style(); };
+            }
+            ThemeChanged.Invoke();
         }
         public static class Styles {
             public static Style SettingDetailTextbox() {
