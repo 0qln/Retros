@@ -20,20 +20,20 @@ using System.Windows.Automation;
 
 namespace Retros.ProgramWindow.DisplaySystem {
     public partial class WorkstationImage : IFrameworkElement {
-        public FrameworkElement FrameworkElement => CurrentImage;
+        public FrameworkElement FrameworkElement => pageFrame;
         private WriteableBitmap resizedSourceBitmap;
-        private Image currentImage = new();
         private Uri source;
-        private Grid imagesGrid = new();
         private ChangeHistory changeHistory = new();
         private ImageChangeManager filterManager;
         private DispatcherTimer actionTimer = new();
         private Queue<Action> actionQueue = new();
+        private Frame pageFrame = new();
 
+        /// <summary>Used to display the image.</summary>
+        private readonly WorkstationImagePage Page = new();
 
         /// <summary>Used to display the current image.</summary>
-        public Image CurrentImage => currentImage;
-        private DropShadowEffect dropShadowEffect;
+        public Image CurrentImage => Page.Image;
 
         /// <summary>Chaches the source image.</summary>
         public Uri Source => source;
@@ -44,49 +44,83 @@ namespace Retros.ProgramWindow.DisplaySystem {
         /// <summary>Works as a computation/backend image for the filters to work on.</summary>
         public WriteableBitmap DummyImage { get; set; }
 
-        public Grid Grid => imagesGrid;
-        public ChangeHistory History => changeHistory;
+        /// <summary>Main Grid</summary>
+        public Grid Grid => Page.MainGrid;
+
+        /// <summary>The FilterManager instance for this WorkstationImage.</summary>
         public ImageChangeManager GetFilterManager => filterManager;
 
+        //TODO:
+        /// <summary>Keeps track of all the changes that were applied to the image.</summary>
+        public ChangeHistory History => changeHistory;
 
+
+
+        private Thickness _margin = new Thickness(50);
+        public Thickness ImageMargin {
+            get {
+                return _margin;
+            }
+            set {
+                _margin = value;
+                Page.Image.Margin = _margin;
+            }
+        }
+        private List<float> dp_tValues = new(); /// caches the opacity curve
+        private bool isCalculated = false;
+        private static int smoothness = 1;
+        public int InterpolationSmoothness {
+            get => smoothness;
+            set {
+                smoothness = value;
+                isCalculated = false;
+            }
+        }
+        private static float totalInterpolationTime = 150; /// reccomendet to have this the same as the interval in which the filters are applied
+        public float TotalInterpolationTime {
+            get => totalInterpolationTime;
+            set {
+                totalInterpolationTime = value;
+                isCalculated = false;
+            }
+        }
+        private float interval = 6.94444444444f; /// time between ticks
+        private bool enableStartboost = false;
+        private float startBoost {
+            get {
+                if (enableStartboost) {
+                    return smoothness;
+                }
+                else {
+                    return 0;
+                }
+            }
+        } /// recomendet for high smoothness (This approximates, will not work for very high values)
+        private int imageCount = 1; /// used to set the newest images to the front
+        public delegate float InterpolationFuntionHandler(float t);
+        public InterpolationFuntionHandler InterpolationFuntion = (t) => ExtendedMath.RootStep(ExtendedMath.RootStep(t, smoothness, 0, totalInterpolationTime));
+
+
+
+
+#pragma warning disable CS8618 // Ein Non-Nullable-Feld muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Erwägen Sie die Deklaration als Nullable.
         public WorkstationImage(string path) {
+            _init();
+
             source = new Uri(path);
-            filterManager = new(this);
-            currentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
-            _margin = new Thickness(50);
-            currentImage.Margin = _margin;
-            
-            dropShadowEffect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
-            SettingsManager.WorkstationImageShadow.BlurRadius += (value) => dropShadowEffect.BlurRadius = value;
-            SettingsManager.WorkstationImageShadow.ShadowDepth += (value) => dropShadowEffect.ShadowDepth = value;
-            SettingsManager.WorkstationImageShadow.Opacity += (value) => dropShadowEffect.Opacity = value;
-            SettingsManager.WorkstationImageShadow.Direction += (value) => dropShadowEffect.Direction = value;
-            SettingsManager.WorkstationImageShadow.Enabled += (enabled) => {
-                if (enabled) currentImage.Effect = dropShadowEffect;
-                else currentImage.Effect = null;
-            };
-
-            imagesGrid.Children.Add(currentImage);
-
-            StartUpdating();
             SetSourceImage(source);
         }
-        public WorkstationImage() {
+        public WorkstationImage() { 
+            _init(); 
+        }
+
+        private void _init() {
+            pageFrame.Content = Page;
             filterManager = new(this);
             StartUpdating();
-            currentImage.HorizontalAlignment = HorizontalAlignment.Stretch;
-            currentImage.Margin = new Thickness(50);
-            imagesGrid.Children.Add(currentImage);
-            dropShadowEffect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
-            SettingsManager.WorkstationImageShadow.BlurRadius += (value) => dropShadowEffect.BlurRadius = value;
-            SettingsManager.WorkstationImageShadow.ShadowDepth += (value) => dropShadowEffect.ShadowDepth = value;
-            SettingsManager.WorkstationImageShadow.Opacity += (value) => dropShadowEffect.Opacity = value;
-            SettingsManager.WorkstationImageShadow.Direction += (value) => dropShadowEffect.Direction = value;
-            SettingsManager.WorkstationImageShadow.Enabled += (enabled) => {
-                if (enabled) currentImage.Effect = dropShadowEffect;
-                else currentImage.Effect = null;
-            };
         }
+
+#pragma warning restore CS8618 // Ein Non-Nullable-Feld muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Erwägen Sie die Deklaration als Nullable.
 
 
         public void SetSourceImage(Uri source) {
@@ -96,7 +130,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
             double screenHeight = SystemParameters.PrimaryScreenHeight;
             resizedSourceBitmap = ResizeWritableBitmap(new BitmapImage(source), (int) screenWidth, (int) screenHeight);
 
-            currentImage.Source = resizedSourceBitmap.Clone();
+            Page.Image.Source = resizedSourceBitmap.Clone();
             DummyImage = new WriteableBitmap(resizedSourceBitmap);
         }
 
@@ -334,55 +368,12 @@ namespace Retros.ProgramWindow.DisplaySystem {
         }
         private void AddTaskToQueue(Action action) => actionQueue.Enqueue(action);
 
-        /*
-        public void SetSource(ImageSource source) {
-            sourceImage.Source = source;
-            currentImage.Source = source;
-            DummyImage = new WriteableBitmap((BitmapSource)SourceImage.Source);
-        }
-        */
-
         public void ResetCurrent() {
             AddTaskToQueue(__Execute__ResetCurrent);
         }
         private void __Execute__ResetCurrent() {
-            currentImage.Source = new BitmapImage(source);
+            Page.Image.Source = new BitmapImage(source);
         }
-
-
-        private Thickness _margin;
-        private List<float> dp_tValues = new(); /// caches the opacity curve
-        private bool isCalculated = false;
-        private static int smoothness = 1;
-        public int InterpolationSmoothness {
-            get => smoothness;
-            set {
-                smoothness = value;
-                isCalculated = false;
-            }
-        }
-        private static float totalInterpolationTime = 150; /// reccomendet to have this the same as the interval in which the filters are applied
-        public float TotalInterpolationTime {
-            get => totalInterpolationTime;
-            set {
-                totalInterpolationTime = value;
-                isCalculated = false;
-            }
-        }
-        private float interval = 6.94444444444f; /// time between ticks
-        private bool enableStartboost = false;
-        private float startBoost { get {
-                if (enableStartboost) {
-                    return smoothness;
-                }
-                else {
-                    return 0;
-                }
-            }
-        } /// recomendet for high smoothness (This approximates, will not work for very high values)
-        private int imageCount = 1; /// used to set the newest images to the front
-        public delegate float InterpolationFuntionHandler(float t);
-        public InterpolationFuntionHandler InterpolationFuntion = (t) => ExtendedMath.RootStep(ExtendedMath.RootStep(t, smoothness, 0, totalInterpolationTime));
 
         public void ChangeCurentImage(ImageSource imageSource) {
             AddTaskToQueue(() => __Execute__ChangeCurentImage(imageSource));
@@ -392,7 +383,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
             imageCount++;
             Image newImage = new Image { Source = imageSource };
             newImage.Opacity = 0;
-            Helper.SetChildInGrid((currentImage.Parent as Grid)!, newImage, Grid.GetRow(currentImage), Grid.GetColumn(currentImage));
+            Helper.SetChildInGrid(Page.MainGrid, newImage, Grid.GetRow(Page.Image), Grid.GetColumn(Page.Image));
             //newImage.Margin = new Thickness(
             //currentImage.Margin.Left + 10 * imageCount, 
             //CurrentImage.Margin.Top + 10 * imageCount, 
@@ -400,7 +391,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
             //CurrentImage.Margin.Bottom - 10 * imageCount);
             newImage.Margin = _margin;
             Canvas.SetZIndex(newImage, 10);
-            Canvas.SetZIndex(currentImage, 10 / imageCount);
+            Canvas.SetZIndex(Page.Image, 10 / imageCount);
 
             // Interpolate
             if (isCalculated) { // isCalculated
@@ -412,11 +403,11 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
                     i++;
                     if (i >= dp_tValues.Count) {
-                        newImage.Effect = currentImage.Effect;
-                        currentImage.Effect = null;
-                        (currentImage.Parent as Grid)!.Children.Remove(currentImage);
-                        currentImage = newImage;
-                        currentImage.Margin = _margin;
+                        newImage.Effect = Page.Image.Effect;
+                        Page.Image.Effect = null;
+                        Page.MainGrid.Children.Remove(Page.Image);
+                        Page.Image = newImage;
+                        Page.Image.Margin = _margin;
                         imageCount--;
                         timer.Stop();
                     }
@@ -436,10 +427,10 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
                     t += interval;
                     if (t >= totalInterpolationTime) {
-                        newImage.Effect = currentImage.Effect;
-                        currentImage.Effect = null;
-                        (currentImage.Parent as Grid)!.Children.Remove(currentImage);
-                        currentImage = newImage;
+                        newImage.Effect = Page.Image.Effect;
+                        Page.Image.Effect = null;
+                        Page.MainGrid.Children.Remove(Page.Image);
+                        Page.Image = newImage;
                         imageCount--;
                         isCalculated = true;
                         timer.Stop();

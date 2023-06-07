@@ -55,7 +55,7 @@ namespace Retros
             Helper.SetChildInGrid(WorkStationGrid, workstation.FrameworkElement, 1, 0);
 
             UIManager.ColorThemeManager.Set_BG1(b => WorkStationImageGrid.Background = b);
-            Helper.SetChildInGrid(WorkStationImageGrid, workstation.ImageElement.Grid, 0, 0);
+            Helper.SetChildInGrid(WorkStationImageGrid, workstation.ImageElement.FrameworkElement, 0, 0);
 
             workstation.TableElement.AddTab(new ImageFilterTab(new ImageFilter(workstation.ImageElement), new DefaultHandle("Filters")));
             workstation.TableElement.AddTab(new TestTab(new Test(workstation.ImageElement), new DefaultHandle("Testing")));

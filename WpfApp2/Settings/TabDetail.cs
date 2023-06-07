@@ -137,6 +137,7 @@ namespace Retros.Settings {
 
                 Trigger mouseOverTrigger = new Trigger { Property = Button.IsMouseOverProperty, Value = true };
                 mouseOverTrigger.Setters.Add(new Setter(Button.BackgroundProperty, UIManager.ColorThemeManager.Current.BGh1));
+                mouseOverTrigger.Setters.Add(new Setter(Button.BorderBrushProperty, UIManager.ColorThemeManager.Current.BCh2));
 
                 buttonTemplate.Triggers.Add(mouseOverTrigger);
 
@@ -202,9 +203,37 @@ namespace Retros.Settings {
                 style.Setters.Add(new Setter(TextBox.ForegroundProperty, UIManager.ColorThemeManager.Current.FC2));
                 style.Setters.Add(new Setter(TextBox.MaxLinesProperty, 1));
                 style.Setters.Add(new Setter(TextBox.TextWrappingProperty, TextWrapping.Wrap));
+                style.Setters.Add(new Setter(TextBox.CaretBrushProperty, UIManager.ColorThemeManager.Current.AC1));
 
+                style.Setters.Add(new Setter(TextBox.TextProperty, new Binding("Text") { RelativeSource = new RelativeSource(RelativeSourceMode.Self) }));
+
+                ControlTemplate textBoxTemplate = new ControlTemplate(typeof(TextBox));
+                FrameworkElementFactory borderFactory = new FrameworkElementFactory(typeof(Border));
+                borderFactory.SetValue(Border.BackgroundProperty, new Binding("Background") { RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent) });
+                borderFactory.SetValue(Border.BorderBrushProperty, new Binding("BorderBrush") { RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent) });
+                borderFactory.SetValue(Border.BorderThicknessProperty, new Binding("BorderThickness") { RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent) });
+
+                FrameworkElementFactory contentPresenterFactory = new FrameworkElementFactory(typeof(ContentPresenter));
+                contentPresenterFactory.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+                contentPresenterFactory.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+                contentPresenterFactory.SetValue(TextBox.CaretBrushProperty, UIManager.ColorThemeManager.Current.AC1);
+                contentPresenterFactory.SetBinding(ContentPresenter.ContentProperty, new Binding("Text") { RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent) });
+
+                borderFactory.AppendChild(contentPresenterFactory);
+
+                textBoxTemplate.VisualTree = borderFactory;
+
+                Trigger mouseOverTrigger = new Trigger { Property = TextBox.IsMouseOverProperty, Value = true };
+                mouseOverTrigger.Setters.Add(new Setter(TextBox.BorderBrushProperty, UIManager.ColorThemeManager.Current.BCh2));
+
+                textBoxTemplate.Triggers.Add(mouseOverTrigger);
+
+                style.Setters.Add(new Setter(TextBox.TemplateProperty, textBoxTemplate));
+
+                style.Seal();
                 return style;
             }
+
         }
     }
 }

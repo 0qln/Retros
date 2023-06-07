@@ -19,10 +19,10 @@ namespace Retros.ProgramWindow {
         public FrameworkElement FrameworkElement => border;
 
         // System
-        public WorkstationImage ImageElement = new(defaultPath);
+        public WorkstationImage ImageElement = new(DefaultPath);
         public WorkstationTable TableElement = new(MainGrid);
 
-        private static string defaultPath => @"C:\Users\User\OneDrive\Bilder\alexandre-cabanel-fallen-angel-1847-obelisk-art-history.png";
+        public readonly static string DefaultPath = @"C:\Users\User\OneDrive\Bilder\alexandre-cabanel-fallen-angel-1847-obelisk-art-history.png";
 
         public Workstation() {
             // Init Border

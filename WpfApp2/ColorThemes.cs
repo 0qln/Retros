@@ -34,7 +34,7 @@ namespace Retros.ColorThemes {
         public Brush BC3 { get; } = Helper.StringToSolidColorBrush("#000000", 0);
 
         public Brush BCh1 { get; } = Helper.StringToSolidColorBrush("#000000", 0);
-        public Brush BCh2 { get; } = Helper.StringToSolidColorBrush("#000000", 0);
+        public Brush BCh2 { get; } = Helper.StringToSolidColorBrush("#FFFFFF", 1);
         public Brush BCh3 { get; } = Helper.StringToSolidColorBrush("#000000", 0);
     }
 

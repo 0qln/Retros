@@ -348,4 +348,12 @@ namespace CustomControlLibrary {
         }
     }
 
+
+
+
+    public class TextField : Control {
+        static TextField() {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(TextField), new FrameworkPropertyMetadata(typeof(TextField)));
+        }
+    }
 }
