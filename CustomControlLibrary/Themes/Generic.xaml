@@ -7,39 +7,38 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:SelectionBox}">
                     <Grid x:Name="_mainGrid">
-                        <AdornerDecorator>
-                            <Button x:Name="_toggleButton"
-                                    Grid.ColumnSpan="2"
-                                    Width="{Binding ActualWidth, ElementName=_buttonGrid}"
-                                    Background="{TemplateBinding Background}"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    Foreground="{TemplateBinding Foreground}">
+                        <Border x:Name="_toggleRegion"
+                                Grid.ColumnSpan="2"
+                                Width="{Binding ActualWidth, ElementName=_buttonGrid}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
 
-                                <Button.Content>
-                                    <Grid x:Name="_buttonGrid">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="{Binding ActualHeight, ElementName=_mainGrid}"/>
-                                        </Grid.ColumnDefinitions>
+                            <Border.Child>
+                                <Grid x:Name="_buttonGrid">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="{Binding ActualHeight, ElementName=_mainGrid}"/>
+                                    </Grid.ColumnDefinitions>
 
-                                        <TextBlock x:Name="_textText"
-                                                   Grid.Column="0"
-                                                   VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="_textText"
+                                                    Grid.Column="0"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="{TemplateBinding Foreground}"/>
 
-                                        <Grid Grid.Column="1"
-                                              VerticalAlignment="Stretch"
-                                              HorizontalAlignment="Stretch">
-                                            <TextBlock x:Name="_arrowText"
-                                                       Text="⮟"
-                                                       VerticalAlignment="Center"
-                                                       HorizontalAlignment="Center"
-                                                       Margin="0,0,5,0"/>
-                                        </Grid>
+                                    <Grid Grid.Column="1"
+                                                VerticalAlignment="Stretch"
+                                                HorizontalAlignment="Stretch">
+                                        <TextBlock x:Name="_arrowText"
+                                                        Text=" ⮝"
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Center"
+                                                        Margin="0,0,5,0"
+                                                        Foreground="{TemplateBinding Foreground}"/>
                                     </Grid>
-                                </Button.Content>
-                            </Button>
-                        </AdornerDecorator>
+                                </Grid>
+                            </Border.Child>
+                        </Border>
 
                         <Popup x:Name="_popup"
                                IsOpen="False"
@@ -54,10 +53,13 @@
                                 <StackPanel x:Name="_options"/>
                             </Border>
                         </Popup>
-
                     </Grid>
 
+
                 </ControlTemplate>
+                
+                
+                
             </Setter.Value>
         </Setter>
     </Style>

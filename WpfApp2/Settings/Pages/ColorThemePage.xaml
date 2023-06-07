@@ -13,7 +13,7 @@
 
             <StackPanel x:Name="MainStackpanel">
 
-                <TextBlock x:Name="Headline" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=Title}"/>
+            <TextBlock x:Name="Headline" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=Title}"/>
 
                 <Canvas x:Name="_canvas" Height="{Binding ActualHeight, ElementName=SubStackpanel}">
                     <StackPanel x:Name="SubStackpanel">

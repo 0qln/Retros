@@ -23,7 +23,6 @@ namespace Retros.Settings.Pages {
         {
             InitializeComponent();
 
-
             UIManager.ColorThemeManager.SetStyle(Headline, TabDetail.Body.HeadlineStyle);
             UIManager.ColorThemeManager.SetStyle(ChangeButton, TabDetail.Body.ButtonStyle);
             UIManager.ColorThemeManager.SetStyle(ImportButton, TabDetail.Body.ButtonStyle);
@@ -32,10 +31,9 @@ namespace Retros.Settings.Pages {
             UIManager.ColorThemeManager.SetStyle(ExportText, TabDetail.Body.TextboxStyle);
             UIManager.ColorThemeManager.SetStyle(ImportDescription, TabDetail.Body.TextblockStyle);
             UIManager.ColorThemeManager.SetStyle(ExportDescription, TabDetail.Body.TextblockStyle);
-            ThemeSelectionBox.Loaded += (s,e) => UIManager.ColorThemeManager.SetStyle(ThemeSelectionBox, TabDetail.Body.SelectionBoxStyle);
-            
-
-            ThemeSelectionBox.Loaded += (s,e) => UpdateAvailableThemes();            
+            UIManager.ColorThemeManager.SetStyle(ThemeSelectionBox, TabDetail.Body.SelectionBoxStyle);
+         
+            UpdateAvailableThemes();            
         }
 
         public void UpdateAvailableThemes() {

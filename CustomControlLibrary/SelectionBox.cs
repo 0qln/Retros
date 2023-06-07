@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -37,97 +38,96 @@ namespace CustomControlLibrary {
     ///
     /// </summary>
     public class SelectionBox : Control {
+        //toggle Button
+        public Brush BorderBrushOnHover {
+            get => (Brush)GetValue(BorderBrushOnHoverProperty);
+            set => SetValue(BorderBrushOnHoverProperty, value);
+        }
+        public static readonly DependencyProperty BorderBrushOnHoverProperty =
+            DependencyProperty.Register("BorderBrushOnHover", typeof(Brush), typeof(SelectionBox), new PropertyMetadata(Brushes.Tomato));
+
         //Option Box
         public Brush OptionBoxBorderBrush {
             get => (Brush)GetValue(OptionBoxBorderBrushProperty);
             set => SetValue(OptionBoxBorderBrushProperty, value);
         }
         public static readonly DependencyProperty OptionBoxBorderBrushProperty =
-            DependencyProperty.Register(
-                "OptionBoxBorderBrush",
-                typeof(Brush),
-                typeof(SelectionBox),
-                new PropertyMetadata(Brushes.Transparent));
+            DependencyProperty.Register("OptionBoxBorderBrush", typeof(Brush), typeof(SelectionBox), new PropertyMetadata(Brushes.Transparent));
 
         public Thickness OptionBoxBorderThickness {
             get => (Thickness)GetValue(OptionBoxBorderThicknessProperty);
             set => SetValue(OptionBoxBorderThicknessProperty, value);
         }
         public static readonly DependencyProperty OptionBoxBorderThicknessProperty =
-            DependencyProperty.Register(
-                "OptionBoxBorderThickness",
-                typeof(Thickness),
-                typeof(SelectionBox),
-                new PropertyMetadata(new Thickness(1)));
+            DependencyProperty.Register("OptionBoxBorderThickness", typeof(Thickness), typeof(SelectionBox), new PropertyMetadata(new Thickness(1)));
 
         //Options
         public Brush OptionsBackground {
             get => (Brush)GetValue(OptionsBackgroundProperty);
             set {
                 SetValue(OptionsBackgroundProperty, value);
-                foreach (Button option in _options!.Children) {
+                foreach (Border option in _options!.Children) {
                     option.Background = value;
                 }
-                DebugLibrary.Console.Log("BG changed");
             }
         }
+        public static readonly DependencyProperty OptionsBackgroundOnHoverProperty =
+            DependencyProperty.Register("OptionsBackgroundOnHover", typeof(Brush), typeof(SelectionBox), new PropertyMetadata(Brushes.CornflowerBlue));
+
+        public Brush OptionsBackgroundOnHover {
+            get => (Brush)GetValue(OptionsBackgroundOnHoverProperty);
+            set => SetValue(OptionsBackgroundOnHoverProperty, value);
+        }
         public static readonly DependencyProperty OptionsBackgroundProperty =
-            DependencyProperty.Register(
-                "OptionsBackground",
-                typeof(Brush),
-                typeof(SelectionBox),
-                new PropertyMetadata(Brushes.CornflowerBlue));
+            DependencyProperty.Register("OptionsBackground", typeof(Brush), typeof(SelectionBox), new PropertyMetadata(Brushes.CornflowerBlue));
 
         public Brush OptionsBorderBrush {
             get => (Brush)GetValue(OptionsBorderBrushProperty);
             set {
                 SetValue(OptionsBorderBrushProperty, value);
-                foreach (Button option in _options!.Children) {
+                foreach (Border option in _options!.Children) {
                     option.BorderBrush = value;
                 }
             }
         }
         public static readonly DependencyProperty OptionsBorderBrushProperty =
-            DependencyProperty.Register(
-                "OptionsBorderBrush",
-                typeof(Brush),
-                typeof(SelectionBox),
-                new PropertyMetadata(Brushes.Transparent));
+            DependencyProperty.Register("OptionsBorderBrush", typeof(Brush), typeof(SelectionBox), new PropertyMetadata(Brushes.Transparent));
+
+        public Brush OptionsBorderBrushOnHover {
+            get => (Brush)GetValue(OptionsBorderBrushPropertyOnHover);
+            set => SetValue(OptionsBorderBrushPropertyOnHover, value);
+        }
+        public static readonly DependencyProperty OptionsBorderBrushPropertyOnHover =
+            DependencyProperty.Register("OptionsBorderBrushOnHover", typeof(Brush), typeof(SelectionBox), new PropertyMetadata(Brushes.Transparent));
 
         public Thickness OptionsBorderThickness {
             get => (Thickness)GetValue(OptionsBorderThicknessProperty);
             set {
                 SetValue(OptionsBorderThicknessProperty, value);
-                foreach (Button option in _options!.Children) {
+                foreach (Border option in _options!.Children) {
                     option.BorderThickness = value;
                 }
             }
         }
         public static readonly DependencyProperty OptionsBorderThicknessProperty =
-            DependencyProperty.Register(
-                "OptionsBorderThickness",
-                typeof(Thickness),
-                typeof(SelectionBox),
-                new PropertyMetadata(new Thickness(1)));
+            DependencyProperty.Register("OptionsBorderThickness", typeof(Thickness), typeof(SelectionBox), new PropertyMetadata(new Thickness(1)));
 
         public Brush OptionsTextBrush {
             get => (Brush)GetValue(OptionsTextBrushProperty);
             set {
                 SetValue(OptionsTextBrushProperty, value);
-                foreach (Button option in _options!.Children) {
-                    option.Foreground = value;
+                foreach (Border option in _options!.Children) {
+                    (option.Child as TextBlock)!.Foreground = value;
                 }
             }
         }
         public static readonly DependencyProperty OptionsTextBrushProperty =
-            DependencyProperty.Register(
-                "OptionsTextBrush",
-                typeof(Brush),
-                typeof(SelectionBox),
-                new PropertyMetadata(Brushes.White));
+            DependencyProperty.Register("OptionsTextBrush", typeof(Brush), typeof(SelectionBox), new PropertyMetadata(Brushes.White));
+
 
         private Dictionary<DependencyProperty, object> Properties = new();
         private Dictionary<DependencyProperty, object> GetProperties() {
+            AddProperty(BorderBrushOnHoverProperty, BorderBrushOnHover);
             AddProperty(OptionBoxBorderBrushProperty, OptionBoxBorderBrush);
             AddProperty(OptionBoxBorderThicknessProperty, OptionBoxBorderThickness);
             AddProperty(OptionsBackgroundProperty, OptionsBackground);
@@ -149,26 +149,38 @@ namespace CustomControlLibrary {
         public new Style Style {
             get => base.Style;
             set {
-                DebugLibrary.Console.Log("Style changed");
-                base.Style = value;
-                GetProperties();
-                OptionBoxBorderBrush = (Brush)GetValue(value, OptionBoxBorderBrushProperty)!;
-                OptionBoxBorderThickness = (Thickness)GetValue(value, OptionBoxBorderThicknessProperty)!;
-                OptionsBackground = (Brush)GetValue(value, OptionsBackgroundProperty)!;
-                OptionsBorderBrush = (Brush)GetValue(value, OptionsBorderBrushProperty)!;
-                OptionsBorderThickness = (Thickness)GetValue(value, OptionsBorderThicknessProperty)!;
-                OptionsTextBrush = (Brush)GetValue(value, OptionsTextBrushProperty)!;
+                if (!IsLoaded) {
+                    _doAfterLoadedActions.Enqueue(() => {
+                        _setStyle(value);
+                    });
+                }
+                else {
+                    _setStyle(value);
+                }
             }
         }
-
+        private void _setStyle(Style value) {
+            base.Style = value;
+            GetProperties();
+            BorderBrushOnHover = (Brush)GetPropertyValue(value, BorderBrushOnHoverProperty)!;
+            OptionBoxBorderBrush = (Brush)GetPropertyValue(value, OptionBoxBorderBrushProperty)!;
+            OptionBoxBorderThickness = (Thickness)GetPropertyValue(value, OptionBoxBorderThicknessProperty)!;
+            OptionsBackground = (Brush)GetPropertyValue(value, OptionsBackgroundProperty)!;
+            OptionsBorderBrush = (Brush)GetPropertyValue(value, OptionsBorderBrushProperty)!;
+            OptionsBorderThickness = (Thickness)GetPropertyValue(value, OptionsBorderThicknessProperty)!;
+            OptionsTextBrush = (Brush)GetPropertyValue(value, OptionsTextBrushProperty)!;
+        }
 
         private Popup? _popup;
-        private Button? _toggleButton;
+        private Border? _toggleRegion;
         private TextBlock? _textText;
         private TextBlock? _arrowText;
         private bool _isCollapsed = true;
         private HashSet<string> _optionSet = new();
         private StackPanel? _options;
+
+        private Queue<Action> _doAfterLoadedActions = new();
+        
 
         public bool IsCollapsed => _isCollapsed;
         public string? Selected => _textText!.Text;
@@ -178,7 +190,7 @@ namespace CustomControlLibrary {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(SelectionBox), new FrameworkPropertyMetadata(typeof(SelectionBox)));
         }
 
-        private object? GetValue(Style style, DependencyProperty property) {
+        private object? GetPropertyValue(Style style, DependencyProperty property) {
             bool hasProperty = false;
             foreach (Setter setter in style.Setters) {
                 if (setter.Property == property) {
@@ -203,9 +215,11 @@ namespace CustomControlLibrary {
             base.OnApplyTemplate();
 
 
-            _toggleButton = GetTemplateChild("_toggleButton") as Button;
-            if (_toggleButton != null) {
-                _toggleButton.Click += (s, e) => Toggle();
+            _toggleRegion = GetTemplateChild("_toggleRegion") as Border;
+            if (_toggleRegion != null) {
+                _toggleRegion.PreviewMouseDown += (s, e) => Toggle();
+                _toggleRegion.MouseEnter += (s, e) => SetToggleButtonBorderBrush(true);
+                _toggleRegion.MouseLeave += (s, e) => SetToggleButtonBorderBrush(false);
             }
 
             _popup = GetTemplateChild("_popup") as Popup;
@@ -217,30 +231,31 @@ namespace CustomControlLibrary {
             _options = GetTemplateChild("_options") as StackPanel;
 
 
-            Loaded += delegate {
-                if (_toggleButton is not null && _popup is not null) {
-                    Window.GetWindow(_toggleButton).LocationChanged += (s, e) => UpadteOptionsPosition();
-                }
-            };
+            _doAfterLoadedActions.Enqueue(() => {
+                Window window = Window.GetWindow(_toggleRegion);
+                window.LocationChanged += (s, e) => UpadteOptionsPosition();
+                window.Deactivated += delegate {
+                    if (!IsCollapsed) {
+                        Toggle();
+                    }
+                };
+            });
 
-            Window.GetWindow(_toggleButton).Deactivated += (s, e) => {
-                if (!IsCollapsed) {
-                    Toggle();
+            Loaded += delegate {
+                while (_doAfterLoadedActions.Count > 0) {
+                    _doAfterLoadedActions.Dequeue().Invoke();
                 }
             };
         }
-
 
         public void UpadteOptionsPosition() {
             if (_popup is null) {
                 return;
             }
             _popup.HorizontalOffset = 1;
-            _popup.VerticalOffset = 1;
             _popup.HorizontalOffset = 0;
             _popup.VerticalOffset = 0;
         }
-
 
         public void Toggle() {
             if (_arrowText is null
@@ -249,16 +264,15 @@ namespace CustomControlLibrary {
 
             if (_isCollapsed) {
                 _isCollapsed = false;
-                _arrowText.Text = "⮟";
+                _arrowText.Text = " ⮟";
                 _popup.IsOpen = true;
             }
             else {
                 _isCollapsed = true;
-                _arrowText.Text = "⮝";
+                _arrowText.Text = " ⮝";
                 _popup.IsOpen = false;
             }
         }
-
 
         public void ChooseOption(string option) {
             if (_textText is null ||
@@ -268,39 +282,44 @@ namespace CustomControlLibrary {
             Toggle();
         }
 
-
         public void AddOption(string newOption) {
+            if (!IsLoaded) {
+                _doAfterLoadedActions.Enqueue(() => AddOption(newOption));
+                return;
+            }
+
             if (_optionSet.Contains(newOption)
                 || _options == null) return;
 
             _optionSet.Add(newOption);
             var newButton = GetNewOptionButton(newOption);
-            newButton.Click += (s, e) => ChooseOption(newOption);
+            newButton.PreviewMouseDown += (s, e) => ChooseOption(newOption);
             _options.Children.Add(newButton);
         }
 
-
-        private Button GetNewOptionButton(string name) {
-            Button button = new Button {
-                Content = name,
-                Background = OptionsBackground,
+        private Border GetNewOptionButton(string name) {
+            Border border = new Border {
+                Background = Background,
                 BorderBrush = OptionsBorderBrush,
                 BorderThickness = OptionsBorderThickness,
+            };
+            TextBlock text = new TextBlock {
+                Text = name,
                 Foreground = OptionsTextBrush
             };
 
-            return button;
-        }
+            border.MouseEnter += delegate {
+                border.Background = OptionsBackgroundOnHover;
+                border.BorderBrush = OptionsBorderBrushOnHover;
+            };
+            border.MouseLeave += delegate {
+                border.Background = OptionsBackground;
+                border.BorderBrush = OptionsBorderBrush;
+            };
 
-        private void UpdateOptionButtonVisuals() {
-            foreach (Button option in _options!.Children) {
-                option.Background = OptionsBackground;
-                option.BorderBrush = OptionsBorderBrush;
-                option.Foreground = OptionsTextBrush;
-                option.BorderThickness = OptionsBorderThickness;
-            }
+            border.Child = text;
+            return border;
         }
-
 
         public void RemoveOption(string option) {
             if (!_optionSet.Contains(option)) return;
@@ -314,6 +333,18 @@ namespace CustomControlLibrary {
                 }
             }
             _options.Children.Remove(optionButton);
+        }
+
+
+        private void SetToggleButtonBorderBrush(bool isHover) {
+            if (_toggleRegion is null) return;
+
+            if (isHover) {
+                _toggleRegion.BorderBrush = BorderBrushOnHover;
+            }
+            else {
+                _toggleRegion.BorderBrush = BorderBrush;
+            }
         }
     }
 
