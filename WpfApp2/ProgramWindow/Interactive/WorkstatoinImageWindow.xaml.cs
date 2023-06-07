@@ -15,13 +15,19 @@ using System.Windows.Shapes;
 
 namespace Retros {
     public partial class WorkstatoinImageWindow : Window {
-        public WorkstatoinImageWindow(WorkstationImagePage page) {
+        public WorkstatoinImageWindow(WorkstationImagePage page, double width, double height) {
             InitializeComponent();            
             PageFrame.Content = page;
+
+            Width = width;
+            Height = height;
         }
 
-        public WorkstatoinImageWindow() {
-            InitializeComponent();
+        private void PageFrame_SizeChanged(object sender, SizeChangedEventArgs e) {
+            if (PageFrame.Content is not null) {
+                (PageFrame.Content as Page)!.Width = e.NewSize.Width;
+                (PageFrame.Content as Page)!.Height = e.NewSize.Height;
+            }
         }
     }
 }

@@ -5,10 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Retros"
         mc:Ignorable="d"
-        Title="WorkstatoinImageWindow" Height="450" Width="800">
-    <Grid>
-        <Frame x:Name="PageFrame">
+        Title="WorkstatoinImageWindow" Height="450" Width="800"
+        x:Name="Window">
+    
+    <Frame x:Name="PageFrame"
+           HorizontalAlignment="Stretch"
+           VerticalAlignment="Stretch"
+           SizeChanged="PageFrame_SizeChanged">
             
-        </Frame>
-    </Grid>
+    </Frame>
 </Window>

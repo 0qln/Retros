@@ -6,11 +6,44 @@
       xmlns:local="clr-namespace:Retros.ProgramWindow.DisplaySystem"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="WorkstationImagePage">
+      Title="WorkstationImagePage"
+      x:Name="Page">
 
-    <Grid x:Name="MainGrid">
+    <Grid x:Name="MainGrid"
+          VerticalAlignment="Center"
+          Width="{Binding ActualWidth, ElementName=Page}"
+          Height="{Binding ActualHeight, ElementName=Page}">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="{Binding Height, ElementName=Image}"/>
+        </Grid.RowDefinitions>
+
+        <Canvas x:Name="ImageHandleActivation"
+                Grid.Row="0"
+                MouseEnter="ImageHandleActivation_MouseEnter"
+                MouseLeave="ImageHandleActivation_MouseLeave"
+                Background="Transparent"
+                Height="20"
+                Width="{Binding ActualWidth, ElementName=MainGrid}">
+
+            <Grid Width="{Binding ActualWidth, ElementName=ImageHandleActivation}">
+                
+                <Button x:Name="ImageHandle" 
+                        Margin="5"
+                        PreviewMouseDown="ImageHandle_PreviewMouseDown"
+                        Visibility="Collapsed"/>
+            </Grid>
+
+        </Canvas>
+
+        
         <Image x:Name="Image"
-               HorizontalAlignment="Stretch"
-               Margin="50"/>
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               Margin="50"
+               Grid.Row="1"
+               Stretch="Uniform"
+               Height="{Binding ActualHeight, ElementName=Page}"/>
     </Grid>
 </Page>

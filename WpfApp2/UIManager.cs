@@ -32,7 +32,7 @@ namespace Retros {
             if (!String.IsNullOrEmpty(path)) {
                 image.SetSourceImage(new Uri(path));
             }
-            WindowManager.MainWindow!.windowHandle!.HideAllMenus();
+            WindowManager.MainWindow!.WindowHandle!.HideAllMenus();
         }
         public static void SaveImage(WorkstationImage image) {
             string path = ShowFolderPickerDialog();

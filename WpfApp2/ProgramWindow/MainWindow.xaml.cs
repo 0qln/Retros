@@ -26,7 +26,7 @@ namespace Retros
     public partial class MainWindow : Window {
 
         // Window Handle
-        public WindowHandle? windowHandle;
+        public WindowHandle? WindowHandle;
 
         // UI
         public Workstation SelectedWorkstation;
@@ -39,7 +39,7 @@ namespace Retros
             InitializeComponent();
 
             // Init window handle
-            windowHandle = new(this);
+            WindowHandle = new(this);
             
             // Start WindowManager
             WindowManager.Start(this);
@@ -50,7 +50,7 @@ namespace Retros
             Workstations.Add(workstation);
             SelectedWorkstation = workstation;
 
-            WorkStationGrid.RowDefinitions[0].Height = new(windowHandle.Height);
+            WorkStationGrid.RowDefinitions[0].Height = new(WindowHandle.Height);
             UIManager.ColorThemeManager.Set_BG2(b => WorkStationGrid.Background = b);
             Helper.SetChildInGrid(WorkStationGrid, workstation.FrameworkElement, 1, 0);
 
@@ -68,19 +68,19 @@ namespace Retros
             
 
             // WindowHandle
-            windowHandle.SetParentWindow(MainCanvas);
-            UIManager.ColorThemeManager.Set_BG3(b => windowHandle.SetBGColor(b));
-            UIManager.ColorThemeManager.Set_BGh1(b => windowHandle.ApplicationButtons.ColorWhenButtonHover = b);
+            WindowHandle.SetParentWindow(MainCanvas);
+            UIManager.ColorThemeManager.Set_BG3(b => WindowHandle.SetBGColor(b));
+            UIManager.ColorThemeManager.Set_BGh1(b => WindowHandle.ApplicationButtons.ColorWhenButtonHover = b);
 
             DropDownMenu fileMenu = new("File", this);
             DropDownMenu editMenu = new("Edit", Application.Current.MainWindow);
             DropDownMenu viewMenu = new("View", Application.Current.MainWindow);
             DropDownMenu settingsMenu = new("Settings", Application.Current.MainWindow);
 
-            windowHandle.CreateClientButton(fileMenu);
-            windowHandle.CreateClientButton(viewMenu);
-            windowHandle.CreateClientButton(editMenu);
-            windowHandle.CreateClientButton(settingsMenu);
+            WindowHandle.CreateClientButton(fileMenu);
+            WindowHandle.CreateClientButton(viewMenu);
+            WindowHandle.CreateClientButton(editMenu);
+            WindowHandle.CreateClientButton(settingsMenu);
 
             fileMenu.AddOption("Save").SetKeyboardShortcut("Strg + S").AddCommand(() => UIManager.SaveImage(SelectedWorkstation.ImageElement));
             fileMenu.AddOption("Open").SetKeyboardShortcut("Strg + O").AddCommand(() => UIManager.LoadImage(SelectedWorkstation.ImageElement));
@@ -88,13 +88,16 @@ namespace Retros
             viewMenu.AddOption("Zoom").SetKeyboardShortcut("Bla bla");
             settingsMenu.AddOption("Change Layout").SetKeyboardShortcut("Strg + LShift + L");
 
-            windowHandle.ActivateAllClientButtons();
+            WindowHandle.ActivateAllClientButtons();
 
 
-            windowHandle.ApplicationButtons.AddSettingsButton();
-            windowHandle.ApplicationButtons.SettingsButtonImageSource = UIManager.SettingsIconPath;
-            windowHandle.ApplicationButtons.SettingsButtonImagePadding = new Thickness(5);
-            windowHandle.ApplicationButtons.OverrideSettings(WindowManager.ToggleSettings);
+            WindowHandle.ApplicationButtons.AddSettingsButton();
+            WindowHandle.ApplicationButtons.SettingsButtonImageSource = UIManager.SettingsIconPath;
+            WindowHandle.ApplicationButtons.SettingsButtonImagePadding = new Thickness(5);
+            WindowHandle.ApplicationButtons.OverrideSettings(WindowManager.ToggleSettings);
+
+
+            ClientGrid.RowDefinitions[0].Height = new GridLength(WindowHandle.Height);
         }
 
 
