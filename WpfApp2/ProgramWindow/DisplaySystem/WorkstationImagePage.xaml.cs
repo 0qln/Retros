@@ -16,6 +16,7 @@ using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Utillities.Wpf;
 
 namespace Retros.ProgramWindow.DisplaySystem {
     public partial class WorkstationImagePage : Page {
@@ -50,6 +51,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
         private void ImageHandle_PreviewMouseDown(object sender, MouseButtonEventArgs e) {
             tempImageHandle = ImageHandleActivation.Children[0];
             ImageHandleActivation.Children.RemoveAt(0);
+            ImageHandleActivation.Height = 0;
 
             var width = Image.ActualWidth;
             var height = Image.ActualHeight;

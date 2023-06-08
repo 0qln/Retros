@@ -6,12 +6,17 @@
         xmlns:local="clr-namespace:Retros"
         mc:Ignorable="d"
         Title="WorkstatoinImageWindow" Height="450" Width="800"
-        x:Name="Window">
-    
-    <Frame x:Name="PageFrame"
-           HorizontalAlignment="Stretch"
-           VerticalAlignment="Stretch"
-           SizeChanged="PageFrame_SizeChanged">
+        x:Name="Window"
+        SizeChanged="PageFrame_SizeChanged">
+
+    <Canvas x:Name="MainCanvas"
+               VerticalAlignment="Stretch"
+               HorizontalAlignment="Stretch">
+
+        <Frame x:Name="PageFrame"
+               VerticalAlignment="Stretch"
+               HorizontalAlignment="Stretch">
             
     </Frame>
+    </Canvas>
 </Window>

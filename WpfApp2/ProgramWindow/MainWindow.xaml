@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Retros"
         mc:Ignorable="d"
-        WindowStyle="None"
         Height="600" Width="900">
 
     <Canvas x:Name="MainCanvas">

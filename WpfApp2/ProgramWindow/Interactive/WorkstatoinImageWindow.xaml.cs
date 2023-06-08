@@ -12,15 +12,25 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Utillities.Wpf;
 
 namespace Retros {
     public partial class WorkstatoinImageWindow : Window {
+
+        public readonly WindowHandle WindowHandle;
+
         public WorkstatoinImageWindow(WorkstationImagePage page, double width, double height) {
             InitializeComponent();            
             PageFrame.Content = page;
 
             Width = width;
             Height = height;
+
+            WindowHandle = new(this);
+            WindowHandle.SetParentWindow(MainCanvas);
+            UIManager.ColorThemeManager.Set_BG6(b => WindowHandle.SetBGColor(b));
+            UIManager.ColorThemeManager.Set_BG1(b => Background = b);
+            UIManager.ColorThemeManager.Set_BGh1(b => WindowHandle.ApplicationButtons.ColorWhenButtonHover = b);
         }
 
         private void PageFrame_SizeChanged(object sender, SizeChangedEventArgs e) {
@@ -28,6 +38,7 @@ namespace Retros {
                 (PageFrame.Content as Page)!.Width = e.NewSize.Width;
                 (PageFrame.Content as Page)!.Height = e.NewSize.Height;
             }
+
         }
     }
 }

@@ -9,6 +9,10 @@
       Title="WorkstationImagePage"
       x:Name="Page">
 
+    <Canvas x:Name="MainCanvas"
+          Width="{Binding ActualWidth, ElementName=Page}"
+          Height="{Binding ActualHeight, ElementName=Page}">
+        
     <Grid x:Name="MainGrid"
           VerticalAlignment="Center"
           Width="{Binding ActualWidth, ElementName=Page}"
@@ -27,15 +31,15 @@
                 Height="20"
                 Width="{Binding ActualWidth, ElementName=MainGrid}">
 
-            <Grid Width="{Binding ActualWidth, ElementName=ImageHandleActivation}">
-                
-                <Button x:Name="ImageHandle" 
+                <Grid Width="{Binding ActualWidth, ElementName=ImageHandleActivation}"
+                  Height="20">
+
+                    <Button x:Name="ImageHandle" 
                         Margin="5"
                         PreviewMouseDown="ImageHandle_PreviewMouseDown"
                         Visibility="Collapsed"/>
-            </Grid>
-
-        </Canvas>
+                </Grid>
+            </Canvas>
 
         
         <Image x:Name="Image"
@@ -46,4 +50,5 @@
                Stretch="Uniform"
                Height="{Binding ActualHeight, ElementName=Page}"/>
     </Grid>
+    </Canvas>
 </Page>
