@@ -27,7 +27,6 @@ namespace Retros {
             Height = height;
 
             WindowHandle = new(this);
-            WindowHandle.SetParentWindow(MainCanvas);
             UIManager.ColorThemeManager.Set_BG6(b => WindowHandle.SetBGColor(b));
             UIManager.ColorThemeManager.Set_BG1(b => Background = b);
             UIManager.ColorThemeManager.Set_BGh1(b => WindowHandle.ApplicationButtons.ColorWhenButtonHover = b);

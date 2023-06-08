@@ -25,7 +25,6 @@ namespace Retros {
             InitializeComponent();
 
             WindowHandle = new(this);
-            WindowHandle.SetParentWindow(MainCanvas!);
             WindowHandle.SetWindowChromeActiveAll();
             WindowHandle.AddIcon(UIManager.SettingsIconPath);
             UIManager.ColorThemeManager.Set_BG3((brush) => WindowHandle.SetBGColor(brush));

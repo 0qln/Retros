@@ -68,7 +68,6 @@ namespace Retros
             
 
             // WindowHandle
-            WindowHandle.SetParentWindow(MainCanvas);
             UIManager.ColorThemeManager.Set_BG3(b => WindowHandle.SetBGColor(b));
             UIManager.ColorThemeManager.Set_BGh1(b => WindowHandle.ApplicationButtons.ColorWhenButtonHover = b);
 
@@ -96,6 +95,10 @@ namespace Retros
             WindowHandle.ApplicationButtons.SettingsButtonImagePadding = new Thickness(5);
             WindowHandle.ApplicationButtons.OverrideSettings(WindowManager.ToggleSettings);
 
+            WindowHandle.ApplicationButtons.AddFullcreenButton();
+            WindowHandle.ApplicationButtons.FullscreenButtonImageSource = UIManager.SettingsIconPath;
+            WindowHandle.ApplicationButtons.FullscreenButtonImagePadding = new Thickness(5);
+            //WindowHandle.ApplicationButtons.OverrideFullscreen(WindowManager.ToggleSettings);
 
             ClientGrid.RowDefinitions[0].Height = new GridLength(WindowHandle.Height);
         }
