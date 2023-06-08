@@ -7,6 +7,12 @@ using Retros.ProgramWindow;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.IO;
+using System.Windows.Media.Media3D;
+using System.Windows.Media;
+using System.Xml;
+using System.Windows.Shapes;
+using System.Windows.Markup;
 
 // Bodies Manage the Tab body UIElements and functionality
 namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
@@ -100,7 +106,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
     public class Test : Body {
         private static float filterIntensity;
 
-        public Test(WorkstationImage image) : base(image) {
+        public Test(WorkstationImage image, string value) : base(image) {
             ///Debugger.Console.ClearAll();
 
             Button normal = new Button { Content = "Execute normal" };
@@ -111,6 +117,23 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
 
             stackPanel.Children.Add(normal);
             stackPanel.Children.Add(gpu);
+
+
+            using StreamReader sr = new StreamReader(value!);
+            using XmlReader xmlReader = XmlReader.Create(sr);
+            Viewbox viewbox = (Viewbox)XamlReader.Load(xmlReader);
+            viewbox.RenderTransform = new RotateTransform(90);
+            viewbox.Width = 100;
+            viewbox.Height = 100;
+            Canvas canvas = (Canvas)viewbox.Child; 
+            canvas.Width = 2000;
+            canvas.Height = 2000;
+
+            foreach(System.Windows.Shapes.Path path1 in canvas.Children) {
+                path1.Fill = Brushes.White;
+            }
+
+            stackPanel.Children.Add(viewbox);
         }
     }
 

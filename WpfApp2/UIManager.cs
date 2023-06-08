@@ -25,7 +25,18 @@ namespace Retros {
     public static class UIManager {
         public static ColorThemeManager ColorThemeManager => colorThemeManager;
         private static ColorThemeManager colorThemeManager = new(new ColorThemes.DefaultDark());
-        public static string SettingsIconPath => "pack://application:,,,/settings5.png";
+        public static string SettingsPath_Svg => "pack://application:,,,/sprites/settings.svg";
+        public static string TuneIconPath_96 => "pack://application:,,,/sprites/tune-96.png";
+        public static string TuneIconPath_48 => "pack://application:,,,/sprites/tune-96.png";
+        public static string SettingsIconPath => "pack://application:,,,/sprites/settings5.png";
+        public static string SettingsIconPath_24 => "pack://application:,,,/sprites/settings-24.png";
+        public static string SettingsIconPath_96 => "pack://application:,,,/sprites/settings-96.png";
+        public static string FullscreenIconPath => "pack://application:,,,/sprites/fullscreen.png";
+        public static string ExitIconPath => "pack://application:,,,/sprites/close.png";
+        public static string WindowedIconPath => "pack://application:,,,/sprites/windowed.png";
+        public static string MaximizeIconPath => "pack://application:,,,/sprites/maximize.png";
+        public static string MinimizeIconPath => "pack://application:,,,/sprites/minimize.png";
+        public readonly static Thickness IconPadding = new Thickness(8);
 
         public static void LoadImage(WorkstationImage image) {
             string path = ShowImagePickerDialog();

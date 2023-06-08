@@ -58,7 +58,7 @@ namespace Retros
             Helper.SetChildInGrid(WorkStationImageGrid, workstation.ImageElement.FrameworkElement, 0, 0);
 
             workstation.TableElement.AddTab(new ImageFilterTab(new ImageFilter(workstation.ImageElement), new DefaultHandle("Filters")));
-            workstation.TableElement.AddTab(new TestTab(new Test(workstation.ImageElement), new DefaultHandle("Testing")));
+            workstation.TableElement.AddTab(new TestTab(new Test(workstation.ImageElement, @"D:\Programmmieren\Projects\Retros\Retros\WpfApp2\sprites\settings.xaml"), new DefaultHandle("Testing")));
             workstation.TableElement.SelectTab(0);
 
 
@@ -89,16 +89,28 @@ namespace Retros
 
             WindowHandle.ActivateAllClientButtons();
 
+            WindowHandle.ApplicationButtons.ActivateExitButtonSprite();
+            WindowHandle.ApplicationButtons.ExitButtonImageSource = UIManager.ExitIconPath;
+            WindowHandle.ApplicationButtons.ExitButtonImagePadding = UIManager.IconPadding;
 
-            WindowHandle.ApplicationButtons.AddSettingsButton();
-            WindowHandle.ApplicationButtons.SettingsButtonImageSource = UIManager.SettingsIconPath;
-            WindowHandle.ApplicationButtons.SettingsButtonImagePadding = new Thickness(5);
-            WindowHandle.ApplicationButtons.OverrideSettings(WindowManager.ToggleSettings);
+            WindowHandle.ApplicationButtons.ActivateMaximizeButtonSprite();
+            WindowHandle.ApplicationButtons.MaximizeButtonImageSource = UIManager.MaximizeIconPath;
+            WindowHandle.ApplicationButtons.MaximizeButtonImageSourceWhenMaximized = UIManager.MaximizeIconPath;
+            WindowHandle.ApplicationButtons.MaximizeButtonImageSourceWhenWindowed = UIManager.WindowedIconPath;
+            WindowHandle.ApplicationButtons.MaximizeButtonImagePadding = UIManager.IconPadding;
+
+            WindowHandle.ApplicationButtons.ActivateMinimizeButtonSprite();
+            WindowHandle.ApplicationButtons.MinimizeButtonImageSource = UIManager.MinimizeIconPath;
+            WindowHandle.ApplicationButtons.MinimizeButtonImagePadding = UIManager.IconPadding;
 
             WindowHandle.ApplicationButtons.AddFullcreenButton();
-            WindowHandle.ApplicationButtons.FullscreenButtonImageSource = UIManager.SettingsIconPath;
-            WindowHandle.ApplicationButtons.FullscreenButtonImagePadding = new Thickness(5);
-            //WindowHandle.ApplicationButtons.OverrideFullscreen(WindowManager.ToggleSettings);
+            WindowHandle.ApplicationButtons.FullscreenButtonImageSource = UIManager.FullscreenIconPath;
+            WindowHandle.ApplicationButtons.FullscreenButtonImagePadding = UIManager.IconPadding;
+
+            WindowHandle.ApplicationButtons.AddSettingsButton();
+            //WindowHandle.ApplicationButtons.SettingsButtonXmlSource = @"D:\Programmmieren\Projects\Retros\Retros\WpfApp2\sprites\settings.xaml";
+            WindowHandle.ApplicationButtons.SettingsButtonContentPadding = new Thickness(3);
+            WindowHandle.ApplicationButtons.OverrideSettings(WindowManager.ToggleSettings);
 
             ClientGrid.RowDefinitions[0].Height = new GridLength(WindowHandle.Height);
         }

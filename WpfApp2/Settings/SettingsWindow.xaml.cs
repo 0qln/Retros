@@ -38,6 +38,21 @@ namespace Retros {
             UIManager.ColorThemeManager.Set_FC1(b => windowTitle.Foreground = b);
             WindowHandle.AddElement(windowTitle);
 
+            WindowHandle.ApplicationButtons.ActivateExitButtonSprite();
+            WindowHandle.ApplicationButtons.ExitButtonImageSource = UIManager.ExitIconPath;
+            WindowHandle.ApplicationButtons.ExitButtonImagePadding = new Thickness(5);
+
+            WindowHandle.ApplicationButtons.ActivateMaximizeButtonSprite();
+            WindowHandle.ApplicationButtons.MaximizeButtonImageSource = UIManager.MaximizeIconPath;
+            WindowHandle.ApplicationButtons.MaximizeButtonImageSourceWhenMaximized = UIManager.MaximizeIconPath;
+            WindowHandle.ApplicationButtons.MaximizeButtonImageSourceWhenWindowed = UIManager.WindowedIconPath;
+            WindowHandle.ApplicationButtons.MaximizeButtonImagePadding = new Thickness(3);
+
+            WindowHandle.ApplicationButtons.ActivateMinimizeButtonSprite();
+            WindowHandle.ApplicationButtons.MinimizeButtonImageSource = UIManager.MinimizeIconPath;
+            WindowHandle.ApplicationButtons.MinimizeButtonImagePadding = new Thickness(5);
+
+
             Loaded += (s, e) => {
                 Tab appearance = new Tab("Appearance");
                 appearance.AddDetail(new TabDetail(new Settings.Pages.ColorTheme()));

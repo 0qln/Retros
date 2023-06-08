@@ -556,19 +556,43 @@
         <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ExitButton">
             <summary>Gets the exit button.</summary>
         </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ExitButtonImageSource">
+            <summary>Gets or sets the image source for the exit button.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ExitButtonImagePadding">
+            <summary>Gets or sets the padding for the exit button image.</summary>
+        </member>
         <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MinimizeButton">
             <summary>Gets the minimize button.</summary>
         </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MinimizeButtonImageSource">
+            <summary>Gets or sets the image source for the minimize button.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MinimizeButtonImagePadding">
+            <summary>Gets or sets the padding for the minimize button image.</summary>
+        </member>
         <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MaximizeButton">
             <summary>Gets the maximize button.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MaximizeButtonImageSource">
+            <summary>Gets or sets the image source for the maximize button.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MaximizeButtonImageSourceWhenMaximized">
+            <summary>Gets or sets the image source for the maximize button when it is maximized.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MaximizeButtonImagePadding">
+            <summary>Gets or sets the padding for the maximize button image.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MaximizeButtonImageSourceWhenWindowed">
+            <summary>Gets or sets the image source for the maximize button when it is windowed</summary>
         </member>
         <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SettingsButton">
             <summary>Gets the settings button.</summary>
         </member>
         <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SettingsButtonImageSource">
-            <summary>Gets or sets the image source for the settings button.</summary>
+            <summary>Gets or sets the image source for the settings button. Expects an image file, like `png`.</summary>
         </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SettingsButtonImagePadding">
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SettingsButtonContentPadding">
             <summary>Gets or sets the padding for the settings button image.</summary>
         </member>
         <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.FullscreenButton">
@@ -598,6 +622,21 @@
             </summary>
             <param name="windowHandle">The WindowHandle.</param>
             <param name="window">The associated window.</param>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ActivateExitButtonSprite">
+            <summary>
+            Will prepare the exit button to have an image as content.
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ActivateMaximizeButtonSprite">
+            <summary>
+            Will prepare the exit button to have an image as content.
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ActivateMinimizeButtonSprite">
+            <summary>
+            Will prepare the exit button to have an image as content.
+            </summary>
         </member>
         <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.AddSettingsButton">
             <summary>

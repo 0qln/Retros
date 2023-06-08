@@ -30,6 +30,24 @@ namespace Retros {
             UIManager.ColorThemeManager.Set_BG6(b => WindowHandle.SetBGColor(b));
             UIManager.ColorThemeManager.Set_BG1(b => Background = b);
             UIManager.ColorThemeManager.Set_BGh1(b => WindowHandle.ApplicationButtons.ColorWhenButtonHover = b);
+
+            WindowHandle.ApplicationButtons.AddFullcreenButton();
+            WindowHandle.ApplicationButtons.FullscreenButtonImageSource = UIManager.FullscreenIconPath;
+            WindowHandle.ApplicationButtons.FullscreenButtonImagePadding = new Thickness(5);
+
+            WindowHandle.ApplicationButtons.ActivateExitButtonSprite();
+            WindowHandle.ApplicationButtons.ExitButtonImageSource = UIManager.ExitIconPath;
+            WindowHandle.ApplicationButtons.ExitButtonImagePadding = new Thickness(5);
+
+            WindowHandle.ApplicationButtons.ActivateMaximizeButtonSprite();
+            WindowHandle.ApplicationButtons.MaximizeButtonImageSource = UIManager.MaximizeIconPath;
+            WindowHandle.ApplicationButtons.MaximizeButtonImageSourceWhenMaximized = UIManager.MaximizeIconPath;
+            WindowHandle.ApplicationButtons.MaximizeButtonImageSourceWhenWindowed = UIManager.WindowedIconPath;
+            WindowHandle.ApplicationButtons.MaximizeButtonImagePadding = new Thickness(3);
+
+            WindowHandle.ApplicationButtons.ActivateMinimizeButtonSprite();
+            WindowHandle.ApplicationButtons.MinimizeButtonImageSource = UIManager.MinimizeIconPath;
+            WindowHandle.ApplicationButtons.MinimizeButtonImagePadding = new Thickness(5);
         }
 
         private void PageFrame_SizeChanged(object sender, SizeChangedEventArgs e) {

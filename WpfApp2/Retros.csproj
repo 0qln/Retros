@@ -12,7 +12,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="settings5.png" />
+    <None Remove="sprites\close.png" />
+    <None Remove="sprites\maximize.png" />
+    <None Remove="sprites\minimize.png" />
+    <None Remove="sprites\settings-24.png" />
+    <None Remove="sprites\settings-96.png" />
+    <None Remove="sprites\settings.svg" />
+    <None Remove="sprites\settings5.png" />
+	<None Remove="sprites\fullscreen.png" />
+	<None Remove="sprites\tune-48.png" />
+	<None Remove="sprites\tune-96.png" />
+	<None Remove="sprites\windowed.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="sprites\settings-24.png" />
+    <Resource Include="sprites\settings-96.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,7 +45,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="settings5.png" />
+    <Resource Include="sprites\close.png" />
+    <Resource Include="sprites\maximize.png" />
+    <Resource Include="sprites\minimize.png" />
+    <Resource Include="sprites\settings.svg" />
+    <Resource Include="sprites\settings5.png" />
+    <Resource Include="sprites\fullscreen.png" />
+    <Resource Include="sprites\tune-48.png" />
+    <Resource Include="sprites\tune-96.png" />
+	<Resource Include="sprites\windowed.png" />
   </ItemGroup>
 
   <ItemGroup>
