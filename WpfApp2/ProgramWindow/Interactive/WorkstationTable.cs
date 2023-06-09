@@ -42,6 +42,10 @@ namespace Retros.ProgramWindow.Interactive {
             };
         }
 
+        public Tab? GetTab(Type type) {
+            return tabs.First(tab => tab.GetType() == type);
+        }
+
         public void SelectTab(int index) {
             if (index >= 0 && index < tabs.Count) {
                 tabs[currentSelectedTab].Body.Hide();

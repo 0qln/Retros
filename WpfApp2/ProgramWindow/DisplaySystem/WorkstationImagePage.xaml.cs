@@ -23,10 +23,12 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
         public DropShadowEffect ImageEffect;
         private WorkstatoinImageWindow? _imageWindow;
-        private UIElement? tempImageHandle;
+        private UIElement? _tempImageHandle;
+        private WorkstationImage _workstationImage;
 
 
-        public WorkstationImagePage() {
+        public WorkstationImagePage(WorkstationImage workstationImage) {
+            _workstationImage = workstationImage;
             InitializeComponent();
 
             ImageEffect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
@@ -49,13 +51,14 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
 
         private void ImageHandle_PreviewMouseDown(object sender, MouseButtonEventArgs e) {
-            tempImageHandle = ImageHandleActivation.Children[0];
+            _tempImageHandle = ImageHandleActivation.Children[0];
             ImageHandleActivation.Children.RemoveAt(0);
             ImageHandleActivation.Height = 0;
 
             var width = Image.ActualWidth;
             var height = Image.ActualHeight;
             Image.Margin = new Thickness(0);
+            _workstationImage.ImageMargin = new Thickness(0);
             _imageWindow = new WorkstatoinImageWindow(this, width, height);
             _imageWindow.Show();
             _imageWindow.Top = Mouse.GetPosition(WindowManager.MainWindow).Y + WindowManager.MainWindow!.Top - 10;

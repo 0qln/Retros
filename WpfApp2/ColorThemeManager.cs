@@ -84,7 +84,7 @@ namespace Retros {
             SetTheme(ct);
         }
 
-        private void UpdateColors() {
+        public void UpdateColors() {
             FC1_Changed?.Invoke(Current.FC1);
             FC2_Changed?.Invoke(Current.FC2);
             BG1_Changed?.Invoke(Current.BG1);
@@ -101,7 +101,6 @@ namespace Retros {
             BC3_Changed?.Invoke(Current.BC3);
             BCh1_Changed?.Invoke(Current.BCh1);
             AC1_Changed?.Invoke(Current.AC1);
-
         }
 
         private void SetHandler(Action<Brush> handler, ref Action<Brush>? colorEvent) {
@@ -127,22 +126,22 @@ namespace Retros {
 
         public event Action? ThemeChanged;
         
-        private event Action<Brush>? FC1_Changed;
-        private event Action<Brush>? FC2_Changed;
-        private event Action<Brush>? BG1_Changed;
-        private event Action<Brush>? BG2_Changed;
-        private event Action<Brush>? BG3_Changed;
-        private event Action<Brush>? BG4_Changed;
-        private event Action<Brush>? BG5_Changed;
-        private event Action<Brush>? BG6_Changed;
-        private event Action<Brush>? BGh1_Changed;
-        private event Action<Brush>? BGh2_Changed;
-        private event Action<Brush>? BGh3_Changed;
-        private event Action<Brush>? BC1_Changed;
-        private event Action<Brush>? BC2_Changed;
-        private event Action<Brush>? BC3_Changed;
-        private event Action<Brush>? BCh1_Changed;
-        private event Action<Brush>? AC1_Changed;
+        public event Action<Brush>? FC1_Changed;
+        public event Action<Brush>? FC2_Changed;
+        public event Action<Brush>? BG1_Changed;
+        public event Action<Brush>? BG2_Changed;
+        public event Action<Brush>? BG3_Changed;
+        public event Action<Brush>? BG4_Changed;
+        public event Action<Brush>? BG5_Changed;
+        public event Action<Brush>? BG6_Changed;
+        public event Action<Brush>? BGh1_Changed;
+        public event Action<Brush>? BGh2_Changed;
+        public event Action<Brush>? BGh3_Changed;
+        public event Action<Brush>? BC1_Changed;
+        public event Action<Brush>? BC2_Changed;
+        public event Action<Brush>? BC3_Changed;
+        public event Action<Brush>? BCh1_Changed;
+        public event Action<Brush>? AC1_Changed;
 
         public void Set_FC1(Action<Brush> handler) => SetHandler(handler, ref FC1_Changed);
         public void Set_FC2(Action<Brush> handler) => SetHandler(handler, ref FC2_Changed);

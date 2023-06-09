@@ -592,6 +592,9 @@
         <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SettingsButtonImageSource">
             <summary>Gets or sets the image source for the settings button. Expects an image file, like `png`.</summary>
         </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SettingsButtonContent">
+            <summary>Set the content of the settings button directly.</summary>
+        </member>
         <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SettingsButtonContentPadding">
             <summary>Gets or sets the padding for the settings button image.</summary>
         </member>

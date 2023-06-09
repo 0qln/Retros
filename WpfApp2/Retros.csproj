@@ -18,6 +18,8 @@
     <None Remove="sprites\settings-24.png" />
     <None Remove="sprites\settings-96.png" />
     <None Remove="sprites\settings.svg" />
+    <None Remove="sprites\settings.txt" />
+	<None Remove="sprites\settings.xaml" />
     <None Remove="sprites\settings5.png" />
 	<None Remove="sprites\fullscreen.png" />
 	<None Remove="sprites\tune-48.png" />
@@ -26,8 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="sprites\settings-24.png" />
-    <Resource Include="sprites\settings-96.png" />
+    <Page Remove="sprites\settings.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,10 +46,14 @@
   </ItemGroup>
 
   <ItemGroup>
+	<Resource Include="sprites\settings-24.png" />
+	<Resource Include="sprites\settings-96.png" />
     <Resource Include="sprites\close.png" />
     <Resource Include="sprites\maximize.png" />
     <Resource Include="sprites\minimize.png" />
     <Resource Include="sprites\settings.svg" />
+    <Resource Include="sprites\settings.txt" />
+    <Resource Include="sprites\settings.xaml" />
     <Resource Include="sprites\settings5.png" />
     <Resource Include="sprites\fullscreen.png" />
     <Resource Include="sprites\tune-48.png" />
@@ -57,11 +62,28 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Resources\" />
     <Folder Include="Styles\" />
+	<Folder Include="sprites\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CustomControlLibrary\CustomControlLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

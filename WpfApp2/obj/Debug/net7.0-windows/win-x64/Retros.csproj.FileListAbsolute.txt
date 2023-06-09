@@ -499,4 +499,8 @@ D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x6
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\ProgramWindow\Interactive\WorkstatoinImageWindow.g.cs
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\ProgramWindow\DisplaySystem\WorkstationImagePage.baml
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\ProgramWindow\Interactive\WorkstatoinImageWindow.baml
-D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\sprites\settings.baml
+D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\Retros.Properties.Resources.resources
+D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\Retros.csproj.GenerateResource.cache
+D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\App.baml
+D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\sprites\Zeichnung.baml
+D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\sprites\settings_thicker.baml

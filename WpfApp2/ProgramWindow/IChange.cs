@@ -19,4 +19,12 @@ namespace Retros.ProgramWindow {
     public interface IResizeChange {
 
     }
+
+    public interface IEmptyChange : IChange {
+
+    }
+
+    public interface IRenderChange {
+
+    }
 }

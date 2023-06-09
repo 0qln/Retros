@@ -25,6 +25,8 @@ namespace Retros {
     public static class UIManager {
         public static ColorThemeManager ColorThemeManager => colorThemeManager;
         private static ColorThemeManager colorThemeManager = new(new ColorThemes.DefaultDark());
+        public static string SettingsPath_Txt => "pack://application:,,,/sprites/settings.txt";
+        public static string SettingsPath_Xaml => "pack://application:,,,/sprites/settings.xaml";
         public static string SettingsPath_Svg => "pack://application:,,,/sprites/settings.svg";
         public static string TuneIconPath_96 => "pack://application:,,,/sprites/tune-96.png";
         public static string TuneIconPath_48 => "pack://application:,,,/sprites/tune-96.png";

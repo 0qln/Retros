@@ -41,6 +41,10 @@ namespace Retros.ProgramWindow.Interactive.Tabs {
     }
 
 
+    public class ImageHistoryTab : Tab {
+        public ImageHistoryTab(Body body, Handle handle) : base(body, handle) { }
+    }
+
     public class ImageFilterTab : Tab {
         public ImageFilterTab(Body body, Handle handle) : base(body, handle) { }
     }

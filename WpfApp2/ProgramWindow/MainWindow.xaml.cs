@@ -45,7 +45,7 @@ namespace Retros
             WindowManager.Start(this);
 
 
-            //UI
+            // UI
             Workstation workstation = new();
             Workstations.Add(workstation);
             SelectedWorkstation = workstation;
@@ -58,14 +58,15 @@ namespace Retros
             Helper.SetChildInGrid(WorkStationImageGrid, workstation.ImageElement.FrameworkElement, 0, 0);
 
             workstation.TableElement.AddTab(new ImageFilterTab(new ImageFilter(workstation.ImageElement), new DefaultHandle("Filters")));
-            workstation.TableElement.AddTab(new TestTab(new Test(workstation.ImageElement, @"D:\Programmmieren\Projects\Retros\Retros\WpfApp2\sprites\settings.xaml"), new DefaultHandle("Testing")));
+            workstation.TableElement.AddTab(new ImageHistoryTab(new ImageHistory(workstation.ImageElement), new DefaultHandle("Change History")));
+            workstation.TableElement.AddTab(new TestTab(new Test(workstation.ImageElement), new DefaultHandle("Testing")));
             workstation.TableElement.SelectTab(0);
 
-
+            // Shadow
             Shadow.Width = shadowRectWidth;
             Shadow.Effect = new DropShadowEffect { BlurRadius = 25, ShadowDepth = 10, Color = Colors.Black, Opacity = 0.80, Direction = 180 };
             UIManager.ColorThemeManager.Set_BG2(b => Shadow.Fill = b);
-            
+
 
             // WindowHandle
             UIManager.ColorThemeManager.Set_BG3(b => WindowHandle.SetBGColor(b));
@@ -83,8 +84,16 @@ namespace Retros
 
             fileMenu.AddOption("Save").SetKeyboardShortcut("Strg + S").AddCommand(() => UIManager.SaveImage(SelectedWorkstation.ImageElement));
             fileMenu.AddOption("Open").SetKeyboardShortcut("Strg + O").AddCommand(() => UIManager.LoadImage(SelectedWorkstation.ImageElement));
+
             editMenu.AddOption("Save Filter").SetKeyboardShortcut("Strg + S + F");
+            editMenu.AddOption("Undo").SetKeyboardShortcut("Strg + Z");
+            InputBindings.Add(new KeyBinding(new ImageChangeManager.UndoCommand(), Key.Z, ModifierKeys.Control));
+            InputBindings.Add(new KeyBinding(new ImageChangeManager.RedoCommand(), Key.Y, ModifierKeys.Control));
+
+            editMenu.AddOption("Redo").SetKeyboardShortcut("Strg + Y");
+
             viewMenu.AddOption("Zoom").SetKeyboardShortcut("Bla bla");
+
             settingsMenu.AddOption("Change Layout").SetKeyboardShortcut("Strg + LShift + L");
 
             WindowHandle.ActivateAllClientButtons();
@@ -108,11 +117,13 @@ namespace Retros
             WindowHandle.ApplicationButtons.FullscreenButtonImagePadding = UIManager.IconPadding;
 
             WindowHandle.ApplicationButtons.AddSettingsButton();
-            //WindowHandle.ApplicationButtons.SettingsButtonXmlSource = @"D:\Programmmieren\Projects\Retros\Retros\WpfApp2\sprites\settings.xaml";
+            //WindowHandle.ApplicationButtons.SettingsButtonContent = Properties.Resources.settings_24;
             WindowHandle.ApplicationButtons.SettingsButtonContentPadding = new Thickness(3);
             WindowHandle.ApplicationButtons.OverrideSettings(WindowManager.ToggleSettings);
 
             ClientGrid.RowDefinitions[0].Height = new GridLength(WindowHandle.Height);
+
+            (workstation.TableElement.GetTab(typeof(TestTab))?.Body as Test)?.Run();
         }
 
 

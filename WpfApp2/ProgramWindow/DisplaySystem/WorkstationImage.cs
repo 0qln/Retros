@@ -23,14 +23,14 @@ namespace Retros.ProgramWindow.DisplaySystem {
         public FrameworkElement FrameworkElement => pageFrame;
         private WriteableBitmap resizedSourceBitmap;
         private Uri source;
-        private ChangeHistory changeHistory = new();
         private ImageChangeManager filterManager;
+        private ChangeHistory changeHistory = new();
         private DispatcherTimer actionTimer = new();
         private Queue<Action> actionQueue = new();
         private Frame pageFrame = new();
 
         /// <summary>Used to display the image.</summary>
-        private readonly WorkstationImagePage Page = new();
+        private WorkstationImagePage Page { get; init; }
 
         /// <summary>Used to display the current image.</summary>
         public Image CurrentImage => Page.Image;
@@ -50,10 +50,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
         /// <summary>The FilterManager instance for this WorkstationImage.</summary>
         public ImageChangeManager GetFilterManager => filterManager;
 
-        //TODO:
-        /// <summary>Keeps track of all the changes that were applied to the image.</summary>
-        public ChangeHistory History => changeHistory;
-
+        /// <summary>Gets the ChangeHistory instance for this WorkstationImage.</summary>
+        public ChangeHistory GetHistory => changeHistory;
 
 
         private Thickness _margin = new Thickness(50);
@@ -105,16 +103,16 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
 #pragma warning disable CS8618 // Ein Non-Nullable-Feld muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Erwägen Sie die Deklaration als Nullable.
         public WorkstationImage(string path) {
-            _init();
+            Page = new(this);
+            pageFrame.Content = Page;
+            filterManager = new(this);
+            StartUpdating();
 
             source = new Uri(path);
             SetSourceImage(source);
         }
         public WorkstationImage() { 
-            _init(); 
-        }
-
-        private void _init() {
+            Page = new(this);
             pageFrame.Content = Page;
             filterManager = new(this);
             StartUpdating();
@@ -383,11 +381,6 @@ namespace Retros.ProgramWindow.DisplaySystem {
             Image newImage = new Image { Source = imageSource };
             newImage.Opacity = 0;
             Helper.SetChildInGrid(Page.MainGrid, newImage, Grid.GetRow(Page.Image), Grid.GetColumn(Page.Image));
-            //newImage.Margin = new Thickness(
-            //currentImage.Margin.Left + 10 * imageCount, 
-            //CurrentImage.Margin.Top + 10 * imageCount, 
-            //currentImage.Margin.Right - 10 * imageCount, 
-            //CurrentImage.Margin.Bottom - 10 * imageCount);
             newImage.Margin = _margin;
             Canvas.SetZIndex(newImage, 10);
             Canvas.SetZIndex(Page.Image, 10 / imageCount);

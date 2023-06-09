@@ -5,7 +5,9 @@ VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Retros", "Retros.csproj", "{689BB8BF-090D-41BC-9CA4-6BC3ECBF537C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomControlLibrary", "..\CustomControlLibrary\CustomControlLibrary.csproj", "{ACE6AB3C-185F-4324-AB65-597D398095F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomControlLibrary", "..\CustomControlLibrary\CustomControlLibrary.csproj", "{ACE6AB3C-185F-4324-AB65-597D398095F5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{60E3A9D7-B052-4834-A7AE-11754E4108AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
