@@ -118,6 +118,14 @@ namespace Retros {
             }
             ThemeChanged.Invoke();
         }
+        public void RemoveStyle(FrameworkElement element, DStyle style) {
+            if (element is SelectionBox) {
+                ThemeChanged -= delegate { (element as SelectionBox)!.Style = style(); };
+            }
+            else {
+                ThemeChanged -= delegate { element.Style = style(); };
+            }
+        }
         public static class Styles {
             public static Style SettingDetailTextbox() {
                 throw new NotImplementedException();

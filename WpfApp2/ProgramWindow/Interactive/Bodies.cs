@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using Utillities.Wpf;
 
 // Bodies Manage the Tab body UIElements and functionality
@@ -30,6 +31,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
     }
 
 
+    
     public class ImageFilter : Body {
         public Button resetButton = new();
 
@@ -100,18 +102,23 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
         }
     }
 
+
+
     public class ImageHistory : Body {
         private ChangeHistory _history;
-        private Canvas _canvas = new();
+        private static Canvas _canvas = new();
         private Node _root;
         private Node _currentNode;
         private HashSet<Node> _allNodes = new();
 
+        public ChangeHistory History => _history;
+
         public ImageHistory(WorkstationImage image) : base(image) {
             _history = image.GetHistory;
 
-            _root = new Node(null, _history.RootChange, _history);
+            _root = new Node(null, _history.RootChange, this);
             _currentNode = _root;
+            _allNodes.Add(_root);
 
             _history.AllChildrenRemoved += (parent) => {
                 Node parentNode = parent == _currentNode.Source
@@ -127,17 +134,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             _history.PositionChanged += (newCurrentNode) => {
                 _currentNode.SetHighlight(false);
 
-                // Update _current
                 _currentNode = _allNodes.First(node => node.Source == newCurrentNode);
-                /*
-                var _newCurrentNode = _root.Source == newCurrentNode
-                    ? _root
-                    : _root.First(child => child.Source == newCurrentNode);
-
-                _currentNode = _newCurrentNode is not null
-                    ? _newCurrentNode
-                    : _currentNode;
-                */
 
                 _currentNode.SetHighlight(true);
                 UIManager.ColorThemeManager.UpdateColors();
@@ -169,7 +166,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
                 UIManager.ColorThemeManager.UpdateColors();
             };
             _history.ChangeAdded += (newChange) => {
-                var newNode = new Node(_currentNode, newChange, _history);
+                var newNode = new Node(_currentNode, newChange, this);
                 _currentNode.Add(newNode);
                 _allNodes.Add(newNode);
             };
@@ -183,17 +180,23 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             _canvas.Children.Add(_root.FrameworkElement);
         }
 
-        public static Style NodeStyle() {
+        public void UpdateLines() {
+            foreach (var node in _allNodes) {
+                CompositionTarget.Rendering += node.UpdateLines;
+            }
+        }
+        public static Style NodeStyle_Highlighed() {
             Style style = new Style(typeof(Button));
 
             style.Setters.Add(new Setter(Button.PaddingProperty, new Thickness(10, 0, 10, 0)));
-            style.Setters.Add(new Setter(Button.BackgroundProperty, UIManager.ColorThemeManager.Current.BG6));
+            style.Setters.Add(new Setter(Button.BackgroundProperty, UIManager.ColorThemeManager.Current.BG4));
             style.Setters.Add(new Setter(Button.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
             style.Setters.Add(new Setter(Button.BorderThicknessProperty, new Thickness(0)));
             style.Setters.Add(new Setter(Button.HorizontalAlignmentProperty, HorizontalAlignment.Left));
-            style.Setters.Add(new Setter(Button.VerticalAlignmentProperty, VerticalAlignment.Center));
+            style.Setters.Add(new Setter(Button.VerticalAlignmentProperty, VerticalAlignment.Top));
+            style.Setters.Add(new Setter(Button.FontWeightProperty, FontWeights.ExtraBold));
             style.Setters.Add(new Setter(Button.HeightProperty, 20.0));
-            style.Setters.Add(new Setter(Button.FontSizeProperty, 8.0));
+            style.Setters.Add(new Setter(Button.FontSizeProperty, 11.0));
             style.Setters.Add(new Setter(Button.ContentProperty, new TextBlock { Margin = new Thickness(15, 0, 10, 0) }));
 
 
@@ -204,17 +207,57 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             borderFactory.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Button.BorderThicknessProperty));
 
             FrameworkElementFactory contentPresenterFactory = new FrameworkElementFactory(typeof(ContentPresenter));
-            contentPresenterFactory.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-            contentPresenterFactory.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+            contentPresenterFactory.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+            contentPresenterFactory.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Top);
 
             borderFactory.AppendChild(contentPresenterFactory);
 
             buttonTemplate.VisualTree = borderFactory;
 
             Trigger mouseOverTrigger = new Trigger { Property = Button.IsMouseOverProperty, Value = true };
-            mouseOverTrigger.Setters.Add(new Setter(Button.BackgroundProperty, UIManager.ColorThemeManager.Current.BGh1));
+            //mouseOverTrigger.Setters.Add(new Setter(Button.BackgroundProperty, UIManager.ColorThemeManager.Current.BG4));
+            //mouseOverTrigger.Setters.Add(new Setter(Button.BorderBrushProperty, UIManager.ColorThemeManager.Current.BCh2));
+
+            buttonTemplate.Triggers.Add(mouseOverTrigger);
+
+            style.Setters.Add(new Setter(Button.TemplateProperty, buttonTemplate));
+
+            style.Seal();
+
+            return style;
+        }
+        public static Style NodeStyle() {
+            Style style = new Style(typeof(Button));
+
+            style.Setters.Add(new Setter(Button.PaddingProperty, new Thickness(10, 0, 10, 0)));
+            style.Setters.Add(new Setter(Button.BackgroundProperty, UIManager.ColorThemeManager.Current.BG4));
+            style.Setters.Add(new Setter(Button.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
+            style.Setters.Add(new Setter(Button.BorderThicknessProperty, new Thickness(0)));
+            style.Setters.Add(new Setter(Button.HorizontalAlignmentProperty, HorizontalAlignment.Left));
+            style.Setters.Add(new Setter(Button.VerticalAlignmentProperty, VerticalAlignment.Top));
+            style.Setters.Add(new Setter(Button.HeightProperty, 20.0));
+            style.Setters.Add(new Setter(Button.FontSizeProperty, 11.0));
+            style.Setters.Add(new Setter(Button.ContentProperty, new TextBlock { Margin = new Thickness(15, 0, 10, 0) }));
+
+
+            ControlTemplate buttonTemplate = new ControlTemplate(typeof(Button));
+            FrameworkElementFactory borderFactory = new FrameworkElementFactory(typeof(Border));
+            borderFactory.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Button.BackgroundProperty));
+            borderFactory.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Button.BorderBrushProperty));
+            borderFactory.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Button.BorderThicknessProperty));
+
+            FrameworkElementFactory contentPresenterFactory = new FrameworkElementFactory(typeof(ContentPresenter));
+            contentPresenterFactory.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+            contentPresenterFactory.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Top);
+
+            borderFactory.AppendChild(contentPresenterFactory);
+
+            buttonTemplate.VisualTree = borderFactory;
+
+            Trigger mouseOverTrigger = new Trigger { Property = Button.IsMouseOverProperty, Value = true };
+            //mouseOverTrigger.Setters.Add(new Setter(Button.BackgroundProperty, UIManager.ColorThemeManager.Current.BG4));
             mouseOverTrigger.Setters.Add(new Setter(Button.BorderBrushProperty, UIManager.ColorThemeManager.Current.BCh2));
-            mouseOverTrigger.Setters.Add(new Setter(Button.FontWeightProperty, FontWeights.Bold));
+            mouseOverTrigger.Setters.Add(new Setter(Button.BorderThicknessProperty, new Thickness(0, 0, 0, 0.8)));
 
             buttonTemplate.Triggers.Add(mouseOverTrigger);
 
@@ -226,50 +269,99 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
         }
         private class Node : IFrameworkElement {
             private ChangeHistory.Node _sourceNode;
-            private StackPanel _stackPanel;
+            private StackPanel _mainStackPanel;
+            private StackPanel _nameAndArrowsStackPanel;
+            private Line _lineVertical;
+            private Line _lineHorizontal;
             private StackPanel _children;
             private List<Node> _nodes = new();
             private Node? _previous;
             private Button _button;
+            private StackPanel _buttonStackPanel;
+            private ImageHistory _history;
 
-            public FrameworkElement FrameworkElement => _stackPanel;
+            public Button ButtonElement => _button;
+            public FrameworkElement FrameworkElement => _mainStackPanel;
             public List<Node> Children => _nodes;
 
-            public Node(Node? previous, ChangeHistory.Node source, ChangeHistory history) {
+            public Node(Node? previous, ChangeHistory.Node source, ImageHistory history) {
+                _history = history;
                 _sourceNode = source;
                 _previous = previous;
                 _children = new StackPanel { 
-                    Margin=new Thickness(10, 0, 0, 0),
+                    Margin = new Thickness(0, 0, 0, 0),
                     VerticalAlignment = VerticalAlignment.Top,
                     HorizontalAlignment = HorizontalAlignment.Left};
 
-                _button = new Button { Content = source.Value.GetType().Name };
-                _button.Click += (s, e) => history.Jump(source);
-                UIManager.ColorThemeManager.SetStyle(_button, NodeStyle);
+                _buttonStackPanel = new StackPanel { Orientation  = Orientation.Horizontal };
 
-                _stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
-                _stackPanel.Children.Add(_button);
-                _stackPanel.Children.Add(_children);
+                _button = new Button { Content = source.Value.GetType().Name };
+                _button.Click += (s, e) => history.History.Jump(source);
+                
+                UIManager.ColorThemeManager.SetStyle(_button, NodeStyle);
+                _buttonStackPanel.Children.Add(_button);
+
+                _lineVertical = new Line {
+                    VerticalAlignment = VerticalAlignment.Top,
+                    HorizontalAlignment= HorizontalAlignment.Right,
+                    X1 = 0, Y1 = 0, X2 = 0,
+                };
+                UIManager.ColorThemeManager.Set_BC2(b => _lineVertical.Stroke = b);
+
+                _nameAndArrowsStackPanel = new();
+                _nameAndArrowsStackPanel.Children.Add(_buttonStackPanel);
+                _nameAndArrowsStackPanel.Children.Add(_lineVertical);
+
+                _mainStackPanel = new StackPanel { Orientation = Orientation.Horizontal };
+                _mainStackPanel.Children.Add(_nameAndArrowsStackPanel);
+                _mainStackPanel.Children.Add(_children);
+
+                _lineHorizontal = new Line {
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    X1 = 0, Y1 = 0, X2 = 20, Y2 = 0,
+                };
+                _buttonStackPanel.Children.Insert(0, _lineHorizontal);
+                if (previous is not null) {
+                    UIManager.ColorThemeManager.Set_BC2(b => _lineHorizontal.Stroke = b);
+                }
+                else {
+                    UIManager.ColorThemeManager.Set_BC3(b => _lineHorizontal.Stroke = b);
+                }
             }
+
+            public void UpdateLines(object? sender, EventArgs e) {
+                if (_nodes.Count < 2) return;
+
+                double newHeight = 0;
+                for (int i = 1; i < _nodes.Count; i++) {
+                    var pos = _PositionOf(_nodes[i - 1].ButtonElement);
+                    var pos1 = _PositionOf(_nodes[i].ButtonElement);
+                    double d = Math.Abs(pos1.Y - pos.Y);
+                    newHeight += d;
+                }
+                newHeight -= _nodes[_nodes.Count - 1].ButtonElement.ActualHeight / 2;
+                _lineVertical.Y2 = newHeight;           
+            }
+
+            private Point _PositionOf(FrameworkElement element) => element.TranslatePoint(new Point(), _canvas);
 
             public void SetHighlight(bool activate) {
                 if (activate) {
-                    UIManager.ColorThemeManager.BG2_Changed -= SetBG;
-                    UIManager.ColorThemeManager.AC1_Changed += SetBG;
+                    UIManager.ColorThemeManager.SetStyle(_button, NodeStyle_Highlighed);
+                    UIManager.ColorThemeManager.RemoveStyle(_button, NodeStyle);
                 }
                 else {
-                    UIManager.ColorThemeManager.AC1_Changed -= SetBG;
-                    UIManager.ColorThemeManager.BG2_Changed += SetBG;
+                    UIManager.ColorThemeManager.RemoveStyle(_button, NodeStyle_Highlighed);
+                    UIManager.ColorThemeManager.SetStyle(_button, NodeStyle);
                 }
-            }
-            public void SetBG(Brush b) {
-                _button.Background = b;
             }
 
             public Node? Next(uint index) => (index < _nodes.Count) ? _nodes[(int)index] : null;
             public Node? Previous => _previous;
             public ChangeHistory.Node Source => _sourceNode;
 
+            //Todo
             public Node? First(Func<Node, bool> predicate) {
                 foreach (var node in _nodes) {
                     var result = node.First(predicate);
@@ -277,10 +369,13 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
                 }
                 return null;
             }
+            //
 
             public void Cut() {
                 _nodes.Clear();
                 _children.Children.Clear();
+
+                _history.UpdateLines();
             }
 
             public Node? CutNode(uint index) {
@@ -290,15 +385,22 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
                     _nodes.RemoveAt((int)index);
                     return node;
                 }
+
+                _history.UpdateLines();
+
                 return null;
             }
 
             public void Add(Node source) {
                 _children.Children.Add(source.FrameworkElement);
                 _nodes.Add(source);
+
+                _history.UpdateLines();
             }
         }
     }
+
+
 
     public class PixelSorting : Body {
 
@@ -309,6 +411,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
         }
 
     }
+
 
 
     public class Test : Body {
@@ -354,6 +457,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             //stackPanel.Children.Add(viewbox);
         }
     }
+
 
 
     public class Export : Body {
