@@ -24,23 +24,20 @@ namespace Retros.ProgramWindow {
 
             try {
                 unsafe {
-                    // Get a pointer to the pixel buffer
                     IntPtr bufferPtr = bitmap.BackBuffer;
                     byte* pixelData = (byte*)bufferPtr;
 
-                    // Modify the pixel values directly in the pixel buffer
                     Parallel.For(0, pixelHeight, y => {
                         byte* row = pixelData + y * stride;
                         Parallel.For(0, pixelWidth, x => {
                             int index = (y * pixelWidth + x) * bytesPerPixel;
-                            pixelData[index + 1] = (byte)(pixelData[index + 1] * (1 - filterIntensity));    // Green
-                            pixelData[index + 0] = (byte)(pixelData[index + 0] * (1 - filterIntensity));    // Blue
+                            pixelData[index + 1] = (byte)(pixelData[index + 1] * (1 - filterIntensity));
+                            pixelData[index + 0] = (byte)(pixelData[index + 0] * (1 - filterIntensity));
                         });
                     });
                 }
             }
             finally {
-                // Unlock the WriteableBitmap to release the pixel buffer
                 bitmap.Unlock();
             }
 
@@ -58,23 +55,20 @@ namespace Retros.ProgramWindow {
 
             try {
                 unsafe {
-                    // Get a pointer to the pixel buffer
                     IntPtr bufferPtr = bitmap.BackBuffer;
                     byte* pixelData = (byte*)bufferPtr;
 
-                    // Modify the pixel values directly in the pixel buffer
                     Parallel.For(0, pixelHeight, y => {
                         byte* row = pixelData + y * stride;
                         Parallel.For(0, pixelWidth, x => {
                             int index = (y * pixelWidth + x) * bytesPerPixel;
-                            pixelData[index + 2] = (byte)(pixelData[index + 2] * (1 - filterIntensity));    // Red
-                            pixelData[index + 0] = (byte)(pixelData[index + 0] * (1 - filterIntensity));    // Blue
+                            pixelData[index + 2] = (byte)(pixelData[index + 2] * (1 - filterIntensity));
+                            pixelData[index + 0] = (byte)(pixelData[index + 0] * (1 - filterIntensity));
                         });
                     });
                 }
             }
             finally {
-                // Unlock the WriteableBitmap to release the pixel buffer
                 bitmap.Unlock();
             }
 
@@ -92,23 +86,20 @@ namespace Retros.ProgramWindow {
 
             try {
                 unsafe {
-                    // Get a pointer to the pixel buffer
                     IntPtr bufferPtr = bitmap.BackBuffer;
                     byte* pixelData = (byte*)bufferPtr;
 
-                    // Modify the pixel values directly in the pixel buffer
                     Parallel.For(0, pixelHeight, y => {
                         byte* row = pixelData + y * stride;
                         Parallel.For(0, pixelWidth, x => {
                             int index = (y * pixelWidth + x) * bytesPerPixel;
-                            pixelData[index + 2] = (byte)(pixelData[index + 2] * (1 - filterIntensity));    // Red
-                            pixelData[index + 1] = (byte)(pixelData[index + 1] * (1 - filterIntensity));    // Green
+                            pixelData[index + 2] = (byte)(pixelData[index + 2] * (1 - filterIntensity));
+                            pixelData[index + 1] = (byte)(pixelData[index + 1] * (1 - filterIntensity));
                         });
                     });
                 }
             }
             finally {
-                // Unlock the WriteableBitmap to release the pixel buffer
                 bitmap.Unlock();
             }
 
@@ -122,16 +113,13 @@ namespace Retros.ProgramWindow {
             int pixelWidth = bitmap.PixelWidth;
             int stride = bitmap.BackBufferStride;
 
-            // Lock the WriteableBitmap to get a reference to its pixel buffer
             bitmap.Lock();
 
             try {
                 unsafe {
-                    // Get a pointer to the pixel buffer
                     IntPtr bufferPtr = bitmap.BackBuffer;
                     byte* pixelData = (byte*)bufferPtr;
 
-                    // Modify the pixel values directly in the pixel buffer
                     Parallel.For(0, pixelHeight, y => {
                         byte* row = pixelData + y * stride;
                         Parallel.For(0, pixelWidth, x => {
@@ -142,7 +130,6 @@ namespace Retros.ProgramWindow {
                 }
             }
             finally {
-                // Unlock the WriteableBitmap to release the pixel buffer
                 bitmap.Unlock();
             }
 

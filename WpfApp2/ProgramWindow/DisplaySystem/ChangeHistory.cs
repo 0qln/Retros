@@ -9,6 +9,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
         private HashSet<Node> _allNodes = new();
 
         public readonly Node RootChange;
+        public Node CurrentNode => _current;
 
 
         public delegate void AllChildrenRemovedHandler(Node parent);
@@ -23,8 +24,10 @@ namespace Retros.ProgramWindow.DisplaySystem {
         public event ChangedHandler? ChangeAdded; // A change has been added
         public event ChangedHandler? PositionChanged; // the position of _current has changed
 
+
         public ChangeHistory() {
-            RootChange = new Node(null, new RootChange());
+            RootChange = new Node(null, new RootChange(), new IPositiveChange[0]);
+            _allNodes.Add(RootChange);
             _current = RootChange;
             ChangeAdded?.Invoke(_current);
             _rootNode = _current!;
@@ -32,11 +35,15 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
 
         public void Add(IChange change) {
-            Node newNode = new Node(_current, change);
+            Node newNode = new Node(
+                _current, 
+                change, 
+                WindowManager.MainWindow.SelectedWorkstation.ImageElement.GetChangeManager.CurrentChanges);
+
             _current.Add(newNode);
             _allNodes.Add(newNode);
             ChangeAdded?.Invoke(newNode);
-            DebugLibrary.Console.Log($"History node added :{change.GetType().Name}");
+            //DebugLibrary.Console.Log($"History node added :{change.GetType().Name}");
         }
         public void AddAndStep(IChange change) {
             uint index = _current.Children is not null
@@ -109,15 +116,26 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
 
         public class Node {
+            private readonly IPositiveChange[] _activeChanges;
             private readonly IChange _value;
             private List<Node>? _nodes;
             private Node? _prev;
 
+            public IPositiveChange[] ActiveChanges => _activeChanges;
+            public IChange Value => _value;
+            public List<Node>? Children => _nodes;
 
-            public Node(Node? prevNode, IChange change) {
+
+            public Node(Node? prevNode, IChange change, IPositiveChange[] activeChanges) {
                 _prev = prevNode;
                 _value = change;
+                _activeChanges = activeChanges;
             }
+
+
+            public bool HasChildren => _nodes != null;
+            public Node? Next(uint index) => index < _nodes?.Count ? _nodes[(int)index] : null;
+            public Node? Previous => _prev is not null ? _prev : null;
 
             public void Add(Node node) {
                 _nodes ??= new List<Node>();
@@ -142,11 +160,6 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 return null;
             }
 
-            public bool HasChildren => _nodes != null;
-            public List<Node>? Children => _nodes;
-            public Node? Next(uint index) => index < _nodes?.Count ? _nodes[(int)index] : null;
-            public Node? Previous => _prev is not null ? _prev : null;
-            public IChange Value => _value;
         }
     }
 }

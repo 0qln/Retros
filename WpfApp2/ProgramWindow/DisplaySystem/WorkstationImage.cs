@@ -51,7 +51,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
         public ImageChangeManager GetChangeManager => changeManger;
 
         /// <summary>Gets the ChangeHistory instance for this WorkstationImage.</summary>
-        public ChangeHistory GetHistory => changeHistory;
+        public ChangeHistory GetHistoryManager => changeHistory;
 
 
         private Thickness _margin = new Thickness(50);
@@ -110,15 +110,9 @@ namespace Retros.ProgramWindow.DisplaySystem {
             source = new Uri(path);
             SetSourceImage(source);
 
-            changeHistory.MoveBack += (steps) => {
-
-            };
-            changeHistory.MoveForward += (steps) => {
-
-            };
-            changeHistory.PositionChanged += (newNode) => {
-
-            };
+            changeHistory.MoveBack += (steps) => ReloadImage();
+            changeHistory.MoveForward += (steps) => ReloadImage();
+            changeHistory.PositionChanged += (newNode) => ReloadImage();
         }
         public WorkstationImage() {
             Page = new(this);
@@ -127,6 +121,10 @@ namespace Retros.ProgramWindow.DisplaySystem {
             StartUpdating();
         }
 
+        public void ReloadImage() {
+            changeManger.CurrentChanges = changeHistory.CurrentNode.ActiveChanges;
+            changeManger.ApplyChanges();
+        }
 
         public void SetSourceImage(Uri source) {
             this.source = source;

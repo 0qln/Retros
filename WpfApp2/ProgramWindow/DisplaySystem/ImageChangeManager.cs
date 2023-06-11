@@ -33,13 +33,33 @@ namespace Retros.ProgramWindow.DisplaySystem {
         private TimeSpan Interval = TimeSpan.FromMilliseconds(16.66f);
         private ChangeHistory? history;
 
+        public IPositiveChange[] CurrentChanges {
+            set {
+                changes = value.ToList();
+                changed = true;
+            }
+            get {
+                IPositiveChange[] arr = new IPositiveChange[changes.Count];
+                for (int i = 0; i < changes.Count; i++) {
+                    arr[i] = (IPositiveChange)changes[i].Clone();
+                }
+                return arr;
+            }
+        }
+        private void PrintChanges() {
+            DebugLibrary.Console.Log("Changes:");
+            foreach (var change in changes) {
+                DebugLibrary.Console.Log(change.GetType().Name.ToString());
+            }
+        }
+
 
         public ImageChangeManager(WorkstationImage image) {
             timer.Interval = Interval;
             timer.Tick += (s, e) => ApplyChanges();
             timer.Start();
 
-            history = image.GetHistory;
+            history = image.GetHistoryManager;
             this.image = image;
         }
 
@@ -118,7 +138,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
             return true;
         }
         public void RemoveChange(INegativeChange change) {
-            if (!ContainsChange(change.Value)) return;
+            if (!ContainsChange(change.Value) ||
+                !ContainsChange(change.ValueType)) return;
 
             changes.Remove(GetChange(change.Value)!);
             changeTypes.Remove(change.GetType());
@@ -170,7 +191,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
             }
 
             public void Execute(object? parameter) {
-                WindowManager.MainWindow?.SelectedWorkstation.ImageElement.GetHistory.Undo();
+                WindowManager.MainWindow?.SelectedWorkstation.ImageElement.GetHistoryManager.Undo();
             }
         }
 
@@ -182,7 +203,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
             }
 
             public void Execute(object? parameter) {
-                WindowManager.MainWindow?.SelectedWorkstation.ImageElement.GetHistory.Redo();
+                WindowManager.MainWindow?.SelectedWorkstation.ImageElement.GetHistoryManager.Redo();
             }
         }
     }

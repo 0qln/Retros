@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -63,34 +64,35 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             grayscaleSlider.SliderElement.PreviewMouseUp += (s, e) => HandleChangeHistory<GrayScale>(grayscaleSlider.SliderElement.Value);
 
             blueChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyBlueChannel(), blueChannelSlider.SliderElement.Value / 10);
-            blueChannelSlider.SliderElement.PreviewMouseUp += (s, e) => image.GetHistory.AddAndStep(image.GetChangeManager.GetChange(typeof(OnlyBlueChannel))!);
+            blueChannelSlider.SliderElement.PreviewMouseUp += (s, e) => HandleChangeHistory<OnlyBlueChannel>(grayscaleSlider.SliderElement.Value);
 
             redChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyRedChannel(), redChannelSlider.SliderElement.Value / 10);
-            redChannelSlider.SliderElement.PreviewMouseUp += (s, e) => image.GetHistory.AddAndStep(image.GetChangeManager.GetChange(typeof(OnlyRedChannel))!);
+            redChannelSlider.SliderElement.PreviewMouseUp += (s, e) => HandleChangeHistory<OnlyRedChannel>(grayscaleSlider.SliderElement.Value);
 
             greenChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyGreenChannel(), greenChannelSlider.SliderElement.Value / 10);
-            greenChannelSlider.SliderElement.PreviewMouseUp += (s, e) => image.GetHistory.AddAndStep(image.GetChangeManager.GetChange(typeof(OnlyGreenChannel))!);
+            greenChannelSlider.SliderElement.PreviewMouseUp += (s, e) => HandleChangeHistory<OnlyGreenChannel>(grayscaleSlider.SliderElement.Value);
 
             testBlueSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new TestBlue(), testBlueSlider.SliderElement.Value / 10);
-            testBlueSlider.SliderElement.PreviewMouseUp += (s, e) => image.GetHistory.AddAndStep(image.GetChangeManager.GetChange(typeof(TestBlue))!);
+            testBlueSlider.SliderElement.PreviewMouseUp += (s, e) => HandleChangeHistory<TestBlue>(grayscaleSlider.SliderElement.Value);
 
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e) {
             image.GetChangeManager.Clear();
+            image.GetHistoryManager.Clear();
             image.ResetCurrent();
         }
 
         private void HandleChangeHistory<T>(double value) {
             if (value != 0) {
-                image.GetHistory
+                image.GetHistoryManager
                     .AddAndStep(image.GetChangeManager
                     .GetChange(typeof(T))?
                     .Clone()!);
             }
             else {
                 if (_removeChangeChache is null) return;
-                image.GetHistory.AddAndStep(_removeChangeChache);
+                image.GetHistoryManager.AddAndStep(_removeChangeChache);
                 image.GetChangeManager.RemoveChange(_removeChangeChache);
                 _removeChangeChache = null;
             }
@@ -124,10 +126,11 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
         public ChangeHistory History => _history;
 
         public ImageHistory(WorkstationImage image) : base(image) {
-            _history = image.GetHistory;
+            _history = image.GetHistoryManager;
 
             _root = new Node(null, _history.RootChange, this);
             _currentNode = _root;
+            _currentNode.SetHighlight(true);
             _allNodes.Add(_root);
 
             _history.AllChildrenRemoved += (parent) => {
@@ -305,7 +308,11 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
 
                 _buttonStackPanel = new StackPanel { Orientation  = Orientation.Horizontal };
 
-                _button = new Button { Content = source.Value.GetType().Name };
+                string name = source.Value.GetType().Name;
+                name += source.Value.GetType() == typeof(RemoveChange)
+                    ? ": " + ((RemoveChange)source.Value).ValueType.Name
+                    : "";
+                _button = new Button { Content = name };
                 _button.Click += (s, e) => history.History.Jump(source);
                 
                 UIManager.ColorThemeManager.SetStyle(_button, NodeStyle);

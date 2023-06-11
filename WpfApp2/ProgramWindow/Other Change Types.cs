@@ -13,15 +13,22 @@ namespace Retros.ProgramWindow {
     }
 
     public class RemoveChange : INegativeChange {
+        private Type _valueType;
+
         public IPositiveChange? Value { get; }
-        public Type? ValueType { get; }
+        public Type ValueType => _valueType;
 
 
-        public RemoveChange(IPositiveChange value) => Value = value;
-        public RemoveChange(Type type) => ValueType = type;
+        public RemoveChange(IPositiveChange value) {
+            Value = value;
+            _valueType = value.GetType();
+        }
+        public RemoveChange(Type type) {
+            _valueType = type;
+        }
 
-        private RemoveChange(IPositiveChange? value, Type? valueType) {
-            ValueType = valueType;
+        private RemoveChange(IPositiveChange? value, Type valueType) {
+            _valueType = valueType;
             Value = value;
         }
 

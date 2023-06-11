@@ -24,7 +24,7 @@ namespace Retros.ProgramWindow {
     // represents the removal of a positive change
     public interface INegativeChange : IChange {
         public IPositiveChange? Value { get; } // the change that was removed
-        public Type? ValueType { get; } // the type of the change that was removed
+        public Type ValueType { get; } // the type of the change that was removed
     }
 
 
