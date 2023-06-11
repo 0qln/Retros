@@ -110,8 +110,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
 
         public class Node {
+            private readonly IChange _value;
             private List<Node>? _nodes;
-            private IChange _value;
             private Node? _prev;
 
 

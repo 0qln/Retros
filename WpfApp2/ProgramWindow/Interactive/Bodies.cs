@@ -88,11 +88,11 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
 
         private void AddFilterChange(IFilterChange filter, double value) {
             if (value == 0) {
-                image.GetChangeManager.RemoveChange((IChange)filter);
+                image.GetChangeManager.RemoveChange(filter);
                 FilterDisplay.RemoveItem(filter.GetType().Name);
             }
             else {
-                if (image.GetChangeManager.AddChange((IChange)filter)) {
+                if (image.GetChangeManager.AddChange(filter)) {
                     FilterDisplay.AddItem(filter.GetType().Name);
                 }
                 else {
@@ -364,6 +364,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             public ChangeHistory.Node Source => _sourceNode;
 
             //Todo
+            //--
             public Node? First(Func<Node, bool> predicate) {
                 foreach (var node in _nodes) {
                     var result = node.First(predicate);
@@ -371,7 +372,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
                 }
                 return null;
             }
-            //
+            //--
 
             public void Cut() {
                 _nodes.Clear();

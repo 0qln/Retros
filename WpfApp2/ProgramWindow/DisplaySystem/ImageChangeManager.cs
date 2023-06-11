@@ -27,7 +27,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
     // Functionality -> Image Filters Tab Body
     public class ImageChangeManager {
         private HashSet<Type> changeTypes = new(); 
-        private List<IChange> changes = new();
+        private List<IPositiveChange> changes = new();
         private DispatcherTimer timer = new();
         private WorkstationImage image;
         private TimeSpan Interval = TimeSpan.FromMilliseconds(16.66f);
@@ -106,7 +106,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
             return bitmap;
         }
 
-        public bool AddChange(IChange change) {
+        public bool AddChange(IPositiveChange change) {
             if (ContainsChange(change)) {
                 return false;
             }
@@ -117,7 +117,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
             return true;
         }
-        public void RemoveChange(IChange change) {
+        public void RemoveChange(IPositiveChange change) {
             if (!ContainsChange(change)) return;
 
             changes.Remove(GetChange(change));
@@ -139,21 +139,21 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 ? (IFilterChange)changes.First(c => c.GetType() == filter.GetType())
                 : null;
         }
-        public IChange? GetChange(IChange change) {
+        public IPositiveChange? GetChange(IPositiveChange change) {
             return changes.Count > 0 
                 ? changes.First(c => c.GetType() == change.GetType()) 
                 : null;
         }
-        public IChange? GetChange(Type changeType) {
+        public IPositiveChange? GetChange(Type changeType) {
             return changes.Count > 0 
                 ? changes.First(c => c.GetType() == changeType) 
                 : null;
         }
-        public bool ContainsChange(IChange change) {
+        public bool ContainsChange(IPositiveChange change) {
             return changeTypes.Contains(change.GetType());
         }
         public bool ContainsFilter(IFilterChange filter) {
-            return changeTypes.Contains(((IChange)filter).GetType());
+            return changeTypes.Contains(((IPositiveChange)filter).GetType());
         }
         public bool ContainsChange(Type type) {
             return changeTypes.Contains(type);

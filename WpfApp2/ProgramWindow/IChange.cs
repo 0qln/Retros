@@ -6,24 +6,37 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace Retros.ProgramWindow {
-    public interface IChange : ICloneable {
+
+    // represents a general change to the images change history 
+    public interface IChange : ICloneable { }
+
+
+    // old IChange, represents a positive change (e.g. smth that adds to the image)
+    public interface IPositiveChange : IChange {
         public void Generate(WriteableBitmap bitmap);
         public bool Applied { get; }
     }
 
-    public interface IFilterChange : IChange {
+    // represents the removal of a positive change
+    public interface INegativeChange : IChange {
+        public IPositiveChange Value { get; } // the change that was removed
+    }
+
+
+
+    // represents filters
+    public interface IFilterChange : IPositiveChange {
         public double FilterIntensity { get; set; }
     }
 
-    public interface IResizeChange : IChange {
+    // represents a resize 
+    public interface IResizeChange : IPositiveChange {
 
     }
 
-    public interface IEmptyChange : IChange {
+    // represents dummy, does not have an impact to the image
+    public interface IEmptyChange : IPositiveChange {
 
     }
 
-    public interface IRenderChange : IChange {
-
-    }
 }

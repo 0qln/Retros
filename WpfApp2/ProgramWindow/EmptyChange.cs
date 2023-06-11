@@ -9,5 +9,6 @@ namespace Retros.ProgramWindow {
     public class RootChange : IEmptyChange {
         public bool Applied => false;
         public void Generate(WriteableBitmap bitmap) { }
+        public object Clone() => new RootChange();
     }
 }
