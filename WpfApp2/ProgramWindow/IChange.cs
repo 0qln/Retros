@@ -10,6 +10,10 @@ namespace Retros.ProgramWindow {
     // represents a general change to the images change history 
     public interface IChange : ICloneable { }
 
+    public interface ICloneable {
+        public IChange Clone();    
+    }
+
 
     // old IChange, represents a positive change (e.g. smth that adds to the image)
     public interface IPositiveChange : IChange {
@@ -19,7 +23,8 @@ namespace Retros.ProgramWindow {
 
     // represents the removal of a positive change
     public interface INegativeChange : IChange {
-        public IPositiveChange Value { get; } // the change that was removed
+        public IPositiveChange? Value { get; } // the change that was removed
+        public Type? ValueType { get; } // the type of the change that was removed
     }
 
 

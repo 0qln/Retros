@@ -117,10 +117,10 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
             return true;
         }
-        public void RemoveChange(IPositiveChange change) {
-            if (!ContainsChange(change)) return;
+        public void RemoveChange(INegativeChange change) {
+            if (!ContainsChange(change.Value)) return;
 
-            changes.Remove(GetChange(change));
+            changes.Remove(GetChange(change.Value)!);
             changeTypes.Remove(change.GetType());
             changed = true;
             justRemoved = true;
@@ -129,8 +129,10 @@ namespace Retros.ProgramWindow.DisplaySystem {
         }
 
         public void SetFilterIntensity(IFilterChange filter, double value) {
-            GetFilter(filter).FilterIntensity = value;
-            changed = true;
+            if (ContainsFilter(filter)) {
+                GetFilter(filter)!.FilterIntensity = value;
+                changed = true;
+            }
         }
 
 
@@ -168,7 +170,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
             }
 
             public void Execute(object? parameter) {
-                WindowManager.MainWindow.SelectedWorkstation.ImageElement.GetHistory.Undo();
+                WindowManager.MainWindow?.SelectedWorkstation.ImageElement.GetHistory.Undo();
             }
         }
 
@@ -180,7 +182,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
             }
 
             public void Execute(object? parameter) {
-                WindowManager.MainWindow.SelectedWorkstation.ImageElement.GetHistory.Redo();
+                WindowManager.MainWindow?.SelectedWorkstation.ImageElement.GetHistory.Redo();
             }
         }
     }

@@ -13,9 +13,8 @@ using System.Windows.Media.Imaging;
 
 namespace Retros.ProgramWindow {
 
-    public class OnlyRedChannel : FilterAbstraction, IFilterChange {
-
-        public void Generate(WriteableBitmap bitmap) {
+    public class OnlyRedChannel : FilterAbstraction<OnlyRedChannel> {
+        public override void Generate(WriteableBitmap bitmap) {
             int bytesPerPixel = (bitmap.Format.BitsPerPixel + 7) / 8;
             int pixelHeight = bitmap.PixelHeight;
             int pixelWidth = bitmap.PixelWidth;
@@ -48,8 +47,8 @@ namespace Retros.ProgramWindow {
             applied = true;
         }
     }
-    public class OnlyGreenChannel : FilterAbstraction, IFilterChange {
-        public void Generate(WriteableBitmap bitmap) {
+    public class OnlyGreenChannel : FilterAbstraction<OnlyGreenChannel>, IFilterChange {
+        public override void Generate(WriteableBitmap bitmap) {
             int bytesPerPixel = (bitmap.Format.BitsPerPixel + 7) / 8;
             int pixelHeight = bitmap.PixelHeight;
             int pixelWidth = bitmap.PixelWidth;
@@ -82,8 +81,8 @@ namespace Retros.ProgramWindow {
             applied = true;
         }
     }
-    public class OnlyBlueChannel : FilterAbstraction, IFilterChange {
-        public void Generate(WriteableBitmap bitmap) {
+    public class OnlyBlueChannel : FilterAbstraction<OnlyBlueChannel>, IFilterChange {
+        public override void Generate(WriteableBitmap bitmap) {
             int bytesPerPixel = (bitmap.Format.BitsPerPixel + 7) / 8;
             int pixelHeight = bitmap.PixelHeight;
             int pixelWidth = bitmap.PixelWidth;
@@ -116,8 +115,8 @@ namespace Retros.ProgramWindow {
             applied = true;
         }
     }
-    public class TestBlue : FilterAbstraction, IFilterChange {
-        public void Generate(WriteableBitmap bitmap) {
+    public class TestBlue : FilterAbstraction<TestBlue>, IFilterChange {
+        public override void Generate(WriteableBitmap bitmap) {
             int bytesPerPixel = (bitmap.Format.BitsPerPixel + 7) / 8;
             int pixelHeight = bitmap.PixelHeight;
             int pixelWidth = bitmap.PixelWidth;
@@ -150,8 +149,8 @@ namespace Retros.ProgramWindow {
             applied = true;
         }
     }
-    public class GrayScale : FilterAbstraction, IFilterChange {
-        public void Generate(WriteableBitmap bitmap) {
+    public class GrayScale : FilterAbstraction<GrayScale>, IFilterChange {
+        public override void Generate(WriteableBitmap bitmap) {
             int bytesPerPixel = (bitmap.Format.BitsPerPixel + 7) / 8;
             int pixelHeight = bitmap.PixelHeight;
             int pixelWidth = bitmap.PixelWidth;
@@ -192,9 +191,13 @@ namespace Retros.ProgramWindow {
 
             applied = true;
         }
+
     }
 
-    public class FilterAbstraction {
+    public abstract class FilterAbstraction<T> 
+        : IChange, IFilterChange 
+        where T : FilterAbstraction<T>, new() {
+
         protected double filterIntensity;
         protected bool applied = false;
 
@@ -207,12 +210,14 @@ namespace Retros.ProgramWindow {
         }
         public bool Applied => applied;
 
-        public object Clone() {
-            var clone = new FilterAbstraction();
+        public IChange Clone() {
+            var clone = new T();
             clone.applied = applied;
             clone.filterIntensity = filterIntensity;
             return clone;
         }
+
+        public abstract void Generate(WriteableBitmap bitmap);
     }
 
     /*

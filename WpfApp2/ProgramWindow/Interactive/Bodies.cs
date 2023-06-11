@@ -33,6 +33,8 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
 
     
     public class ImageFilter : Body {
+        private RemoveChange? _removeChangeChache = null;
+
         public Button resetButton = new();
 
         public Slider blueChannelSlider = new("Blue Channel");
@@ -58,14 +60,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             resetButton.Content = "Back to original";
 
             grayscaleSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new GrayScale(), grayscaleSlider.SliderElement.Value / 10);
-            grayscaleSlider.SliderElement.PreviewMouseUp += (s, e) => {
-                if (grayscaleSlider.SliderElement.Value != 0)
-                    image.GetHistory.AddAndStep(image.GetChangeManager.GetChange(typeof(GrayScale)));
-                else {
-
-                }
-                    
-            };
+            grayscaleSlider.SliderElement.PreviewMouseUp += (s, e) => HandleChangeHistory<GrayScale>(grayscaleSlider.SliderElement.Value);
 
             blueChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyBlueChannel(), blueChannelSlider.SliderElement.Value / 10);
             blueChannelSlider.SliderElement.PreviewMouseUp += (s, e) => image.GetHistory.AddAndStep(image.GetChangeManager.GetChange(typeof(OnlyBlueChannel))!);
@@ -86,9 +81,24 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             image.ResetCurrent();
         }
 
+        private void HandleChangeHistory<T>(double value) {
+            if (value != 0) {
+                image.GetHistory
+                    .AddAndStep(image.GetChangeManager
+                    .GetChange(typeof(T))?
+                    .Clone()!);
+            }
+            else {
+                if (_removeChangeChache is null) return;
+                image.GetHistory.AddAndStep(_removeChangeChache);
+                image.GetChangeManager.RemoveChange(_removeChangeChache);
+                _removeChangeChache = null;
+            }
+        }
+
         private void AddFilterChange(IFilterChange filter, double value) {
             if (value == 0) {
-                image.GetChangeManager.RemoveChange(filter);
+                _removeChangeChache = new RemoveChange(filter);
                 FilterDisplay.RemoveItem(filter.GetType().Name);
             }
             else {

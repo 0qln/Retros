@@ -34,10 +34,9 @@ namespace Retros.ProgramWindow.DisplaySystem {
         public void Add(IChange change) {
             Node newNode = new Node(_current, change);
             _current.Add(newNode);
-            ChangeAdded?.Invoke(newNode);
             _allNodes.Add(newNode);
-
-            DebugLibrary.Console.Log("History node added");
+            ChangeAdded?.Invoke(newNode);
+            DebugLibrary.Console.Log($"History node added :{change.GetType().Name}");
         }
         public void AddAndStep(IChange change) {
             uint index = _current.Children is not null
