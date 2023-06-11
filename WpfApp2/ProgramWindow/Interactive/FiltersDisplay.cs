@@ -119,7 +119,7 @@ namespace Retros.ProgramWindow.Interactive
         private void InvokeItemListChanged() {
             List<string> list = new();
             items.ForEach(item => list.Add(item.tbName.Text));
-            image.GetFilterManager.Order(list);
+            image.GetChangeManager.Order(list);
         }
 
         private class Item : IFrameworkElement {

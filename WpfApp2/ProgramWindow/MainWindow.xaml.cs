@@ -58,7 +58,7 @@ namespace Retros
             Helper.SetChildInGrid(WorkStationImageGrid, workstation.ImageElement.FrameworkElement, 0, 0);
 
             workstation.TableElement.AddTab(new ImageFilterTab(new ImageFilter(workstation.ImageElement), new DefaultHandle("Filters")));
-            workstation.TableElement.AddTab(new ImageHistoryTab(new ImageHistory(workstation.ImageElement), new DefaultHandle("Change History")));
+            //workstation.TableElement.AddTab(new ImageHistoryTab(new ImageHistory(workstation.ImageElement), new DefaultHandle("Change History")));
             workstation.TableElement.AddTab(new TestTab(new Test(workstation.ImageElement), new DefaultHandle("Testing")));
             workstation.TableElement.SelectTab(0);
 

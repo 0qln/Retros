@@ -23,7 +23,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
         public FrameworkElement FrameworkElement => pageFrame;
         private WriteableBitmap resizedSourceBitmap;
         private Uri source;
-        private ImageChangeManager filterManager;
+        private ImageChangeManager changeManger;
         private ChangeHistory changeHistory = new();
         private DispatcherTimer actionTimer = new();
         private Queue<Action> actionQueue = new();
@@ -48,7 +48,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
         public Grid Grid => Page.MainGrid;
 
         /// <summary>The FilterManager instance for this WorkstationImage.</summary>
-        public ImageChangeManager GetFilterManager => filterManager;
+        public ImageChangeManager GetChangeManager => changeManger;
 
         /// <summary>Gets the ChangeHistory instance for this WorkstationImage.</summary>
         public ChangeHistory GetHistory => changeHistory;
@@ -101,23 +101,31 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
 
 
-#pragma warning disable CS8618 // Ein Non-Nullable-Feld muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Erwägen Sie die Deklaration als Nullable.
         public WorkstationImage(string path) {
             Page = new(this);
             pageFrame.Content = Page;
-            filterManager = new(this);
+            changeManger = new(this);
             StartUpdating();
 
             source = new Uri(path);
             SetSourceImage(source);
+
+            changeHistory.MoveBack += (steps) => {
+
+            };
+            changeHistory.MoveForward += (steps) => {
+
+            };
+            changeHistory.PositionChanged += (newNode) => {
+
+            };
         }
-        public WorkstationImage() { 
+        public WorkstationImage() {
             Page = new(this);
             pageFrame.Content = Page;
-            filterManager = new(this);
+            changeManger = new(this);
             StartUpdating();
         }
-#pragma warning restore CS8618 // Ein Non-Nullable-Feld muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Erwägen Sie die Deklaration als Nullable.
 
 
         public void SetSourceImage(Uri source) {
@@ -183,7 +191,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
         public System.Drawing.Bitmap Render() {
             // Get the image Source
             WriteableBitmap writeableBitmap = 
-                filterManager.ApplyChanges(
+                changeManger.ApplyChanges(
                     new WriteableBitmap(
                         new BitmapImage(source)));
 

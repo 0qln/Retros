@@ -60,7 +60,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             grayscaleSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new GrayScale(), grayscaleSlider.SliderElement.Value / 10);
             grayscaleSlider.SliderElement.PreviewMouseUp += (s, e) => {
                 if (grayscaleSlider.SliderElement.Value != 0)
-                    image.GetHistory.AddAndStep(image.GetFilterManager.GetChange(typeof(GrayScale)));
+                    image.GetHistory.AddAndStep(image.GetChangeManager.GetChange(typeof(GrayScale)));
                 else {
 
                 }
@@ -68,35 +68,35 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             };
 
             blueChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyBlueChannel(), blueChannelSlider.SliderElement.Value / 10);
-            blueChannelSlider.SliderElement.PreviewMouseUp += (s, e) => image.GetHistory.AddAndStep(image.GetFilterManager.GetChange(typeof(OnlyBlueChannel))!);
+            blueChannelSlider.SliderElement.PreviewMouseUp += (s, e) => image.GetHistory.AddAndStep(image.GetChangeManager.GetChange(typeof(OnlyBlueChannel))!);
 
             redChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyRedChannel(), redChannelSlider.SliderElement.Value / 10);
-            redChannelSlider.SliderElement.PreviewMouseUp += (s, e) => image.GetHistory.AddAndStep(image.GetFilterManager.GetChange(typeof(OnlyRedChannel))!);
+            redChannelSlider.SliderElement.PreviewMouseUp += (s, e) => image.GetHistory.AddAndStep(image.GetChangeManager.GetChange(typeof(OnlyRedChannel))!);
 
             greenChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyGreenChannel(), greenChannelSlider.SliderElement.Value / 10);
-            greenChannelSlider.SliderElement.PreviewMouseUp += (s, e) => image.GetHistory.AddAndStep(image.GetFilterManager.GetChange(typeof(OnlyGreenChannel))!);
+            greenChannelSlider.SliderElement.PreviewMouseUp += (s, e) => image.GetHistory.AddAndStep(image.GetChangeManager.GetChange(typeof(OnlyGreenChannel))!);
 
             testBlueSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new TestBlue(), testBlueSlider.SliderElement.Value / 10);
-            testBlueSlider.SliderElement.PreviewMouseUp += (s, e) => image.GetHistory.AddAndStep(image.GetFilterManager.GetChange(typeof(TestBlue))!);
+            testBlueSlider.SliderElement.PreviewMouseUp += (s, e) => image.GetHistory.AddAndStep(image.GetChangeManager.GetChange(typeof(TestBlue))!);
 
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e) {
-            image.GetFilterManager.Clear();
+            image.GetChangeManager.Clear();
             image.ResetCurrent();
         }
 
         private void AddFilterChange(IFilterChange filter, double value) {
             if (value == 0) {
-                image.GetFilterManager.RemoveChange((IChange)filter);
+                image.GetChangeManager.RemoveChange((IChange)filter);
                 FilterDisplay.RemoveItem(filter.GetType().Name);
             }
             else {
-                if (image.GetFilterManager.AddChange((IChange)filter)) {
+                if (image.GetChangeManager.AddChange((IChange)filter)) {
                     FilterDisplay.AddItem(filter.GetType().Name);
                 }
                 else {
-                    image.GetFilterManager.SetFilterIntensity(filter, value);
+                    image.GetChangeManager.SetFilterIntensity(filter, value);
                 }
             }
         }
@@ -341,7 +341,9 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
                     newHeight += d;
                 }
                 newHeight -= _nodes[_nodes.Count - 1].ButtonElement.ActualHeight / 2;
-                _lineVertical.Y2 = newHeight;           
+                _lineVertical.Y2 = newHeight;
+
+                CompositionTarget.Rendering -= UpdateLines;
             }
 
             private Point _PositionOf(FrameworkElement element) => element.TranslatePoint(new Point(), _canvas);

@@ -36,6 +36,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
             _current.Add(newNode);
             ChangeAdded?.Invoke(newNode);
             _allNodes.Add(newNode);
+
+            DebugLibrary.Console.Log("History node added");
         }
         public void AddAndStep(IChange change) {
             uint index = _current.Children is not null
@@ -68,6 +70,15 @@ namespace Retros.ProgramWindow.DisplaySystem {
             MoveForward?.Invoke(new uint[] { 0 });
         }
 
+        public void Undo() {
+            var prev = _current?.Previous;
+            _current = prev is not null 
+                ? prev 
+                : _current!;
+
+            MoveBack?.Invoke(1);
+        }
+
         public void Cut() {
             if (_current is not null && _current.HasChildren) {
                 foreach (var child in _current.Children!) {
@@ -87,15 +98,6 @@ namespace Retros.ProgramWindow.DisplaySystem {
             }
         }
 
-        public void Undo() {
-            var prev = _current?.Previous;
-            _current = prev is not null 
-                ? prev 
-                : _current!;
-
-            MoveBack?.Invoke(1);
-        }
-
         public void Clear() {
             _current = _rootNode;
             _rootNode.CutNodes();
@@ -103,18 +105,19 @@ namespace Retros.ProgramWindow.DisplaySystem {
             _allNodes.Add(_rootNode);
 
             AllChildrenRemoved?.Invoke(_rootNode);
+            PositionChanged?.Invoke(_rootNode);
         }
 
 
         public class Node {
             private List<Node>? _nodes;
-            private IChange _change;
+            private IChange _value;
             private Node? _prev;
 
 
             public Node(Node? prevNode, IChange change) {
                 _prev = prevNode;
-                _change = change;
+                _value = change;
             }
 
             public void Add(Node node) {
@@ -144,7 +147,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
             public List<Node>? Children => _nodes;
             public Node? Next(uint index) => index < _nodes?.Count ? _nodes[(int)index] : null;
             public Node? Previous => _prev is not null ? _prev : null;
-            public IChange Value => _change;
+            public IChange Value => _value;
         }
     }
 }
