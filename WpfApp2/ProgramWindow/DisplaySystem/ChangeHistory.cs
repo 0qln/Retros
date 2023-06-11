@@ -49,6 +49,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
             uint index = _current.Children is not null
                 ? (uint)_current.Children.Count
                 : 0;
+
             Add(change);
             Forward(index);
         }

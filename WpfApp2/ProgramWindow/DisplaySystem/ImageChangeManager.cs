@@ -22,6 +22,7 @@ using System.Windows.Navigation;
 using DebugLibrary;
 using static System.Net.WebRequestMethods;
 using System.Windows.Input;
+using System.Security.Policy;
 
 namespace Retros.ProgramWindow.DisplaySystem {
     // Functionality -> Image Filters Tab Body
@@ -37,6 +38,10 @@ namespace Retros.ProgramWindow.DisplaySystem {
             set {
                 changes = value.ToList();
                 changed = true;
+
+                image.GetChangeManager.PrintChanges();
+
+                // update sliders
             }
             get {
                 IPositiveChange[] arr = new IPositiveChange[changes.Count];
@@ -46,7 +51,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 return arr;
             }
         }
-        private void PrintChanges() {
+        public void PrintChanges() {
             DebugLibrary.Console.Log("Changes:");
             foreach (var change in changes) {
                 DebugLibrary.Console.Log(change.GetType().Name.ToString());
@@ -118,7 +123,6 @@ namespace Retros.ProgramWindow.DisplaySystem {
             image.ChangeCurentImage (ApplyChanges (new WriteableBitmap (image.ResizedSourceBitmap)));
 
 
-
             changed = false;
         }
         public WriteableBitmap ApplyChanges(WriteableBitmap bitmap) {
@@ -140,20 +144,25 @@ namespace Retros.ProgramWindow.DisplaySystem {
             return true;
         }
         public void RemoveChange(INegativeChange change) {
-            if (!ContainsChange(change.Value) ||
-                !ContainsChange(change.ValueType)) return;
+            if (!ContainsChangeContent(change)) {
+                return;
+            }
 
+            changeTypes.Remove(change.ValueType);
             changes.Remove(GetChange(change.Value)!);
-            changeTypes.Remove(change.GetType());
             changed = true;
             justRemoved = true;
-
-            history?.Undo();
         }
 
         public void SetFilterIntensity(IFilterChange filter, double value) {
             if (ContainsFilter(filter)) {
                 GetFilter(filter)!.FilterIntensity = value;
+                changed = true;
+            }
+        }
+        public void SetFilterIntensity(Type filter, double value) {
+            if (ContainsChange(filter)) {
+                ((IFilterChange)GetChange(filter)).FilterIntensity = value;
                 changed = true;
             }
         }
@@ -176,6 +185,16 @@ namespace Retros.ProgramWindow.DisplaySystem {
         }
         public bool ContainsChange(IPositiveChange change) {
             return changeTypes.Contains(change.GetType());
+        }
+        public bool ContainsChangeContent(INegativeChange change) {
+            if (ContainsChange(change.ValueType)) {
+                return true;
+            }
+            if (change.Value is not null
+                && ContainsChange(change.Value)) {
+                return true;
+            }
+            return false;
         }
         public bool ContainsFilter(IFilterChange filter) {
             return changeTypes.Contains(((IPositiveChange)filter).GetType());

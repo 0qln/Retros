@@ -34,47 +34,30 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
 
     
     public class ImageFilter : Body {
-        private RemoveChange? _removeChangeChache = null;
-
         public Button resetButton = new();
-
-        public Slider blueChannelSlider = new("Blue Channel");
-        public Slider redChannelSlider = new("Red Channel");
-        public Slider greenChannelSlider = new("Green Channel");
-        public Slider grayscaleSlider = new("Grayscale");
-        public Slider testBlueSlider = new("TestBlue");
         public FilterDisplay FilterDisplay;
+
 
         public ImageFilter(WorkstationImage image) : base(image) {
             FilterDisplay = new(image);
 
+            ChangeAccess<GrayScale> grayscale = new(FilterDisplay, image);
+            ChangeAccess<OnlyRedChannel> redChannel = new(FilterDisplay, image);
+            ChangeAccess<OnlyGreenChannel> greenChannel = new(FilterDisplay, image);
+            ChangeAccess<OnlyBlueChannel> blueChannel = new(FilterDisplay, image);
+            ChangeAccess<TestBlue> testBlue = new(FilterDisplay, image);
+
             stackPanel.Children.Add(resetButton);
-            stackPanel.Children.Add(grayscaleSlider.FrameworkElement);
-            stackPanel.Children.Add(blueChannelSlider.FrameworkElement);
-            stackPanel.Children.Add(redChannelSlider.FrameworkElement);
-            stackPanel.Children.Add(greenChannelSlider.FrameworkElement);
-            stackPanel.Children.Add(testBlueSlider.FrameworkElement);
+            stackPanel.Children.Add(grayscale.FrameworkElement);
+            stackPanel.Children.Add(redChannel.FrameworkElement);
+            stackPanel.Children.Add(greenChannel.FrameworkElement);
+            stackPanel.Children.Add(blueChannel.FrameworkElement);
+            stackPanel.Children.Add(testBlue.FrameworkElement);
             stackPanel.Children.Add(FilterDisplay.FrameworkElement);
 
             UIManager.ColorThemeManager.Set_AC1(b => resetButton.Background = b);
             resetButton.Click += ResetButton_Click;
             resetButton.Content = "Back to original";
-
-            grayscaleSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new GrayScale(), grayscaleSlider.SliderElement.Value / 10);
-            grayscaleSlider.SliderElement.PreviewMouseUp += (s, e) => HandleChangeHistory<GrayScale>(grayscaleSlider.SliderElement.Value);
-
-            blueChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyBlueChannel(), blueChannelSlider.SliderElement.Value / 10);
-            blueChannelSlider.SliderElement.PreviewMouseUp += (s, e) => HandleChangeHistory<OnlyBlueChannel>(blueChannelSlider.SliderElement.Value);
-
-            redChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyRedChannel(), redChannelSlider.SliderElement.Value / 10);
-            redChannelSlider.SliderElement.PreviewMouseUp += (s, e) => HandleChangeHistory<OnlyRedChannel>(redChannelSlider.SliderElement.Value);
-
-            greenChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyGreenChannel(), greenChannelSlider.SliderElement.Value / 10);
-            greenChannelSlider.SliderElement.PreviewMouseUp += (s, e) => HandleChangeHistory<OnlyGreenChannel>(greenChannelSlider.SliderElement.Value);
-
-            testBlueSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new TestBlue(), testBlueSlider.SliderElement.Value / 10);
-            testBlueSlider.SliderElement.PreviewMouseUp += (s, e) => HandleChangeHistory<TestBlue>(testBlueSlider.SliderElement.Value);
-
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e) {
@@ -83,34 +66,61 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             image.ResetCurrent();
         }
 
-        private void HandleChangeHistory<T>(double value) {
-            if (value != 0) {
-                image.GetHistoryManager
-                    .AddAndStep(image.GetChangeManager
-                    .GetChange(typeof(T))?
-                    .Clone()!);
-            }
-            else {
-                if (_removeChangeChache is null) return;
-                image.GetHistoryManager.AddAndStep(_removeChangeChache);
-                image.GetChangeManager.RemoveChange(_removeChangeChache);
-                _removeChangeChache = null;
-            }
-        }
+        // can be static, the user will never be able to activate two different instances of this tab at the same time
+        private static RemoveChange? _removeChangeChache; 
 
-        private void AddFilterChange(IFilterChange filter, double value) {
-            if (value == 0) {
-                _removeChangeChache = new RemoveChange(filter);
-                FilterDisplay.RemoveItem(filter.GetType().Name);
+        private class ChangeAccess<T> where T : IFilterChange, new() { 
+            public FrameworkElement FrameworkElement => _slider.FrameworkElement;
+
+            //private RemoveChange? _removeChangeChache;
+            private Type _filterType = typeof(T);
+            private IFilterChange _filterInstance = new T();
+            private Slider _slider;
+
+
+            public ChangeAccess(FilterDisplay filterDisplay, WorkstationImage image) {
+                _slider = new Slider(_filterType.Name);
+                _slider.SliderElement.ValueChanged += (s, e) => SetToManager(filterDisplay, image);
+                _slider.SliderElement.PreviewMouseUp += (s, e) => SetChangeHistory(image);
             }
-            else {
-                if (image.GetChangeManager.AddChange(filter)) {
-                    FilterDisplay.AddItem(filter.GetType().Name);
+
+
+            private void SetChangeHistory(WorkstationImage image) {
+                if (_slider.SliderElement.Value != 0) {
+                    image.GetHistoryManager
+                        .AddAndStep(image.GetChangeManager
+                        .GetChange(_filterType)?
+                        .Clone()!);
                 }
                 else {
-                    image.GetChangeManager.SetFilterIntensity(filter, value);
+                    if (_removeChangeChache is null) return;
+                    image.GetChangeManager.RemoveChange(_removeChangeChache);
+                    image.GetHistoryManager.AddAndStep(_removeChangeChache);
+                    _removeChangeChache = null;
                 }
             }
+
+            private void SetToManager(FilterDisplay filterDisplay, WorkstationImage image) {
+                if (_slider.SliderElement.Value == 0) {
+                    _removeChangeChache = new RemoveChange(_filterInstance);
+                    filterDisplay.RemoveItem(_filterInstance);
+                }
+                else {
+                    if (image.GetChangeManager.AddChange(_filterInstance)) { // try adding
+                        // -> does already contain
+                        // add the name to the display
+                        filterDisplay.AddItem(_filterInstance);
+                    }
+                    else {
+                        image.GetChangeManager.SetFilterIntensity(_filterType, _slider.SliderElement.Value / 10);
+                        /*was added the first time after not beeing added*/
+                        if (!filterDisplay.Contains(_filterType))
+                            filterDisplay.AddItem(_filterInstance);
+                    }
+                    
+                }
+            }
+
         }
     }
 

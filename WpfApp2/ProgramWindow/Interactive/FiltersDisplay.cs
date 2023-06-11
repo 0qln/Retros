@@ -16,37 +16,45 @@ using System.Windows.Input;
 using System.Windows.Markup.Localizer;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 using Utillities.Wpf;
 
 namespace Retros.ProgramWindow.Interactive
 {
     public class FilterDisplay : IFrameworkElement
     {
-        private List<Item> items = new();
-        private readonly WorkstationImage image;
+        private HashSet<Type> _itemTypes = new();
+        private List<Item> _items = new();
+        private readonly WorkstationImage _image;
 
         public FrameworkElement FrameworkElement => StackPanel;
         public StackPanel StackPanel = new();
 
 
         public FilterDisplay(WorkstationImage image) {
-            this.image = image;
+            this._image = image;
             StackPanel.VerticalAlignment = VerticalAlignment.Top;
         }
 
-        public void AddItem(string name) {
-            Item item = new(name, this);
+
+        public bool Contains(Type filter) => _itemTypes.Contains(filter);
+        
+        public void AddItem(IFilterChange newItem) {
+            Item item = new(newItem.GetType().Name, this);
             StackPanel.Children.Add(item.FrameworkElement);
-            items.Add(item);
+            _items.Add(item);
+            _itemTypes.Add(newItem.GetType());
 
             InvokeItemListChanged();
         }
 
-        public void RemoveItem(string name) {
-            Item item = items.Find(item => item.tbName.Text == name)!;
-            if (item == null) return;
-            items.Remove(item);
-            StackPanel.Children.Remove(item.FrameworkElement);
+        public void RemoveItem(IFilterChange item) {
+            if (Contains(item.GetType())) return;
+
+            Item removeItem = _items.Find(item => item.tbName.Text == item.GetType().Name)!;
+            _items.Remove(removeItem);
+            StackPanel.Children.Remove(removeItem.FrameworkElement);
+            _itemTypes.Add(item.GetType());
 
             InvokeItemListChanged();
         }
@@ -59,7 +67,7 @@ namespace Retros.ProgramWindow.Interactive
 
 
         private void InsertItem(Item item, Point newPosition) {
-            if (items.Count == 1) {
+            if (_items.Count == 1) {
                 if (item.FrameworkElement.Parent is StackPanel) (item.FrameworkElement.Parent as StackPanel)!.Children.Remove(item.FrameworkElement);
                 else (item.FrameworkElement.Parent as Canvas)!.Children.Remove(item.FrameworkElement);
                 StackPanel.Children.Add(item.FrameworkElement);
@@ -85,12 +93,12 @@ namespace Retros.ProgramWindow.Interactive
                 }
             }
 
-            items.Remove(item);
-            if (items.Count == 0) {
-                items.Add(item);
+            _items.Remove(item);
+            if (_items.Count == 0) {
+                _items.Add(item);
             }
             else {
-                items.Insert(index, item);
+                _items.Insert(index, item);
             }
 
             if (item.FrameworkElement.Parent is StackPanel) (item.FrameworkElement.Parent as StackPanel)!.Children.Remove(item.FrameworkElement);
@@ -101,13 +109,13 @@ namespace Retros.ProgramWindow.Interactive
         }
 
         private void IncreaseHierachy(Item item) {
-            if (items.Count == 1) return;
+            if (_items.Count == 1) return;
 
-            int index = items.IndexOf(item);
+            int index = _items.IndexOf(item);
             if (index <= 0) return;
 
-            items.RemoveAt(index);
-            items.Insert(index-1, item);
+            _items.RemoveAt(index);
+            _items.Insert(index-1, item);
 
             StackPanel.Children.RemoveAt(index);
             StackPanel.Children.Insert(index - 1, item.FrameworkElement);
@@ -118,8 +126,8 @@ namespace Retros.ProgramWindow.Interactive
 
         private void InvokeItemListChanged() {
             List<string> list = new();
-            items.ForEach(item => list.Add(item.tbName.Text));
-            image.GetChangeManager.Order(list);
+            _items.ForEach(item => list.Add(item.tbName.Text));
+            _image.GetChangeManager.Order(list);
         }
 
         private class Item : IFrameworkElement {
