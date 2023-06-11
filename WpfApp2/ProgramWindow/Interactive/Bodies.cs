@@ -64,16 +64,16 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             grayscaleSlider.SliderElement.PreviewMouseUp += (s, e) => HandleChangeHistory<GrayScale>(grayscaleSlider.SliderElement.Value);
 
             blueChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyBlueChannel(), blueChannelSlider.SliderElement.Value / 10);
-            blueChannelSlider.SliderElement.PreviewMouseUp += (s, e) => HandleChangeHistory<OnlyBlueChannel>(grayscaleSlider.SliderElement.Value);
+            blueChannelSlider.SliderElement.PreviewMouseUp += (s, e) => HandleChangeHistory<OnlyBlueChannel>(blueChannelSlider.SliderElement.Value);
 
             redChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyRedChannel(), redChannelSlider.SliderElement.Value / 10);
-            redChannelSlider.SliderElement.PreviewMouseUp += (s, e) => HandleChangeHistory<OnlyRedChannel>(grayscaleSlider.SliderElement.Value);
+            redChannelSlider.SliderElement.PreviewMouseUp += (s, e) => HandleChangeHistory<OnlyRedChannel>(redChannelSlider.SliderElement.Value);
 
             greenChannelSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new OnlyGreenChannel(), greenChannelSlider.SliderElement.Value / 10);
-            greenChannelSlider.SliderElement.PreviewMouseUp += (s, e) => HandleChangeHistory<OnlyGreenChannel>(grayscaleSlider.SliderElement.Value);
+            greenChannelSlider.SliderElement.PreviewMouseUp += (s, e) => HandleChangeHistory<OnlyGreenChannel>(greenChannelSlider.SliderElement.Value);
 
             testBlueSlider.SliderElement.ValueChanged += (s, e) => AddFilterChange(new TestBlue(), testBlueSlider.SliderElement.Value / 10);
-            testBlueSlider.SliderElement.PreviewMouseUp += (s, e) => HandleChangeHistory<TestBlue>(grayscaleSlider.SliderElement.Value);
+            testBlueSlider.SliderElement.PreviewMouseUp += (s, e) => HandleChangeHistory<TestBlue>(testBlueSlider.SliderElement.Value);
 
         }
 

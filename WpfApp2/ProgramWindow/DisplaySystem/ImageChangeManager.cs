@@ -117,6 +117,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
             
             image.ChangeCurentImage (ApplyChanges (new WriteableBitmap (image.ResizedSourceBitmap)));
 
+
+
             changed = false;
         }
         public WriteableBitmap ApplyChanges(WriteableBitmap bitmap) {

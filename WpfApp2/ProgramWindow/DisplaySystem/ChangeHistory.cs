@@ -77,10 +77,10 @@ namespace Retros.ProgramWindow.DisplaySystem {
         }
 
         public void Undo() {
-            var prev = _current?.Previous;
+            var prev = _current.Previous;
             _current = prev is not null 
                 ? prev 
-                : _current!;
+                : _current;
 
             MoveBack?.Invoke(1);
         }
