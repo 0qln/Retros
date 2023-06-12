@@ -20,9 +20,10 @@ using System.Windows.Threading;
 using Retros;
 using System.Windows.Navigation;
 using DebugLibrary;
-using static System.Net.WebRequestMethods;
 using System.Windows.Input;
 using System.Security.Policy;
+using Retros.ProgramWindow.Interactive.Tabs;
+using Retros.ProgramWindow.Interactive.Tabs.Bodies;
 
 namespace Retros.ProgramWindow.DisplaySystem {
     // Functionality -> Image Filters Tab Body
@@ -39,6 +40,12 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 changes = value.ToList();
 
                 // update sliders
+                Tab? tab = WindowManager.MainWindow!.SelectedWorkstation.TableElement.GetTab(typeof(ImageFilterTab));
+                if (tab is null) return;
+
+                ((ImageFilter)tab.Body).AdjustSlisers(value);
+
+                // Update filter hierachy
             }
             get {
                 IPositiveChange[] arr = new IPositiveChange[changes.Count];

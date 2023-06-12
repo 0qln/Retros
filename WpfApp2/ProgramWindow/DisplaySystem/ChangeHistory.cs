@@ -38,7 +38,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
             Node newNode = new Node(
                 _current, 
                 change, 
-                WindowManager.MainWindow.SelectedWorkstation.ImageElement.GetChangeManager.CurrentChanges);
+                WindowManager.MainWindow!.SelectedWorkstation.ImageElement.GetChangeManager.CurrentChanges);
 
             _current.Add(newNode);
             _allNodes.Add(newNode);

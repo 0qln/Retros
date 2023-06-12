@@ -59,7 +59,7 @@ namespace Retros
 
             workstation.TableElement.AddTab(new ImageFilterTab(new ImageFilter(workstation.ImageElement), new DefaultHandle("Filters")));
             workstation.TableElement.AddTab(new ImageHistoryTab(new ImageHistory(workstation.ImageElement), new DefaultHandle("Change History")));
-            //workstation.TableElement.AddTab(new TestTab(new Test(workstation.ImageElement), new DefaultHandle("Testing")));
+            ///workstation.TableElement.AddTab(new TestTab(new Test(workstation.ImageElement), new DefaultHandle("Testing")));
             workstation.TableElement.SelectTab(0);
 
             // Shadow
@@ -117,13 +117,11 @@ namespace Retros
             WindowHandle.ApplicationButtons.FullscreenButtonImagePadding = UIManager.IconPadding;
 
             WindowHandle.ApplicationButtons.AddSettingsButton();
-            //WindowHandle.ApplicationButtons.SettingsButtonContent = Properties.Resources.settings_24;
+            WindowHandle.ApplicationButtons.SettingsButtonImageSource = UIManager.SettingsIconPath;/// Properties.Resources.settings_24;
             WindowHandle.ApplicationButtons.SettingsButtonContentPadding = new Thickness(3);
             WindowHandle.ApplicationButtons.OverrideSettings(WindowManager.ToggleSettings);
 
             ClientGrid.RowDefinitions[0].Height = new GridLength(WindowHandle.Height);
-
-            //(workstation.TableElement.GetTab(typeof(TestTab))?.Body as Test)?.Run();
         }
 
 

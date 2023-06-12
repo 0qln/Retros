@@ -46,7 +46,12 @@ namespace Retros.ProgramWindow.Interactive {
             try {
                 return tabs.First(tab => tab.GetType() == type);
             }
-            catch {
+            catch (InvalidOperationException e) {
+                DebugLibrary.Console.Log(e);
+                return null;
+            }
+            catch (ArgumentNullException e) {
+                DebugLibrary.Console.Log(e);
                 return null;
             }
         }

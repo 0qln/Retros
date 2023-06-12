@@ -37,15 +37,18 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
         public Button resetButton = new();
         public FilterDisplay FilterDisplay;
 
+        private List<ChangeAccess> filters;
 
         public ImageFilter(WorkstationImage image) : base(image) {
             FilterDisplay = new(image);
 
-            ChangeAccess<GrayScale> grayscale = new(FilterDisplay, image);
-            ChangeAccess<OnlyRedChannel> redChannel = new(FilterDisplay, image);
-            ChangeAccess<OnlyGreenChannel> greenChannel = new(FilterDisplay, image);
-            ChangeAccess<OnlyBlueChannel> blueChannel = new(FilterDisplay, image);
-            ChangeAccess<TestBlue> testBlue = new(FilterDisplay, image);
+            ChangeAccess grayscale = ChangeAccess.Instanciate<GrayScale>(FilterDisplay, image);
+            ChangeAccess redChannel = ChangeAccess.Instanciate<OnlyRedChannel>(FilterDisplay, image);
+            ChangeAccess greenChannel = ChangeAccess.Instanciate<OnlyGreenChannel>(FilterDisplay, image);
+            ChangeAccess blueChannel = ChangeAccess.Instanciate<OnlyBlueChannel>(FilterDisplay, image);
+            ChangeAccess testBlue = ChangeAccess.Instanciate<TestBlue>(FilterDisplay, image);
+
+            filters = new List<ChangeAccess> { grayscale, redChannel, greenChannel, blueChannel, testBlue };
 
             stackPanel.Children.Add(resetButton);
             stackPanel.Children.Add(grayscale.FrameworkElement);
@@ -60,30 +63,59 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
             resetButton.Content = "Back to original";
         }
 
+
+        public void AdjustSlisers(IPositiveChange[] values) {
+            //foreach ChangeAccess in filters
+                //if `values` contains a matching IFilterChange
+                    //set the value of the slider to the one in `values`
+                //else 
+                    //set the value of the slider to 0
+
+            foreach (ChangeAccess changeAccess in filters) {
+                changeAccess.AdjustSlider(
+                    (IFilterChange?)values.FirstOrDefault(item => item.GetType() == changeAccess.FilterInstance.GetType()));
+            }
+        }
+
         private void ResetButton_Click(object sender, RoutedEventArgs e) {
             image.GetChangeManager.Clear();
             image.GetHistoryManager.Clear();
             image.ResetCurrent();
         }
 
-        // can be static, the user will never be able to activate two different instances of this tab at the same time
-        private static RemoveChange? _removeChangeChache; 
-
-        private class ChangeAccess<T> where T : IFilterChange, new() { 
+        // can be static, the client will never be able to activate two different instances of this tab at the same time
+        private static RemoveChange? s_removeChangeChache;
+        private class ChangeAccess {
             public FrameworkElement FrameworkElement => _slider.FrameworkElement;
 
             //private RemoveChange? _removeChangeChache;
-            private Type _filterType = typeof(T);
-            private IFilterChange _filterInstance = new T();
+            private Type _filterType;
+            private IFilterChange _filterInstance;
             private Slider _slider;
 
+            public IFilterChange FilterInstance => _filterInstance;
 
-            public ChangeAccess(FilterDisplay filterDisplay, WorkstationImage image) {
-                _slider = new Slider(_filterType.Name);
-                _slider.SliderElement.ValueChanged += (s, e) => SetToManager(filterDisplay, image);
-                _slider.SliderElement.PreviewMouseUp += (s, e) => SetChangeHistory(image);
+
+            private ChangeAccess() { }
+            public static ChangeAccess Instanciate<T>(FilterDisplay filterDisplay, WorkstationImage image) where T : IFilterChange, new() {
+                ChangeAccess instance = new();
+                instance._filterInstance = new T();
+                instance._filterType = typeof(T);
+                instance._slider = new Slider(instance._filterType.Name);
+                instance._slider.SliderElement.ValueChanged += (s, e) => instance.SetToManager(filterDisplay, image);
+                instance._slider.SliderElement.PreviewMouseUp += (s, e) => instance.SetChangeHistory(image);
+                return instance;
             }
 
+
+            public void AdjustSlider(IFilterChange? filterChange) {
+                if (filterChange is not null) {
+                    _slider.SliderElement.Value = filterChange.FilterIntensity * 10;
+                }
+                else {
+                    _slider.SliderElement.Value = 0;
+                }
+            }
 
             private void SetChangeHistory(WorkstationImage image) {
                 if (_slider.SliderElement.Value != 0) {
@@ -93,16 +125,16 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
                         .Clone()!);
                 }
                 else {
-                    if (_removeChangeChache is null) return;
-                    image.GetChangeManager.RemoveChange(_removeChangeChache);
-                    image.GetHistoryManager.AddAndStep(_removeChangeChache);
-                    _removeChangeChache = null;
+                    if (s_removeChangeChache is null) return;
+                    image.GetChangeManager.RemoveChange(s_removeChangeChache);
+                    image.GetHistoryManager.AddAndStep(s_removeChangeChache);
+                    s_removeChangeChache = null;
                 }
             }
 
             private void SetToManager(FilterDisplay filterDisplay, WorkstationImage image) {
                 if (_slider.SliderElement.Value == 0) {
-                    _removeChangeChache = new RemoveChange(_filterInstance);
+                    s_removeChangeChache = new RemoveChange(_filterInstance);
                     filterDisplay.RemoveItem(_filterInstance);
                 }
                 else {
