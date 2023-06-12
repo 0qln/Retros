@@ -37,9 +37,6 @@ namespace Retros.ProgramWindow.DisplaySystem {
         public IPositiveChange[] CurrentChanges {
             set {
                 changes = value.ToList();
-                changed = true;
-
-                image.GetChangeManager.PrintChanges();
 
                 // update sliders
             }
@@ -119,6 +116,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 }
                 return;
             }
+            
             
             image.ChangeCurentImage (ApplyChanges (new WriteableBitmap (image.ResizedSourceBitmap)));
 

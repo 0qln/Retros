@@ -123,7 +123,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
         public void ReloadImage() {
             changeManger.CurrentChanges = changeHistory.CurrentNode.ActiveChanges;
-            changeManger.ApplyChanges();
+
+            ChangeCurentImage(changeManger.ApplyChanges(new WriteableBitmap(ResizedSourceBitmap)));
         }
 
         public void SetSourceImage(Uri source) {
