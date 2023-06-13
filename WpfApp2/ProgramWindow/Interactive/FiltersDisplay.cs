@@ -93,6 +93,7 @@ namespace Retros.ProgramWindow.Interactive
                 }
             }
 
+
             _items.Remove(item);
             if (_items.Count == 0) {
                 _items.Add(item);
@@ -139,6 +140,7 @@ namespace Retros.ProgramWindow.Interactive
             public Grid MainGrid { get; } = new();
             public Button IncreaseHierachyButton { get; } = new();
             public TextBlock Name { get; } = new();
+            public bool IsPinned => _isPinned;
 
 
             public Item(string name, FilterDisplay parent) {
