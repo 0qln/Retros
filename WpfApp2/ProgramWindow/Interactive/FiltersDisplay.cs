@@ -51,7 +51,7 @@ namespace Retros.ProgramWindow.Interactive
         public void RemoveItem(IFilterChange item) {
             if (Contains(item.GetType())) return;
 
-            Item removeItem = _items.Find(item => item.tbName.Text == item.GetType().Name)!;
+            Item removeItem = _items.Find(item => item.Name.Text == item.GetType().Name)!;
             _items.Remove(removeItem);
             StackPanel.Children.Remove(removeItem.FrameworkElement);
             _itemTypes.Add(item.GetType());
@@ -126,48 +126,117 @@ namespace Retros.ProgramWindow.Interactive
 
         private void InvokeItemListChanged() {
             List<string> list = new();
-            _items.ForEach(item => list.Add(item.tbName.Text));
+            _items.ForEach(item => list.Add(item.Name.Text));
             _image.GetChangeManager.Order(list);
         }
 
         private class Item : IFrameworkElement {
-            private FilterDisplay parent;
-            
+            private FilterDisplay _parent;
+            private bool _isPinned = false;
+            private Button _pinButton = new();
+
             public FrameworkElement FrameworkElement => MainGrid;
             public Grid MainGrid { get; } = new();
-            public Button bIncreaseHierachy { get; } = new();
-            public TextBlock tbName { get; } = new();
+            public Button IncreaseHierachyButton { get; } = new();
+            public TextBlock Name { get; } = new();
 
 
             public Item(string name, FilterDisplay parent) {
-                this.parent = parent;
+                _parent = parent;
 
-                UIManager.ColorThemeManager.Set_BG6(b => tbName.Background = b);
-                UIManager.ColorThemeManager.Set_FC1(b => tbName.Foreground = b);
-                tbName.Text = name;
-                tbName.FontSize = 14;
-                tbName.PreviewMouseLeftButtonDown += (s, e) => StartDrag();
-                tbName.PreviewMouseLeftButtonUp += (s, e) => StopDrag();
+                UIManager.ColorThemeManager.Set_BG6(b => Name.Background = b);
+                UIManager.ColorThemeManager.Set_FC1(b => Name.Foreground = b);
+                Name.Text = name;
+                Name.FontSize = 14;
+                Name.PreviewMouseLeftButtonDown += (s, e) => StartDrag();
+                Name.PreviewMouseLeftButtonUp += (s, e) => StopDrag();
 
-                bIncreaseHierachy.MinWidth = 20;
-                bIncreaseHierachy.Click += (s, e) => { parent.IncreaseHierachy(this); };
-                bIncreaseHierachy.Content = "⮭";
-                bIncreaseHierachy.MaxHeight = 20;
-                bIncreaseHierachy.Style = WindowHandle.ClientButtonStyle();
-                bIncreaseHierachy.FontSize = 15;
-                bIncreaseHierachy.Margin = new Thickness(0);
+                UIManager.ColorThemeManager.SetStyle(IncreaseHierachyButton, WindowHandle.ClientButtonStyle);
+                IncreaseHierachyButton.MinWidth = 20;
+                IncreaseHierachyButton.Click += (s, e) => { parent.IncreaseHierachy(this); };
+                IncreaseHierachyButton.Content = "⮭";
+                IncreaseHierachyButton.MaxHeight = 20;
+                IncreaseHierachyButton.Style = WindowHandle.ClientButtonStyle();
+                IncreaseHierachyButton.FontSize = 15;
+                IncreaseHierachyButton.Margin = new Thickness(0);
+
+                UIManager.ColorThemeManager.SetStyle(_pinButton, PinButtonStyle);
+                _pinButton.Content = "📌";
+                _pinButton.MaxWidth = 0;
+                _pinButton.MinWidth = 0;
+                MainGrid.MouseEnter += (s, e) => {
+                    if (_isPinned) return;
+
+                    _pinButton.MaxWidth = 20;
+                    _pinButton.MinWidth = 20;
+                };
+                _pinButton.Click += (s, e) => {
+                    if (!_isPinned) {
+                        _isPinned = true;
+                    }
+                    else {
+                        _isPinned = false;
+                    }
+                };
+                MainGrid.MouseLeave += (s, e) => {
+                    if (_isPinned) return;
+
+                    if (!_isPinned) {
+                        _pinButton.MaxWidth = 0;
+                        _pinButton.MinWidth = 0;
+                    }
+                };
 
                 Helper.AddColumn(MainGrid, 1, GridUnitType.Auto);
+                Helper.AddColumn(MainGrid, 1, GridUnitType.Auto);
                 Helper.AddColumn(MainGrid, 1, GridUnitType.Star);
-                Helper.SetChildInGrid(MainGrid, tbName, 0, 1);
-                Helper.SetChildInGrid(MainGrid, bIncreaseHierachy, 0, 0);
+                Helper.SetChildInGrid(MainGrid, _pinButton, 0, 0);
+                Helper.SetChildInGrid(MainGrid, IncreaseHierachyButton, 0, 1);
+                Helper.SetChildInGrid(MainGrid, Name, 0, 2);
                 MainGrid.MaxHeight = 25;
                 UIManager.ColorThemeManager.Set_BG3(b => MainGrid.Background = b);
             }
 
+            private Style PinButtonStyle() {
+                Style clientButtonsStyle = new Style(typeof(Button));
+
+                clientButtonsStyle.Setters.Add(new Setter(Button.BackgroundProperty, UIManager.ColorThemeManager.Current.BG6));
+                clientButtonsStyle.Setters.Add(new Setter(Button.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
+                clientButtonsStyle.Setters.Add(new Setter(Button.BorderBrushProperty, UIManager.ColorThemeManager.Current.BC3));
+                clientButtonsStyle.Setters.Add(new Setter(Button.BorderThicknessProperty, new Thickness(1)));
+                clientButtonsStyle.Setters.Add(new Setter(Button.HorizontalAlignmentProperty, HorizontalAlignment.Left));
+                clientButtonsStyle.Setters.Add(new Setter(Button.VerticalAlignmentProperty, VerticalAlignment.Center));
+
+                ControlTemplate userButtonTemplate = new ControlTemplate(typeof(Button));
+                FrameworkElementFactory borderFactory = new FrameworkElementFactory(typeof(Border));
+                borderFactory.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Button.BackgroundProperty));
+                borderFactory.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Button.BorderBrushProperty));
+                borderFactory.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Button.BorderThicknessProperty));
+
+                FrameworkElementFactory contentPresenterFactory = new FrameworkElementFactory(typeof(ContentPresenter));
+                contentPresenterFactory.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+                contentPresenterFactory.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+
+                borderFactory.AppendChild(contentPresenterFactory);
+
+                userButtonTemplate.VisualTree = borderFactory;
+
+                Trigger mouseOverTrigger = new Trigger { Property = Button.IsMouseOverProperty, Value = true };
+                mouseOverTrigger.Setters.Add(new Setter(Button.BackgroundProperty, UIManager.ColorThemeManager.Current.BGh1));
+                mouseOverTrigger.Setters.Add(new Setter(Button.BorderBrushProperty, Brushes.Gray));
+
+                userButtonTemplate.Triggers.Add(mouseOverTrigger);
+
+                clientButtonsStyle.Setters.Add(new Setter(Button.TemplateProperty, userButtonTemplate));
+
+                clientButtonsStyle.Seal();
+
+                return clientButtonsStyle;                
+            }
+
 
             public override string ToString() {
-                return tbName.Text;
+                return Name.Text;
             }
 
 
@@ -180,7 +249,7 @@ namespace Retros.ProgramWindow.Interactive
             }
 
             private bool IsValid() {
-                StackPanel s = parent.StackPanel;
+                StackPanel s = _parent.StackPanel;
                 Point p = Mouse.GetPosition(WindowManager.MainWindow);
                 Point _1 = s.TransformToAncestor(WindowManager.MainWindow).Transform(new Point(0, 0));
                 Point _2 = new Point(_1.X + s.ActualWidth, _1.Y + s.ActualHeight);
@@ -196,14 +265,14 @@ namespace Retros.ProgramWindow.Interactive
             private void StartDrag() {
                 startPosition = Mouse.GetPosition(WindowManager.MainWindow);
                 CompositionTarget.Rendering += Drag;
-                parent.StackPanel.Children.Remove(FrameworkElement);
+                _parent.StackPanel.Children.Remove(FrameworkElement);
                 WindowManager.MainWindow!.MainCanvas.Children.Add(FrameworkElement);
             }
             private void StopDrag() {
                 CompositionTarget.Rendering -= Drag;
 
-                bool isValid = parent.StackPanel.IsMouseOver;
-                foreach ( FrameworkElement child in parent.StackPanel.Children ) {
+                bool isValid = _parent.StackPanel.IsMouseOver;
+                foreach ( FrameworkElement child in _parent.StackPanel.Children ) {
                     if (child.IsMouseOver) {
                         isValid = true;
                         break;
@@ -212,10 +281,10 @@ namespace Retros.ProgramWindow.Interactive
 
                 if (IsValid()) {
                     //DebugLibrary.Console.Log();
-                    parent.InsertItem(this, Mouse.GetPosition(WindowManager.MainWindow));
+                    _parent.InsertItem(this, Mouse.GetPosition(WindowManager.MainWindow));
                 }
                 else {
-                    parent.InsertItem(this, startPosition);
+                    _parent.InsertItem(this, startPosition);
                 }
             }
             private void Drag(object? sender, EventArgs e) {
@@ -223,8 +292,8 @@ namespace Retros.ProgramWindow.Interactive
                 Canvas.SetTop(FrameworkElement, mousePos.Y);
                 Canvas.SetLeft(FrameworkElement, mousePos.X);
 
-                bool isValid = parent.StackPanel.IsMouseOver;
-                foreach (FrameworkElement child in parent.StackPanel.Children) {
+                bool isValid = _parent.StackPanel.IsMouseOver;
+                foreach (FrameworkElement child in _parent.StackPanel.Children) {
                     if (child.IsMouseOver) {
                         isValid = true;
                         break;
