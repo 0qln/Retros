@@ -27,6 +27,10 @@ namespace Retros.ProgramWindow {
         public Type ValueType { get; } // the type of the change that was removed
     }
 
+    // keeps track of the changes to the filter hierachy
+    public interface IFilterHierachyChange : IChange {
+        public IPositiveChange[] FilterHierachy { get; }
+    }
 
 
     // represents filters

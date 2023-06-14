@@ -41,6 +41,10 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
 
         public ImageFilter(WorkstationImage image) : base(image) {
             FilterDisplay = new(image);
+            FilterDisplay.HierachyChanged += (newHierachy) => {
+                image.GetChangeManager.CurrentChanges = newHierachy;
+                image.GetHistoryManager.AddAndStep(new FilterHierachyChange(newHierachy));
+            };
 
             ChangeAccess grayscale = ChangeAccess.Instanciate<GrayScale>(FilterDisplay, image);
             ChangeAccess redChannel = ChangeAccess.Instanciate<OnlyRedChannel>(FilterDisplay, image);
@@ -65,12 +69,6 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
 
 
         public void AdjustSlisers(IPositiveChange[] values) {
-            //foreach ChangeAccess in filters
-                //if `values` contains a matching IFilterChange
-                    //set the value of the slider to the one in `values`
-                //else 
-                    //set the value of the slider to 0
-
             foreach (ChangeAccess changeAccess in filters) {
                 changeAccess.AdjustSlider(
                     (IFilterChange?)values.FirstOrDefault(item => item.GetType() == changeAccess.FilterInstance.GetType()));
@@ -126,8 +124,10 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
                 }
                 else {
                     if (s_removeChangeChache is null) return;
+
                     image.GetChangeManager.RemoveChange(s_removeChangeChache);
                     image.GetHistoryManager.AddAndStep(s_removeChangeChache);
+
                     s_removeChangeChache = null;
                 }
             }
@@ -139,7 +139,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
                 }
                 else {
                     if (image.GetChangeManager.AddChange(_filterInstance)) { // try adding
-                        // -> does already contain
+                        //-> does already contain
                         // add the name to the display
                         filterDisplay.AddItem(_filterInstance);
                     }

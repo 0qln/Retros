@@ -51,7 +51,10 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 : 0;
 
             Add(change);
-            Forward(index);
+
+            uint uindex = index >= 0 ? index : throw new IndexOutOfRangeException();
+            Node? next = _current?.Next(uindex);
+            _current = next is not null ? next : _current!;
         }
 
         public void Jump(Node node) {
@@ -119,12 +122,15 @@ namespace Retros.ProgramWindow.DisplaySystem {
         public class Node {
             private readonly IPositiveChange[] _activeChanges;
             private readonly IChange _value;
+
             private List<Node>? _nodes;
             private Node? _prev;
+
 
             public IPositiveChange[] ActiveChanges => _activeChanges;
             public IChange Value => _value;
             public List<Node>? Children => _nodes;
+
 
 
             public Node(Node? prevNode, IChange change, IPositiveChange[] activeChanges) {

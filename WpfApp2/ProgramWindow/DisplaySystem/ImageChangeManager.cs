@@ -35,6 +35,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
         private TimeSpan Interval = TimeSpan.FromMilliseconds(16.66f);
         private ChangeHistory? history;
 
+
         public IPositiveChange[] CurrentChanges {
             set {
                 changes = value.ToList();
@@ -45,7 +46,9 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
                 ((ImageFilter)tab.Body).AdjustSlisers(value);
 
-                // Update filter hierachy
+
+                // Update filter hierachy tab
+
             }
             get {
                 IPositiveChange[] arr = new IPositiveChange[changes.Count];
@@ -69,6 +72,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
             timer.Start();
 
             history = image.GetHistoryManager;
+            
             this.image = image;
         }
 
@@ -101,7 +105,6 @@ namespace Retros.ProgramWindow.DisplaySystem {
             }
 
             changed = true;
-            ApplyChanges();
         }
 
         public void Clear() {
@@ -154,7 +157,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
             }
 
             changeTypes.Remove(change.ValueType);
-            changes.Remove(GetChange(change.Value)!);
+            changes.Remove(GetChange(change.Value!)!);
             changed = true;
             justRemoved = true;
         }

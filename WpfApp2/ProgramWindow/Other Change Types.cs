@@ -19,6 +19,10 @@ namespace Retros.ProgramWindow {
         public Type ValueType => _valueType;
 
 
+        private RemoveChange(IPositiveChange? value, Type valueType) {
+            _valueType = valueType;
+            Value = value;
+        }
         public RemoveChange(IPositiveChange value) {
             Value = value;
             _valueType = value.GetType();
@@ -27,12 +31,18 @@ namespace Retros.ProgramWindow {
             _valueType = type;
         }
 
-        private RemoveChange(IPositiveChange? value, Type valueType) {
-            _valueType = valueType;
-            Value = value;
-        }
-
 
         public IChange Clone() => new RemoveChange(Value, ValueType);
+    }
+
+    public class FilterHierachyChange : IFilterHierachyChange {
+        public IPositiveChange[] FilterHierachy { get; }
+
+        public FilterHierachyChange() { }
+        public FilterHierachyChange(IPositiveChange[] filters) {
+            FilterHierachy = (IPositiveChange[]) filters.Clone();
+        }
+
+        public IChange Clone() => new FilterHierachyChange(FilterHierachy);
     }
 }

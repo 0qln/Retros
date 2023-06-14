@@ -34,6 +34,10 @@ namespace Retros.ProgramWindow.Interactive
         public StackPanel StackPanel = new();
 
 
+        public delegate void HierachyChangedHandler(IPositiveChange[] hierachy);
+        public event HierachyChangedHandler HierachyChanged;
+
+
         public FilterDisplay(WorkstationImage image) {
             this._image = image;
             StackPanel.VerticalAlignment = VerticalAlignment.Top;
@@ -59,10 +63,12 @@ namespace Retros.ProgramWindow.Interactive
         }
 
 
-        public bool Contains(Type filter) => _itemTypes.Contains(filter);
-        
+        public bool Contains(Type type) {
+            return _itemTypes.Contains(type);
+        }
+
         public void AddItem(IFilterChange newItem) {
-            Item item = new(newItem.GetType().Name, this, 22);
+            Item item = new(newItem, this, 22);
             StackPanel.Children.Add(item.FrameworkElement);
             _items.Add(item);
             _itemTypes.Add(newItem.GetType());
@@ -71,9 +77,11 @@ namespace Retros.ProgramWindow.Interactive
         }
 
         public void RemoveItem(IFilterChange item) {
-            if (Contains(item.GetType())) return;
+            if (!Contains(item.GetType())) return;
 
-            Item removeItem = _items.Find(item => item.Name.Text == item.GetType().Name)!;
+            Item? removeItem = _items.Find(item_ => item_.Value.GetType() == item.GetType());
+            if (removeItem is null) return;
+
             _items.Remove(removeItem);
             StackPanel.Children.Remove(removeItem.FrameworkElement);
             _itemTypes.Add(item.GetType());
@@ -81,7 +89,10 @@ namespace Retros.ProgramWindow.Interactive
             InvokeItemListChanged();
         }
 
-
+        private void Print() {
+            DebugLibrary.Console.Log("--------Items: ");
+            _items.ForEach(DebugLibrary.Console.Log);
+        }
         private Point GetPos(FrameworkElement item) {
             var p = item.TransformToAncestor(WindowManager.MainWindow).Transform(new Point(0, 0));
             return new Point(p.X + item.ActualWidth / 2, p.Y + item.ActualHeight / 2);
@@ -185,26 +196,33 @@ namespace Retros.ProgramWindow.Interactive
             List<string> list = new();
             _items.ForEach(item => list.Add(item.Name.Text));
             _image.GetChangeManager.Order(list);
+            _image.GetChangeManager.ApplyChanges();
+            //HierachyChanged?.Invoke(_image.GetChangeManager.CurrentChanges);
         }
+
+
 
         private class Item : IFrameworkElement {
             private FilterDisplay _parent;
             private bool _isPinned = false;
             private Button _pinButton = new();
+            private IFilterChange _value;
 
             public FrameworkElement FrameworkElement => MainGrid;
             public Grid MainGrid { get; } = new();
             public Button IncreaseHierachyButton { get; } = new();
             public TextBlock Name { get; } = new();
             public bool IsPinned => _isPinned;
+            public IFilterChange Value => _value;
 
 
-            public Item(string name, FilterDisplay parent, double height) {
+            public Item(IFilterChange value, FilterDisplay parent, double height) {
                 _parent = parent;
+                _value = value;
 
                 UIManager.ColorThemeManager.Set_BG6(b => Name.Background = b);
                 UIManager.ColorThemeManager.Set_FC1(b => Name.Foreground = b);
-                Name.Text = name;
+                Name.Text = value.GetType().Name;
                 Name.VerticalAlignment = VerticalAlignment.Center;
                 Name.FontSize = 14;
                 Name.PreviewMouseLeftButtonDown += (s, e) => StartDrag();
