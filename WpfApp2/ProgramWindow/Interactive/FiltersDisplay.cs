@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -15,6 +16,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Markup.Localizer;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
 using System.Xml.Linq;
 using Utillities.Wpf;
@@ -26,6 +28,7 @@ namespace Retros.ProgramWindow.Interactive
         private HashSet<Type> _itemTypes = new();
         private List<Item> _items = new();
         private readonly WorkstationImage _image;
+        private bool _isDragging;
 
         public FrameworkElement FrameworkElement => StackPanel;
         public StackPanel StackPanel = new();
@@ -34,13 +37,32 @@ namespace Retros.ProgramWindow.Interactive
         public FilterDisplay(WorkstationImage image) {
             this._image = image;
             StackPanel.VerticalAlignment = VerticalAlignment.Top;
+
+            UIManager.ColorThemeManager.BG6_Changed += SetBG;
+            StackPanel.MouseEnter += (s, e) => {
+                if (_isDragging) {
+                    UIManager.ColorThemeManager.BG5_Changed += SetBG;
+                    SetBG(UIManager.ColorThemeManager.Current.BG5);
+
+                    UIManager.ColorThemeManager.BG6_Changed -= SetBG;
+                }
+            };
+            StackPanel.MouseLeave += (s, e) => {
+                UIManager.ColorThemeManager.BG6_Changed += SetBG;
+                SetBG(UIManager.ColorThemeManager.Current.BG6);
+
+                UIManager.ColorThemeManager.BG5_Changed -= SetBG;
+            };
+        }
+        private void SetBG(Brush b) {
+            StackPanel.Background = b;
         }
 
 
         public bool Contains(Type filter) => _itemTypes.Contains(filter);
         
         public void AddItem(IFilterChange newItem) {
-            Item item = new(newItem.GetType().Name, this);
+            Item item = new(newItem.GetType().Name, this, 22);
             StackPanel.Children.Add(item.FrameworkElement);
             _items.Add(item);
             _itemTypes.Add(newItem.GetType());
@@ -66,14 +88,14 @@ namespace Retros.ProgramWindow.Interactive
         }
 
 
-        private void InsertItem(Item item, Point newPosition) {
-            if (_items.Count == 1) {
-                if (item.FrameworkElement.Parent is StackPanel) (item.FrameworkElement.Parent as StackPanel)!.Children.Remove(item.FrameworkElement);
-                else (item.FrameworkElement.Parent as Canvas)!.Children.Remove(item.FrameworkElement);
-                StackPanel.Children.Add(item.FrameworkElement);
-                return;
-            }
+        private void DropItem(Item item, Point newPosition) {
+            (item.FrameworkElement.Parent as Panel)!.Children.Remove(item.FrameworkElement);
+            StackPanel.Children.Add(item.FrameworkElement);
 
+            if (_items.Count <= 2) return;
+            
+            
+            // Get the index of the new Position
             int index = StackPanel.Children.Count-1;
             for (int i = 0; i < StackPanel.Children.Count; i++) {
                 // if d<0 -> the cursor is above this item
@@ -81,12 +103,6 @@ namespace Retros.ProgramWindow.Interactive
                 var pos = GetPos((StackPanel.Children[i] as FrameworkElement)!);
                 double d = pos.Y - newPosition.Y;
                 
-                /*
-                Ellipse point  = new Ellipse { Width = 4, Height = 4, Fill = Brushes.Red };
-                WindowManager.MainWindow.MainCanvas.Children.Add(point);
-                Canvas.SetTop(point, newPosition.Y);
-                Canvas.SetLeft(point, newPosition.X);
-                */
                 if (d >= 0) {
                     index = i; 
                     break;
@@ -94,34 +110,74 @@ namespace Retros.ProgramWindow.Interactive
             }
 
 
-            _items.Remove(item);
-            if (_items.Count == 0) {
-                _items.Add(item);
-            }
-            else {
-                _items.Insert(index, item);
-            }
-
-            if (item.FrameworkElement.Parent is StackPanel) (item.FrameworkElement.Parent as StackPanel)!.Children.Remove(item.FrameworkElement);
-            else (item.FrameworkElement.Parent as Canvas)!.Children.Remove(item.FrameworkElement);
-            StackPanel.Children.Insert(index, item.FrameworkElement);
+            SwapItems(item, index);
             
             InvokeItemListChanged();
         }
 
         private void IncreaseHierachy(Item item) {
-            if (_items.Count == 1) return;
+            if (!_items.Contains(item)
+                || _items.IndexOf(item) < _items.Count - 1
+                || _items.Count <= 1) {
+                return;
+            }
 
-            int index = _items.IndexOf(item);
-            if (index <= 0) return;
-
-            _items.RemoveAt(index);
-            _items.Insert(index-1, item);
-
-            StackPanel.Children.RemoveAt(index);
-            StackPanel.Children.Insert(index - 1, item.FrameworkElement);
+            SwapItems(item, _items.IndexOf(item) - 1);
 
             InvokeItemListChanged();
+        }
+
+
+        // unsafe Methods that respect the pin of the items they handle
+        private void MoveItem(Item item, int index) {
+            if (item.IsPinned) return;
+
+            RemoveItem(item);
+            InsertItem(item, index);
+        }
+        private void InsertItem(Item item, int index) {
+            _items.Insert(index, item);
+            StackPanel.Children.Insert(index, item.FrameworkElement);
+        }
+        private void RemoveItem(Item item) {
+            RemoveItemAt(_items.IndexOf(item));
+        }
+        private void RemoveItemAt(int index) {
+            ((Panel)_items[index].FrameworkElement.Parent)!.Children.RemoveAt(index);
+            _items.RemoveAt(index);
+        }
+        private void SwapItems(Item item1, Item item2) {
+            SwapItems(_items.IndexOf(item1), _items.IndexOf(item2));
+        }
+        private void SwapItems(Item item1, int indexItem2) {
+            SwapItems(_items.IndexOf(item1), indexItem2);
+        }
+        private void SwapItems(int index1, int index2) {
+            if (_items[index1].IsPinned ||
+                _items[index2].IsPinned) return;
+
+            if (index1 == index2) return;
+
+            // Swap StackPanel
+            UIElement element1 = StackPanel.Children[index1];
+            UIElement element2 = StackPanel.Children[index2];
+
+            ((Panel)_items[index1].FrameworkElement.Parent).Children.Remove(element1);
+            ((Panel)_items[index2].FrameworkElement.Parent).Children.Remove(element2);
+
+            if (index1 < index2) {
+                StackPanel.Children.Insert(index1, element2);
+                StackPanel.Children.Insert(index2, element1);
+            }
+            else {
+                StackPanel.Children.Insert(index2, element1);
+                StackPanel.Children.Insert(index1, element2);
+            }
+
+            // Swap List
+            var temp = _items[index1];
+            _items[index1] = _items[index2];
+            _items[index2] = temp;
         }
 
 
@@ -143,34 +199,38 @@ namespace Retros.ProgramWindow.Interactive
             public bool IsPinned => _isPinned;
 
 
-            public Item(string name, FilterDisplay parent) {
+            public Item(string name, FilterDisplay parent, double height) {
                 _parent = parent;
 
                 UIManager.ColorThemeManager.Set_BG6(b => Name.Background = b);
                 UIManager.ColorThemeManager.Set_FC1(b => Name.Foreground = b);
                 Name.Text = name;
+                Name.VerticalAlignment = VerticalAlignment.Center;
                 Name.FontSize = 14;
                 Name.PreviewMouseLeftButtonDown += (s, e) => StartDrag();
                 Name.PreviewMouseLeftButtonUp += (s, e) => StopDrag();
 
                 UIManager.ColorThemeManager.SetStyle(IncreaseHierachyButton, WindowHandle.ClientButtonStyle);
-                IncreaseHierachyButton.MinWidth = 20;
+                IncreaseHierachyButton.MinWidth = height;
                 IncreaseHierachyButton.Click += (s, e) => { parent.IncreaseHierachy(this); };
                 IncreaseHierachyButton.Content = "⮭";
-                IncreaseHierachyButton.MaxHeight = 20;
+                IncreaseHierachyButton.MaxHeight = height;
+                IncreaseHierachyButton.MinHeight = height;
+
                 IncreaseHierachyButton.Style = WindowHandle.ClientButtonStyle();
                 IncreaseHierachyButton.FontSize = 15;
                 IncreaseHierachyButton.Margin = new Thickness(0);
 
                 UIManager.ColorThemeManager.SetStyle(_pinButton, PinButtonStyle);
                 _pinButton.Content = "📌";
-                _pinButton.MaxWidth = 0;
-                _pinButton.MinWidth = 0;
+                _pinButton.MaxWidth = height;
+                _pinButton.MinWidth = height;
+                _pinButton.MinHeight = height;
                 MainGrid.MouseEnter += (s, e) => {
                     if (_isPinned) return;
+                    if (_parent._isDragging) return;
 
-                    _pinButton.MaxWidth = 20;
-                    _pinButton.MinWidth = 20;
+                    Activate_pinButton(height);
                 };
                 _pinButton.Click += (s, e) => {
                     if (!_isPinned) {
@@ -183,10 +243,7 @@ namespace Retros.ProgramWindow.Interactive
                 MainGrid.MouseLeave += (s, e) => {
                     if (_isPinned) return;
 
-                    if (!_isPinned) {
-                        _pinButton.MaxWidth = 0;
-                        _pinButton.MinWidth = 0;
-                    }
+                    Deactivate_pinButton();                
                 };
 
                 Helper.AddColumn(MainGrid, 1, GridUnitType.Auto);
@@ -195,8 +252,18 @@ namespace Retros.ProgramWindow.Interactive
                 Helper.SetChildInGrid(MainGrid, _pinButton, 0, 0);
                 Helper.SetChildInGrid(MainGrid, IncreaseHierachyButton, 0, 1);
                 Helper.SetChildInGrid(MainGrid, Name, 0, 2);
-                MainGrid.MaxHeight = 25;
+                MainGrid.MaxHeight = height;
+                MainGrid.MinHeight = height;
                 UIManager.ColorThemeManager.Set_BG3(b => MainGrid.Background = b);
+            }
+
+            private void Activate_pinButton(double height) {
+                _pinButton.MaxWidth = height;
+                _pinButton.MinWidth = height;
+            }
+            private void Deactivate_pinButton() {
+                _pinButton.MaxWidth = 0;
+                _pinButton.MinWidth = 0;
             }
 
             private Style PinButtonStyle() {
@@ -265,12 +332,18 @@ namespace Retros.ProgramWindow.Interactive
 
             private Point startPosition;
             private void StartDrag() {
+                if (_isPinned) {
+                    return;
+                }
+                _parent._isDragging = true;
                 startPosition = Mouse.GetPosition(WindowManager.MainWindow);
                 CompositionTarget.Rendering += Drag;
                 _parent.StackPanel.Children.Remove(FrameworkElement);
                 WindowManager.MainWindow!.MainCanvas.Children.Add(FrameworkElement);
+                Deactivate_pinButton();
             }
             private void StopDrag() {
+                _parent._isDragging = false;
                 CompositionTarget.Rendering -= Drag;
 
                 bool isValid = _parent.StackPanel.IsMouseOver;
@@ -283,10 +356,10 @@ namespace Retros.ProgramWindow.Interactive
 
                 if (IsValid()) {
                     //DebugLibrary.Console.Log();
-                    _parent.InsertItem(this, Mouse.GetPosition(WindowManager.MainWindow));
+                    _parent.DropItem(this, Mouse.GetPosition(WindowManager.MainWindow));
                 }
                 else {
-                    _parent.InsertItem(this, startPosition);
+                    _parent.DropItem(this, new Point(startPosition.Y, _parent.StackPanel.Children.Count-1));
                 }
             }
             private void Drag(object? sender, EventArgs e) {
