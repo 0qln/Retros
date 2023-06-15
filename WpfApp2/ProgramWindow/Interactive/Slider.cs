@@ -18,7 +18,10 @@ namespace Retros.ProgramWindow.Interactive {
 
 
         public Slider(string name) {
-            SliderElement = new(); 
+            SliderElement = new();
+            SliderElement.Minimum = 0;
+            SliderElement.Maximum = 1;
+            SliderElement.LargeChange = 0;
 
             TextElement = new(); 
             TextElement.Text = name;

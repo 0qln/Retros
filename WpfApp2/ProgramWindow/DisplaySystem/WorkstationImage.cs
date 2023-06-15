@@ -110,9 +110,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
             source = new Uri(path);
             SetSourceImage(source);
 
-            changeHistory.MoveBack += (steps) => ReloadImage();
-            changeHistory.MoveForward += (steps) => ReloadImage();
-            changeHistory.PositionChanged += (newNode) => ReloadImage();
+            changeHistory.ImageChanged += Update;
         }
         public WorkstationImage() {
             Page = new(this);
@@ -121,9 +119,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
             StartUpdating();
         }
 
-        public void ReloadImage() {
+        public void Update() {
             changeManger.CurrentChanges = changeHistory.CurrentNode.ActiveChanges;
-
             ChangeCurentImage(changeManger.ApplyChanges(new WriteableBitmap(ResizedSourceBitmap)));
         }
 

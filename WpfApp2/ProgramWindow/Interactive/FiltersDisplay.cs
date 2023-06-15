@@ -128,7 +128,7 @@ namespace Retros.ProgramWindow.Interactive
 
         private void IncreaseHierachy(Item item) {
             if (!_items.Contains(item)
-                || _items.IndexOf(item) < _items.Count - 1
+                || _items.IndexOf(item) == _items.Count - 1
                 || _items.Count <= 1) {
                 return;
             }
@@ -197,6 +197,7 @@ namespace Retros.ProgramWindow.Interactive
             _items.ForEach(item => list.Add(item.Name.Text));
             _image.GetChangeManager.Order(list);
             _image.GetChangeManager.ApplyChanges();
+
             //HierachyChanged?.Invoke(_image.GetChangeManager.CurrentChanges);
         }
 

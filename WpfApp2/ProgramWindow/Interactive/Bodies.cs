@@ -83,15 +83,14 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
 
         // can be static, the client will never be able to activate two different instances of this tab at the same time
         private static RemoveChange? s_removeChangeChache;
-        private class ChangeAccess {
-            public FrameworkElement FrameworkElement => _slider.FrameworkElement;
 
-            //private RemoveChange? _removeChangeChache;
+        private class ChangeAccess {
             private Type _filterType;
             private IFilterChange _filterInstance;
             private Slider _slider;
 
             public IFilterChange FilterInstance => _filterInstance;
+            public FrameworkElement FrameworkElement => _slider.FrameworkElement;
 
 
             private ChangeAccess() { }
@@ -108,7 +107,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
 
             public void AdjustSlider(IFilterChange? filterChange) {
                 if (filterChange is not null) {
-                    _slider.SliderElement.Value = filterChange.FilterIntensity * 10;
+                    _slider.SliderElement.Value = filterChange.FilterIntensity;
                 }
                 else {
                     _slider.SliderElement.Value = 0;
@@ -119,7 +118,6 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
                 if (_slider.SliderElement.Value != 0) {
                     image.GetHistoryManager.AddAndStep(image.GetChangeManager
                         .GetChange(_filterType)!.Clone());
-
                 }
                 else {
                     if (s_removeChangeChache is null) return;
@@ -143,7 +141,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
                         filterDisplay.AddItem(_filterInstance);
                     }
                     else {
-                        image.GetChangeManager.SetFilterIntensity(_filterType, _slider.SliderElement.Value / 10);
+                        image.GetChangeManager.SetFilterIntensity(_filterType, _slider.SliderElement.Value);
                         if (!filterDisplay.Contains(_filterType))
                             filterDisplay.AddItem(_filterInstance);
                     }
@@ -214,7 +212,6 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
                     next = _currentNode.Next(steps[i]);
                     i++;
                 }
-
                 _currentNode.SetHighlight(true);
                 UIManager.ColorThemeManager.UpdateColors();
             };

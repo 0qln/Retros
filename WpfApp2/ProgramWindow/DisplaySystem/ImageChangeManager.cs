@@ -41,8 +41,11 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 changes = value.ToList();
 
                 // update sliders
-                Tab? tab = WindowManager.MainWindow!.SelectedWorkstation.TableElement.GetTab(typeof(ImageFilterTab));
-                if (tab is null) return;
+                Tab? tab = WindowManager.MainWindow!.SelectedWorkstation.TableElement.
+                    GetTab(typeof(ImageFilterTab));
+
+                if (tab is null) 
+                    return;
 
                 ((ImageFilter)tab.Body).AdjustSlisers(value);
 

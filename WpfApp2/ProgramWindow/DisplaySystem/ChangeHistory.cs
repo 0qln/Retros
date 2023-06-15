@@ -24,6 +24,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
         public event ChangedHandler? ChangeAdded; // A change has been added
         public event ChangedHandler? PositionChanged; // the position of _current has changed
 
+        public event Action? ImageChanged;
+
 
         public ChangeHistory() {
             RootChange = new Node(null, new RootChange(), new IPositiveChange[0]);
@@ -31,6 +33,10 @@ namespace Retros.ProgramWindow.DisplaySystem {
             _current = RootChange;
             ChangeAdded?.Invoke(_current);
             _rootNode = _current!;
+
+            MoveBack += (_) => ImageChanged?.Invoke();
+            MoveForward += (_) => ImageChanged?.Invoke();
+            PositionChanged += (_) => ImageChanged?.Invoke();
         }
 
 
@@ -43,7 +49,6 @@ namespace Retros.ProgramWindow.DisplaySystem {
             _current.Add(newNode);
             _allNodes.Add(newNode);
             ChangeAdded?.Invoke(newNode);
-            //DebugLibrary.Console.Log($"History node added :{change.GetType().Name}");
         }
         public void AddAndStep(IChange change) {
             uint index = _current.Children is not null
