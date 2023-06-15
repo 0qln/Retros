@@ -12,6 +12,9 @@
     <Compile Update="ProgramWindow\DisplaySystem\WorkstationImagePage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="ProgramWindow\WorkstationPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Settings\Pages\ColorThemePage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -30,6 +33,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="ProgramWindow\MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ProgramWindow\WorkstationPage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Settings\Pages\ColorThemePage.xaml">

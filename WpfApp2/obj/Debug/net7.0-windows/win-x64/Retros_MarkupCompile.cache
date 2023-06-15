@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET7_0;NETCOREAPP
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\App.xaml
-8-1315861941
+9-1720358977
 
-34858088452
+35-1555262112
 2031797683426
-ProgramWindow\DisplaySystem\WorkstationImagePage.xaml;ProgramWindow\Interactive\WorkstatoinImageWindow.xaml;ProgramWindow\MainWindow.xaml;Settings\Pages\ColorThemePage.xaml;Settings\Pages\WorkstationImageSettingsPage.xaml;Settings\SettingsWindow.xaml;sprites\settings_thicker.xaml;sprites\Zeichnung.xaml;
+ProgramWindow\DisplaySystem\WorkstationImagePage.xaml;ProgramWindow\Interactive\WorkstatoinImageWindow.xaml;ProgramWindow\MainWindow.xaml;ProgramWindow\WorkstationPage.xaml;Settings\Pages\ColorThemePage.xaml;Settings\Pages\WorkstationImageSettingsPage.xaml;Settings\SettingsWindow.xaml;sprites\settings_thicker.xaml;sprites\Zeichnung.xaml;
 
 False
 

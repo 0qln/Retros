@@ -504,3 +504,5 @@ D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x6
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\App.baml
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\sprites\Zeichnung.baml
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\sprites\settings_thicker.baml
+D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\ProgramWindow\WorkstationPage.g.cs
+D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Debug\net7.0-windows\win-x64\ProgramWindow\WorkstationPage.baml

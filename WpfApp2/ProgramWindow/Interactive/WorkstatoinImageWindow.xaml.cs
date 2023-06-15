@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 using Utillities.Wpf;
 
 namespace Retros {
-    public partial class WorkstatoinImageWindow : Window {
+    public partial class WorkstationImageWindow : Window {
 
         public readonly WindowHandle WindowHandle;
 
-        public WorkstatoinImageWindow(WorkstationImagePage page, double width, double height) {
+        public WorkstationImageWindow(WorkstationImagePage page, double width, double height) {
             InitializeComponent();            
             PageFrame.Content = page;
 
@@ -55,7 +55,6 @@ namespace Retros {
                 (PageFrame.Content as Page)!.Width = e.NewSize.Width;
                 (PageFrame.Content as Page)!.Height = e.NewSize.Height;
             }
-
         }
     }
 }

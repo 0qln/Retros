@@ -11,7 +11,7 @@ namespace Retros {
     public static class WindowManager {
         public static TimeSpan Framerate = TimeSpan.FromMilliseconds(1000 / 60);
 
-        public static MainWindow? MainWindow;
+        public static MainWindow MainWindow;
         public static SettingsWindow? SettingsWindow;
 
 

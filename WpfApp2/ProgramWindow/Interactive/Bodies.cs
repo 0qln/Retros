@@ -41,9 +41,6 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
 
         public ImageFilter(WorkstationImage image) : base(image) {
             FilterDisplay = new(image);
-            FilterDisplay.HierachyChanged += (newHierachy) => {
-                //image.GetHistoryManager.AddAndStep(new FilterHierachyChange(newHierachy));
-            };
 
             ChangeAccess grayscale = ChangeAccess.Instanciate<GrayScale>(FilterDisplay, image);
             ChangeAccess redChannel = ChangeAccess.Instanciate<OnlyRedChannel>(FilterDisplay, image);

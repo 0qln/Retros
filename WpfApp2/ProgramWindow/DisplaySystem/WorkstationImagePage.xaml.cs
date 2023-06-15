@@ -22,7 +22,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
     public partial class WorkstationImagePage : Page {
 
         public DropShadowEffect ImageEffect;
-        private WorkstatoinImageWindow? _imageWindow;
+        private WorkstationImageWindow? _imageWindow;
         private UIElement? _tempImageHandle;
         private WorkstationImage _workstationImage;
 
@@ -51,6 +51,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
 
         private void ImageHandle_PreviewMouseDown(object sender, MouseButtonEventArgs e) {
+            WindowManager.MainWindow.SelectedWorkstation.HideImage();
+
             _tempImageHandle = ImageHandleActivation.Children[0];
             ImageHandleActivation.Children.RemoveAt(0);
             ImageHandleActivation.Height = 0;
@@ -59,14 +61,15 @@ namespace Retros.ProgramWindow.DisplaySystem {
             var height = Image.ActualHeight;
             Image.Margin = new Thickness(0);
             _workstationImage.ImageMargin = new Thickness(0);
-            _imageWindow = new WorkstatoinImageWindow(this, width, height);
+            _imageWindow = new WorkstationImageWindow(this, width, height);
             _imageWindow.Show();
-            _imageWindow.Top = Mouse.GetPosition(WindowManager.MainWindow).Y + WindowManager.MainWindow!.Top - 10;
-            _imageWindow.Left = Mouse.GetPosition(WindowManager.MainWindow).X + WindowManager.MainWindow!.Left - width / 2;
+            _imageWindow.Top = Mouse.GetPosition(WindowManager.MainWindow).Y + WindowManager.MainWindow.Top - 10;
+            _imageWindow.Left = Mouse.GetPosition(WindowManager.MainWindow).X + WindowManager.MainWindow.Left - width / 2;
 
             CaptureWindow(_imageWindow);
 
-            WindowManager.MainWindow!.Activated += ActivateOnce;
+            WindowManager.MainWindow.Activated += ActivateOnce;
+
         }
         private void CaptureWindow(Window window) {
             Mouse.Capture(window);

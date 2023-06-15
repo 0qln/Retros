@@ -31,7 +31,6 @@ namespace Retros
         // UI
         public Workstation SelectedWorkstation;
         public List<Workstation> Workstations = new();
-        private const double shadowRectWidth = 5;
 
 
         public MainWindow() {
@@ -46,26 +45,11 @@ namespace Retros
 
 
             // UI
-            Workstation workstation = new();
+            Workstation workstation = new(WindowHandle.Height);
             Workstations.Add(workstation);
             SelectedWorkstation = workstation;
-
-            WorkStationGrid.RowDefinitions[0].Height = new(WindowHandle.Height);
-            UIManager.ColorThemeManager.Set_BG2(b => WorkStationGrid.Background = b);
-            Helper.SetChildInGrid(WorkStationGrid, workstation.FrameworkElement, 1, 0);
-
-            UIManager.ColorThemeManager.Set_BG1(b => WorkStationImageGrid.Background = b);
-            Helper.SetChildInGrid(WorkStationImageGrid, workstation.ImageElement.FrameworkElement, 0, 0);
-
-            workstation.TableElement.AddTab(new ImageFilterTab(new ImageFilter(workstation.ImageElement), new DefaultHandle("Filters")));
-            workstation.TableElement.AddTab(new ImageHistoryTab(new ImageHistory(workstation.ImageElement), new DefaultHandle("Change History")));
-            workstation.TableElement.SelectTab(0);
-
-            // Shadow
-            Shadow.Width = shadowRectWidth;
-            Shadow.Effect = new DropShadowEffect { BlurRadius = 25, ShadowDepth = 10, Color = Colors.Black, Opacity = 0.80, Direction = 180 };
-            UIManager.ColorThemeManager.Set_BG2(b => Shadow.Fill = b);
-
+            Helper.SetChildInGrid(ClientGrid, workstation.FrameworkElement, 1, 0);
+            
 
             // WindowHandle
             UIManager.ColorThemeManager.Set_BG3(b => WindowHandle.SetBGColor(b));
@@ -119,45 +103,7 @@ namespace Retros
             WindowHandle.ApplicationButtons.SettingsButtonImageSource = UIManager.SettingsIconPath;/// Properties.Resources.settings_24;
             WindowHandle.ApplicationButtons.SettingsButtonContentPadding = new Thickness(3);
             WindowHandle.ApplicationButtons.OverrideSettings(WindowManager.ToggleSettings);
-
-            ClientGrid.RowDefinitions[0].Height = new GridLength(WindowHandle.Height);
         }
 
-
-        // Shadow Behaviour
-        private double offsetOnEnter = 0;
-        private void Shadow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-            (sender as Rectangle)!.CaptureMouse();
-            CompositionTarget.Rendering += CompositionTarget_Rendering;
-
-            double shadowPos = Helper.GetAbsolutePosition(Shadow, Application.Current.MainWindow).X;
-            double mousePos = Mouse.GetPosition(Application.Current.MainWindow).X; // Mouse Position Relative to the window
-            double mousePosDelta = mousePos - shadowPos; // Mouse Position Relative to the AHsoq 
-            offsetOnEnter = mousePosDelta;
-        }
-        private void Shadow_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-            (sender as Rectangle)!.ReleaseMouseCapture();
-            CompositionTarget.Rendering -= CompositionTarget_Rendering;
-            offsetOnEnter = 0;
-        }
-        private void CompositionTarget_Rendering(object? sender, EventArgs e) {
-            double mousePos = Mouse.GetPosition(Application.Current.MainWindow).X; // Mouse Position Relative to the window
-
-            double a = mousePos / ClientGrid.ActualWidth;
-            double b = 1 - a;
-
-            if (a < 0) a = shadowRectWidth / ClientGrid.ActualWidth;
-            if (b < 0) b = 0;
-            ClientGrid.ColumnDefinitions[0].Width = new GridLength(a, GridUnitType.Star);
-            ClientGrid.ColumnDefinitions[1].Width = new GridLength(b, GridUnitType.Star);
-        }
-
-        private void Shadow_MouseEnter(object sender, MouseEventArgs e) {
-            Application.Current.MainWindow.Cursor = Cursors.SizeWE;
-        }
-
-        private void Shadow_MouseLeave(object sender, MouseEventArgs e) {
-            Application.Current.MainWindow.Cursor = Cursors.Arrow;
-        }
     }
 }

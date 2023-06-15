@@ -8,31 +8,61 @@ using System.Windows.Controls;
 
 using Retros.ProgramWindow.Interactive;
 using Retros.ProgramWindow.DisplaySystem;
+using System.Windows.Navigation;
+using Retros.ProgramWindow.Interactive.Tabs.Bodies;
+using Retros.ProgramWindow.Interactive.Tabs.Handles;
+using Retros.ProgramWindow.Interactive.Tabs;
 
 namespace Retros.ProgramWindow {
-    public partial class Workstation : IFrameworkElement {
+    public partial class Workstation {
         // UI
-        static private Grid mainGrid = new();
-        private Border border = new();
+        private Grid _mainGrid = new();
+        private Border _border = new();
+        private WorkstationPage _page;
+        private Frame _pageFrame = new();
 
-        static public Grid MainGrid => mainGrid;
-        public FrameworkElement FrameworkElement => border;
+        public Grid MainGrid => _mainGrid;
+        public FrameworkElement FrameworkElement => _pageFrame;
 
         // System
         public WorkstationImage ImageElement = new(DefaultPath);
-        public WorkstationTable TableElement = new(MainGrid);
+        public WorkstationTable TableElement = new();
 
-        public readonly static string DefaultPath = @"C:\Users\User\OneDrive\Bilder\alexandre-cabanel-fallen-angel-1847-obelisk-art-history.png";
+        public readonly static string DefaultPath =
+            @"C:\Users\User\OneDrive\Bilder\Wallpapers\43666-Kaf-Virtual-YoutuberVirtual-Youtuber-HD-Wallpaper.jpg";
 
-        public Workstation() {
-            // Init Border
-            border.VerticalAlignment = VerticalAlignment.Stretch;
-            border.HorizontalAlignment = HorizontalAlignment.Stretch;
-            border.Margin = new Thickness(10);
-            border.Child = mainGrid;
-            border.BorderBrush = System.Windows.Media.Brushes.Transparent;
-            border.Background = System.Windows.Media.Brushes.Transparent;
-            border.BorderThickness = new Thickness(1);
+
+        public Workstation(double topPadding) {
+            // Table
+            TableElement.AddTab(new ImageFilterTab(new ImageFilter(ImageElement), new DefaultHandle("Filters")));
+            TableElement.AddTab(new ImageHistoryTab(new ImageHistory(ImageElement), new DefaultHandle("Change History")));
+            TableElement.SelectTab(0);
+
+            // Image
+
+
+            // Page
+            _page = new WorkstationPage(ImageElement, TableElement, topPadding);
+            _pageFrame.Content = _page;
+
+            // Border
+            _border.VerticalAlignment = VerticalAlignment.Stretch;
+            _border.HorizontalAlignment = HorizontalAlignment.Stretch;
+            _border.Margin = new Thickness(10);
+            _border.Child = _mainGrid;
+            _border.BorderBrush = System.Windows.Media.Brushes.Transparent;
+            _border.Background = System.Windows.Media.Brushes.Transparent;
+            _border.BorderThickness = new Thickness(1);
+
+        }
+
+
+
+        public void HideImage() {
+            _page.MainGrid.ColumnDefinitions[0].Width = new GridLength(0);
+        }
+        public void ShowImage() {
+
         }
     }
 }
