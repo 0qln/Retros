@@ -25,7 +25,7 @@ namespace Retros.ProgramWindow.Interactive {
 
             TextElement = new(); 
             TextElement.Text = name;
-            TextElement.Foreground = Brushes.White;
+            UIManager.ColorThemeManager.Set_FC1(b => TextElement.Foreground = b);
 
             StackPanelElement = new(); 
             StackPanelElement.Orientation = Orientation.Vertical;
@@ -33,7 +33,6 @@ namespace Retros.ProgramWindow.Interactive {
             StackPanelElement.Children.Add(SliderElement);
 
             BorderElement = new Border { Child = StackPanelElement };
-            BorderElement.Background = Brushes.Transparent;
         }
     }
 }

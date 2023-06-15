@@ -40,9 +40,9 @@ namespace Retros.ProgramWindow {
 
         public FilterHierachyChange() { }
         public FilterHierachyChange(IPositiveChange[] filters) {
-            FilterHierachy = (IPositiveChange[]) filters.Clone();
+            FilterHierachy = filters;
         }
 
-        public IChange Clone() => new FilterHierachyChange(FilterHierachy);
+        public IChange Clone() => new FilterHierachyChange((IPositiveChange[])FilterHierachy.Clone());
     }
 }
