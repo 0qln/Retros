@@ -117,10 +117,9 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
 
             private void SetChangeHistory(WorkstationImage image) {
                 if (_slider.SliderElement.Value != 0) {
-                    image.GetHistoryManager
-                        .AddAndStep(image.GetChangeManager
-                        .GetChange(_filterType)?
-                        .Clone()!);
+                    image.GetHistoryManager.AddAndStep(image.GetChangeManager
+                        .GetChange(_filterType)!.Clone());
+
                 }
                 else {
                     if (s_removeChangeChache is null) return;
@@ -138,14 +137,13 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
                     filterDisplay.RemoveItem(_filterInstance);
                 }
                 else {
-                    if (image.GetChangeManager.AddChange(_filterInstance)) { // try adding
-                        //-> does already contain
-                        // add the name to the display
+                    bool success = image.GetChangeManager.AddChange(_filterInstance);
+                    
+                    if (success) {
                         filterDisplay.AddItem(_filterInstance);
                     }
                     else {
                         image.GetChangeManager.SetFilterIntensity(_filterType, _slider.SliderElement.Value / 10);
-                        /*was added the first time after not beeing added*/
                         if (!filterDisplay.Contains(_filterType))
                             filterDisplay.AddItem(_filterInstance);
                     }

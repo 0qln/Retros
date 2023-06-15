@@ -55,6 +55,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
             uint uindex = index >= 0 ? index : throw new IndexOutOfRangeException();
             Node? next = _current?.Next(uindex);
             _current = next is not null ? next : _current!;
+
+            MoveForward?.Invoke(new uint[] { index });
         }
 
         public void Jump(Node node) {
