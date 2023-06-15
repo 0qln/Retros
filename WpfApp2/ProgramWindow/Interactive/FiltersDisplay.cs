@@ -72,8 +72,6 @@ namespace Retros.ProgramWindow.Interactive
             StackPanel.Children.Add(item.FrameworkElement);
             _items.Add(item);
             _itemTypes.Add(newItem.GetType());
-
-            InvokeItemListChanged();
         }
 
         public void RemoveItem(IFilterChange item) {
@@ -86,7 +84,7 @@ namespace Retros.ProgramWindow.Interactive
             StackPanel.Children.Remove(removeItem.FrameworkElement);
             _itemTypes.Add(item.GetType());
 
-            InvokeItemListChanged();
+            InvokeItemListOrderChanged();
         }
 
         private void Print() {
@@ -123,7 +121,7 @@ namespace Retros.ProgramWindow.Interactive
 
             SwapItems(item, index);
             
-            InvokeItemListChanged();
+            InvokeItemListOrderChanged();
         }
 
         private void IncreaseHierachy(Item item) {
@@ -135,7 +133,7 @@ namespace Retros.ProgramWindow.Interactive
 
             SwapItems(item, _items.IndexOf(item) - 1);
 
-            InvokeItemListChanged();
+            InvokeItemListOrderChanged();
         }
 
 
@@ -191,7 +189,7 @@ namespace Retros.ProgramWindow.Interactive
             _items[index2] = temp;
         }
 
-        private void InvokeItemListChanged() {
+        private void InvokeItemListOrderChanged() {
             List<string> list = new();
             _items.ForEach(item => list.Add(item.Name.Text));
             _image.GetChangeManager.Order(list);

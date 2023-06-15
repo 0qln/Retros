@@ -113,7 +113,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
         }
 
         public void SendHierachyOrderUpdateToHistory() {
-            _history?.Add(new FilterHierachyChange(CurrentChanges));
+            _history?.AddAndStep(new FilterHierachyChange(CurrentChanges));
             PrintChanges();
         }
 
