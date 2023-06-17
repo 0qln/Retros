@@ -55,49 +55,42 @@ namespace Retros.ProgramWindow.DisplaySystem {
         public ChangeHistory GetHistoryManager => _changeHistory;
 
 
-        private Thickness _margin = new Thickness(50);
-        public Thickness ImageMargin {
+        private List<float> _dp_tValues = new(); /// caches the opacity curve
+        private static int _smoothness = 1;
+        private bool _enableStartboost = false;
+        public float StartBoost {
             get {
-                return _margin;
-            }
-            set {
-                _margin = value;
-                Pages.ForEach(page => page.Image.Margin = _margin); 
-            }
-        }
-        private List<float> dp_tValues = new(); /// caches the opacity curve
-        private bool isCalculated = false;
-        private static int smoothness = 1;
-        public int InterpolationSmoothness {
-            get => smoothness;
-            set {
-                smoothness = value;
-                isCalculated = false;
-            }
-        }
-        private static float totalInterpolationTime = 150; /// reccomendet to have this the same as the interval in which the filters are applied
-        public float TotalInterpolationTime {
-            get => totalInterpolationTime;
-            set {
-                totalInterpolationTime = value;
-                isCalculated = false;
-            }
-        }
-        private float interval = 6.94444444444f; /// time between ticks
-        private bool enableStartboost = false;
-        private float startBoost {
-            get {
-                if (enableStartboost) {
-                    return smoothness;
+                if (_enableStartboost) {
+                    return _smoothness;
                 }
                 else {
                     return 0;
                 }
             }
         } /// recomendet for high smoothness (This approximates, will not work for very high values)
-        private int imageCount = 1; /// used to set the newest images to the front
+        private static float _totalInterpolationTime = 150; /// reccomendet to have this the same as the interval in which the filters are applied
+        private float _interval = 6.94444444444f; /// time between ticks
+
+        public List<float> Dp_tValues => _dp_tValues;
+        public int InterpolationSmoothness {
+            get => _smoothness;
+            set {
+                _smoothness = value;
+                IsCalculated = false;
+            }
+        }
+        public float TotalInterpolationTime {
+            get => _totalInterpolationTime;
+            set {
+                _totalInterpolationTime = value;
+                IsCalculated = false;
+            }
+        }
+        public bool IsCalculated = false;
+        public float Interval => _interval;
+
         public delegate float InterpolationFuntionHandler(float t);
-        public InterpolationFuntionHandler InterpolationFuntion = (t) => ExtendedMath.RootStep(ExtendedMath.RootStep(t, smoothness, 0, totalInterpolationTime));
+        public InterpolationFuntionHandler InterpolationFuntion = (t) => ExtendedMath.RootStep(ExtendedMath.RootStep(t, _smoothness, 0, _totalInterpolationTime));
 
 
 
@@ -125,7 +118,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
         public void Update() {
             _changeManger.CurrentChanges = _changeHistory.CurrentNode.ActiveChanges;
-            ChangeCurentImage(_changeManger.ApplyChanges(new WriteableBitmap(ResizedSourceBitmap)));
+            ChangeCurentImages(_changeManger.ApplyChanges(new WriteableBitmap(ResizedSourceBitmap)));
         }
 
         public void SetSourceImage(Uri source) {
@@ -373,19 +366,23 @@ namespace Retros.ProgramWindow.DisplaySystem {
         }
         private void AddTaskToQueue(Action action) => _actionQueue.Enqueue(action);
 
-        public void ResetCurrent() {
-            AddTaskToQueue(__Execute__ResetCurrent);
+        public void ResetCurrents() {
+            AddTaskToQueue(__Execute__ResetCurrents);
         }
-        private void __Execute__ResetCurrent() {
+        private void __Execute__ResetCurrents() {
             Pages.ForEach(Page => Page.Image.Source = new BitmapImage(_source));
         }
 
-        public void ChangeCurentImage(ImageSource imageSource) {
-            AddTaskToQueue(() => __Execute__ChangeCurentImage(imageSource));
+        public void ChangeCurentImages(ImageSource imageSource) {
+            AddTaskToQueue(() => __Execute__ChangeCurentImages(imageSource));
         }
-        private void __Execute__ChangeCurentImage(ImageSource imageSource) {
+        private void __Execute__ChangeCurentImages(ImageSource imageSource) {
+            foreach (var page in Pages) {
+                page.ChangeCurrent(imageSource);
+            }
+            /*
             // Prepare
-            imageCount++;
+            _imageCount++;
             Dictionary<WorkstationImagePage, Image> newImages = new(Pages.Count);
             Pages.ForEach(Page => {
                 if (Page.Visibility == Visibility.Visible) {
@@ -397,61 +394,52 @@ namespace Retros.ProgramWindow.DisplaySystem {
             });
 
             // Interpolate
-            if (isCalculated) { // isCalculated
-                int i = (int)startBoost;
+            if (_isCalculated) { // isCalculated
+                int i = (int)_startBoost;
                 var timer = new DispatcherTimer();
-                timer.Interval = TimeSpan.FromMilliseconds(interval);
+                timer.Interval = TimeSpan.FromMilliseconds(_interval);
                 timer.Tick += (s, e) => {
-                    ForEach(newImages, kvp => kvp.Value.Opacity = dp_tValues[i]);
+                    ForEach(newImages, kvp => kvp.Value.Opacity = _dp_tValues[i]);
 
                     i++;
-                    if (i >= dp_tValues.Count) {
+                    if (i >= _dp_tValues.Count) {
                         ForEach(newImages, kvp => kvp.Value.Effect = kvp.Key.ImageEffect);
                         Pages.ForEach(Page => Page.Image.Effect = null);
                         Pages.ForEach(Page => Page.MainGrid.Children.Remove(Page.Image));
                         ForEach(newImages, kvp => kvp.Key.Image = kvp.Value);
                         Pages.ForEach(Page => Page.Image.Margin = _margin);
-                        imageCount--;
+                        _imageCount--;
                         timer.Stop();
                     }
                 };
                 timer.Start();
             }
             else {
-                dp_tValues.Clear();
-                float t = startBoost;
+                _dp_tValues.Clear();
+                float t = _startBoost;
                 var timer = new DispatcherTimer();
-                timer.Interval = TimeSpan.FromMilliseconds(interval);
+                timer.Interval = TimeSpan.FromMilliseconds(_interval);
                 timer.Tick += (s, e) => {
-                    isCalculated = true;
+                    _isCalculated = true;
                     float val = InterpolationFuntion(t);
                     ForEach(newImages, kvp => kvp.Value.Opacity = val);
-                    dp_tValues.Add(val);
+                    _dp_tValues.Add(val);
 
-                    t += interval;
-                    if (t >= totalInterpolationTime) {
+                    t += _interval;
+                    if (t >= _totalInterpolationTime) {
                         ForEach(newImages, kvp => kvp.Value.Effect = kvp.Key.ImageEffect);
                         Pages.ForEach(Page => Page.Image.Effect = null);
                         Pages.ForEach(Page => Page.MainGrid.Children.Remove(Page.Image));
                         ForEach(newImages, kvp => kvp.Key.Image = kvp.Value);
-                        imageCount--;
-                        isCalculated = true;
+                        _imageCount--;
+                        _isCalculated = true;
                         timer.Stop();
                     }
                 };
                 timer.Start();
             }
+            */
 
-
-        }
-        private Image CreateFadeImage(WorkstationImagePage page, ImageSource imageSource) {
-            Image newImage = new Image { Source = imageSource };
-            newImage.Opacity = 0;
-            Helper.SetChildInGrid(page.MainGrid, newImage, Grid.GetRow(page.Image), Grid.GetColumn(page.Image));
-            newImage.Margin = _margin;
-            Canvas.SetZIndex(newImage, 10);
-            Canvas.SetZIndex(page.Image, 10 / imageCount);
-            return newImage;
         }
 
         private void ForEach<TKey, TValue>(Dictionary<TKey, TValue> dict, Action<KeyValuePair<TKey, TValue>> action) where TKey : notnull {

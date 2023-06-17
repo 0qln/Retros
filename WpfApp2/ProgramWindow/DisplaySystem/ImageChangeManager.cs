@@ -131,14 +131,14 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
             if (_changes.Count == 0) {
                 if (justRemoved) {
-                    _image.ChangeCurentImage(_image.ResizedSourceBitmap);
+                    _image.ChangeCurentImages(_image.ResizedSourceBitmap);
                     justRemoved = false;
                 }
                 return;
             }
             
             
-            _image.ChangeCurentImage (ApplyChanges (new WriteableBitmap (_image.ResizedSourceBitmap)));
+            _image.ChangeCurentImages (ApplyChanges (new WriteableBitmap (_image.ResizedSourceBitmap)));
 
 
             changed = false;

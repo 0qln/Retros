@@ -74,7 +74,7 @@ namespace Retros.ProgramWindow.Interactive.Tabs.Bodies {
         private void ResetButton_Click(object sender, RoutedEventArgs e) {
             image.GetChangeManager.Clear();
             image.GetHistoryManager.Clear();
-            image.ResetCurrent();
+            image.ResetCurrents();
         }
 
         // can be static, the client will never be able to activate two different instances of this tab at the same time

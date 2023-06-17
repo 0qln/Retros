@@ -1,6 +1,7 @@
 ﻿using Retros.Settings;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -16,6 +17,7 @@ using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using Utillities.Wpf;
 
 namespace Retros.ProgramWindow.DisplaySystem {
@@ -45,6 +47,81 @@ namespace Retros.ProgramWindow.DisplaySystem {
         }
 
 
+
+        public Thickness ImageMargin {
+            get {
+                return _margin;
+            }
+            set {
+                _margin = value;
+                Image.Margin = _margin;
+            }
+        }
+        private Thickness _margin = new Thickness(50);
+        private int _imageCount = 1; /// used to set the newest images to the front
+
+        public void ChangeCurrent(ImageSource imageSource) {
+            // Prepare
+            _imageCount++;
+            Image newImage = CreateFadeImage(Page, imageSource);
+
+            // Interpolate
+            if (_workstationImage.IsCalculated) { // isCalculated
+                int i = (int)_workstationImage.StartBoost;
+                var timer = new DispatcherTimer();
+                timer.Interval = TimeSpan.FromMilliseconds(_workstationImage.Interval);
+                timer.Tick += (s, e) => {
+                    newImage.Opacity = _workstationImage.Dp_tValues[i];
+
+                    i++;
+                    if (i >= _workstationImage.Dp_tValues.Count) {
+                        newImage.Effect = Page.Image.Effect;
+                        Page.Image.Effect = null;
+                        Page.MainGrid.Children.Remove(Page.Image);
+                        Page.Image = newImage;
+                        Page.Image.Margin = _margin;
+                        _imageCount--;
+                        timer.Stop();
+                    }
+                };
+                timer.Start();
+            }
+            else {
+                _workstationImage.Dp_tValues.Clear();
+                float t = _workstationImage.StartBoost;
+                var timer = new DispatcherTimer();
+                timer.Interval = TimeSpan.FromMilliseconds(_workstationImage.Interval);
+                timer.Tick += (s, e) => {
+                    _workstationImage.IsCalculated = true;
+                    float val = _workstationImage.InterpolationFuntion(t);
+                    newImage.Opacity = val;
+                    _workstationImage.Dp_tValues.Add(val);
+
+                    t += _workstationImage.Interval;
+                    if (t >= _workstationImage.TotalInterpolationTime) {
+                        newImage.Effect = Page.Image.Effect;
+                        Page.Image.Effect = null;
+                        Page.MainGrid.Children.Remove(Page.Image);
+                        Page.Image = newImage;
+                        _imageCount--;
+                        _workstationImage.IsCalculated = true;
+                        timer.Stop();
+                    }
+                };
+                timer.Start();
+            }
+        }
+        private Image CreateFadeImage(WorkstationImagePage page, ImageSource imageSource) {
+            Image newImage = new Image { Source = imageSource };
+            newImage.Opacity = 0;
+            Helper.SetChildInGrid(page.MainGrid, newImage, Grid.GetRow(page.Image), Grid.GetColumn(page.Image));
+            newImage.Margin = _margin;
+            Canvas.SetZIndex(newImage, 10);
+            Canvas.SetZIndex(page.Image, 10 / _imageCount);
+            return newImage;
+        }
+
+
         private void ImageHandleActivation_MouseEnter(object sender, MouseEventArgs e) => ImageHandle.Visibility = Visibility.Visible;
         private void ImageHandleActivation_MouseLeave(object sender, MouseEventArgs e) => ImageHandle.Visibility = Visibility.Collapsed;
 
@@ -54,7 +131,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
             ImageHandleActivation.Height = 0;
 
             Image.Margin = new Thickness(0);
-            _workstationImage.ImageMargin = new Thickness(0);
+            ImageMargin = new Thickness(0);
             _imageWindow = new WorkstationImageWindow(Image.ActualWidth, Image.ActualHeight);
             _imageWindow.Show();
             _imageWindow.Top = Mouse.GetPosition(WindowManager.MainWindow).Y + WindowManager.MainWindow.Top - 10;
