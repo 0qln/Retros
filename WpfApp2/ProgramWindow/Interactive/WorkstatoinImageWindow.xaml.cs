@@ -18,13 +18,18 @@ namespace Retros {
     public partial class WorkstationImageWindow : Window {
 
         public readonly WindowHandle WindowHandle;
+        public readonly WorkstationImagePage Page = new WorkstationImagePage(WindowManager.MainWindow.SelectedWorkstation.ImageElement);
+        public Frame PageFrame { get; private set; } = new();
 
-        public WorkstationImageWindow(WorkstationImagePage page, double width, double height) {
-            InitializeComponent();            
-            PageFrame.Content = page;
+        public WorkstationImageWindow(double width, double height) {
+            InitializeComponent();
+
+            WindowManager.MainWindow.SelectedWorkstation.ImageElement.Pages.Add(Page);
+            PageFrame.Content = Page;
 
             Width = width;
             Height = height;
+
 
             WindowHandle = new(this);
             UIManager.ColorThemeManager.Set_BG6(b => WindowHandle.SetBGColor(b));

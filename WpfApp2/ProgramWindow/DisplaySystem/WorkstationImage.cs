@@ -20,38 +20,39 @@ using System.Windows.Automation;
 
 namespace Retros.ProgramWindow.DisplaySystem {
     public partial class WorkstationImage : IFrameworkElement {
-        public FrameworkElement FrameworkElement => pageFrame;
-        private WriteableBitmap resizedSourceBitmap;
-        private Uri source;
-        private ImageChangeManager changeManger;
-        private ChangeHistory changeHistory = new();
-        private DispatcherTimer actionTimer = new();
-        private Queue<Action> actionQueue = new();
-        private Frame pageFrame = new();
+        private WriteableBitmap _resizedSourceBitmap;
+        private Uri _source;
+        private ImageChangeManager _changeManger;
+        private ChangeHistory _changeHistory = new();
+        private DispatcherTimer _actionTimer = new();
+        private Queue<Action> _actionQueue = new();
+        private Frame _pageFrame = new();
+
+        /// <summary>The FrameworkElement</summary>
+        public FrameworkElement FrameworkElement => _pageFrame;
 
         /// <summary>Used to display the image.</summary>
-        private WorkstationImagePage Page { get; init; }
+        public readonly List<WorkstationImagePage> Pages = new();
 
-        /// <summary>Used to display the current image.</summary>
-        public Image CurrentImage => Page.Image;
+        public WorkstationImagePage Page => Pages[0];
+
+        /// <summary>The Frame of the WorkstaionImagePage</summary>
+        public Frame PageFrame => _pageFrame;
 
         /// <summary>Chaches the source image.</summary>
-        public Uri Source => source;
+        public Uri Source => _source;
         
         /// <summary>Acts as the source image for the runtime image.</summary>
-        public WriteableBitmap ResizedSourceBitmap => resizedSourceBitmap;
+        public WriteableBitmap ResizedSourceBitmap => _resizedSourceBitmap;
 
         /// <summary>Works as a computation/backend image for the filters to work on.</summary>
         public WriteableBitmap DummyImage { get; set; }
 
-        /// <summary>Main Grid</summary>
-        public Grid Grid => Page.MainGrid;
-
         /// <summary>The FilterManager instance for this WorkstationImage.</summary>
-        public ImageChangeManager GetChangeManager => changeManger;
+        public ImageChangeManager GetChangeManager => _changeManger;
 
         /// <summary>Gets the ChangeHistory instance for this WorkstationImage.</summary>
-        public ChangeHistory GetHistoryManager => changeHistory;
+        public ChangeHistory GetHistoryManager => _changeHistory;
 
 
         private Thickness _margin = new Thickness(50);
@@ -61,7 +62,7 @@ namespace Retros.ProgramWindow.DisplaySystem {
             }
             set {
                 _margin = value;
-                Page.Image.Margin = _margin;
+                Pages.ForEach(page => page.Image.Margin = _margin); 
             }
         }
         private List<float> dp_tValues = new(); /// caches the opacity curve
@@ -100,39 +101,42 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
 
 
-
         public WorkstationImage(string path) {
-            Page = new(this);
-            pageFrame.Content = Page;
-            changeManger = new(this);
+            WorkstationImagePage page = new WorkstationImagePage(this);
+            Pages.Add(page);
+            PageFrame.Content = page;
+
+            _changeManger = new(this);
             StartUpdating();
 
-            source = new Uri(path);
-            SetSourceImage(source);
+            _source = new Uri(path);
+            SetSourceImage(_source);
 
-            changeHistory.ImageChanged += Update;
+            _changeHistory.ImageChanged += Update;
         }
         public WorkstationImage() {
-            Page = new(this);
-            pageFrame.Content = Page;
-            changeManger = new(this);
+            WorkstationImagePage page = new WorkstationImagePage(this);
+            Pages.Add(page);
+            PageFrame.Content = page;
+
+            _changeManger = new(this);
             StartUpdating();
         }
 
         public void Update() {
-            changeManger.CurrentChanges = changeHistory.CurrentNode.ActiveChanges;
-            ChangeCurentImage(changeManger.ApplyChanges(new WriteableBitmap(ResizedSourceBitmap)));
+            _changeManger.CurrentChanges = _changeHistory.CurrentNode.ActiveChanges;
+            ChangeCurentImage(_changeManger.ApplyChanges(new WriteableBitmap(ResizedSourceBitmap)));
         }
 
         public void SetSourceImage(Uri source) {
-            this.source = source;
+            _source = source;
 
             double screenWidth = SystemParameters.PrimaryScreenWidth;
             double screenHeight = SystemParameters.PrimaryScreenHeight;
-            resizedSourceBitmap = ResizeWritableBitmap(new BitmapImage(source), (int) screenWidth, (int) screenHeight);
+            _resizedSourceBitmap = ResizeWritableBitmap(new BitmapImage(source), (int) screenWidth, (int) screenHeight);
 
-            Page.Image.Source = resizedSourceBitmap.Clone();
-            DummyImage = new WriteableBitmap(resizedSourceBitmap);
+            Pages.ForEach(Page => Page.Image.Source = _resizedSourceBitmap.Clone());
+            DummyImage = new WriteableBitmap(_resizedSourceBitmap);
         }
 
         public static WriteableBitmap ResizeWritableBitmap(BitmapImage originalBitmap, int newWidth, int newHeight) {
@@ -187,9 +191,9 @@ namespace Retros.ProgramWindow.DisplaySystem {
         public System.Drawing.Bitmap Render() {
             // Get the image Source
             WriteableBitmap writeableBitmap = 
-                changeManger.ApplyChanges(
+                _changeManger.ApplyChanges(
                     new WriteableBitmap(
-                        new BitmapImage(source)));
+                        new BitmapImage(_source)));
 
             // Default the pixel format
             WriteableBitmap formattedBitmap = SwitchPixelFormat(writeableBitmap, System.Windows.Media.PixelFormats.Bgra32);
@@ -358,22 +362,22 @@ namespace Retros.ProgramWindow.DisplaySystem {
         */
 
         private void StartUpdating() {
-            actionTimer.Interval = WindowManager.Framerate;
-            actionTimer.Tick += (s, e) => {
-                if (actionQueue.Count > 0) {
-                    Action action = actionQueue.Dequeue();
+            _actionTimer.Interval = WindowManager.Framerate;
+            _actionTimer.Tick += (s, e) => {
+                if (_actionQueue.Count > 0) {
+                    Action action = _actionQueue.Dequeue();
                     action.Invoke();
                 }
             };
-            actionTimer.Start();
+            _actionTimer.Start();
         }
-        private void AddTaskToQueue(Action action) => actionQueue.Enqueue(action);
+        private void AddTaskToQueue(Action action) => _actionQueue.Enqueue(action);
 
         public void ResetCurrent() {
             AddTaskToQueue(__Execute__ResetCurrent);
         }
         private void __Execute__ResetCurrent() {
-            Page.Image.Source = new BitmapImage(source);
+            Pages.ForEach(Page => Page.Image.Source = new BitmapImage(_source));
         }
 
         public void ChangeCurentImage(ImageSource imageSource) {
@@ -382,12 +386,15 @@ namespace Retros.ProgramWindow.DisplaySystem {
         private void __Execute__ChangeCurentImage(ImageSource imageSource) {
             // Prepare
             imageCount++;
-            Image newImage = new Image { Source = imageSource };
-            newImage.Opacity = 0;
-            Helper.SetChildInGrid(Page.MainGrid, newImage, Grid.GetRow(Page.Image), Grid.GetColumn(Page.Image));
-            newImage.Margin = _margin;
-            Canvas.SetZIndex(newImage, 10);
-            Canvas.SetZIndex(Page.Image, 10 / imageCount);
+            Dictionary<WorkstationImagePage, Image> newImages = new(Pages.Count);
+            Pages.ForEach(Page => {
+                if (Page.Visibility == Visibility.Visible) {
+                    newImages.Add(Page, CreateFadeImage(Page, imageSource));
+                }
+                else {
+                    newImages.Add(Page, null);
+                }
+            });
 
             // Interpolate
             if (isCalculated) { // isCalculated
@@ -395,15 +402,15 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 var timer = new DispatcherTimer();
                 timer.Interval = TimeSpan.FromMilliseconds(interval);
                 timer.Tick += (s, e) => {
-                    newImage.Opacity = dp_tValues[i];
+                    ForEach(newImages, kvp => kvp.Value.Opacity = dp_tValues[i]);
 
                     i++;
                     if (i >= dp_tValues.Count) {
-                        newImage.Effect = Page.Image.Effect;
-                        Page.Image.Effect = null;
-                        Page.MainGrid.Children.Remove(Page.Image);
-                        Page.Image = newImage;
-                        Page.Image.Margin = _margin;
+                        ForEach(newImages, kvp => kvp.Value.Effect = kvp.Key.ImageEffect);
+                        Pages.ForEach(Page => Page.Image.Effect = null);
+                        Pages.ForEach(Page => Page.MainGrid.Children.Remove(Page.Image));
+                        ForEach(newImages, kvp => kvp.Key.Image = kvp.Value);
+                        Pages.ForEach(Page => Page.Image.Margin = _margin);
                         imageCount--;
                         timer.Stop();
                     }
@@ -418,15 +425,15 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 timer.Tick += (s, e) => {
                     isCalculated = true;
                     float val = InterpolationFuntion(t);
-                    newImage.Opacity = val;
+                    ForEach(newImages, kvp => kvp.Value.Opacity = val);
                     dp_tValues.Add(val);
 
                     t += interval;
                     if (t >= totalInterpolationTime) {
-                        newImage.Effect = Page.Image.Effect;
-                        Page.Image.Effect = null;
-                        Page.MainGrid.Children.Remove(Page.Image);
-                        Page.Image = newImage;
+                        ForEach(newImages, kvp => kvp.Value.Effect = kvp.Key.ImageEffect);
+                        Pages.ForEach(Page => Page.Image.Effect = null);
+                        Pages.ForEach(Page => Page.MainGrid.Children.Remove(Page.Image));
+                        ForEach(newImages, kvp => kvp.Key.Image = kvp.Value);
                         imageCount--;
                         isCalculated = true;
                         timer.Stop();
@@ -436,6 +443,21 @@ namespace Retros.ProgramWindow.DisplaySystem {
             }
 
 
+        }
+        private Image CreateFadeImage(WorkstationImagePage page, ImageSource imageSource) {
+            Image newImage = new Image { Source = imageSource };
+            newImage.Opacity = 0;
+            Helper.SetChildInGrid(page.MainGrid, newImage, Grid.GetRow(page.Image), Grid.GetColumn(page.Image));
+            newImage.Margin = _margin;
+            Canvas.SetZIndex(newImage, 10);
+            Canvas.SetZIndex(page.Image, 10 / imageCount);
+            return newImage;
+        }
+
+        private void ForEach<TKey, TValue>(Dictionary<TKey, TValue> dict, Action<KeyValuePair<TKey, TValue>> action) where TKey : notnull {
+            foreach (var kvp in dict) {
+                action.Invoke(kvp);
+            }
         }
     }
 }

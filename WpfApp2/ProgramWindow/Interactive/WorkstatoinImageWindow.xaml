@@ -13,8 +13,5 @@
                VerticalAlignment="Stretch"
                HorizontalAlignment="Stretch">
 
-        <Frame x:Name="PageFrame"
-               VerticalAlignment="Stretch"
-               HorizontalAlignment="Stretch"/>
     </Canvas>
 </Window>

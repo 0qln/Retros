@@ -23,8 +23,10 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
         public DropShadowEffect ImageEffect;
         private WorkstationImageWindow? _imageWindow;
-        private UIElement? _tempImageHandle;
         private WorkstationImage _workstationImage;
+
+        public delegate void OnWindowInitHandle(WorkstationImageWindow window);
+        public event OnWindowInitHandle? WindowInitiated;
 
 
         public WorkstationImagePage(WorkstationImage workstationImage) {
@@ -42,34 +44,29 @@ namespace Retros.ProgramWindow.DisplaySystem {
             };
         }
 
-        public void SetImage(Image image) {
-            Image = image;
-        }
 
         private void ImageHandleActivation_MouseEnter(object sender, MouseEventArgs e) => ImageHandle.Visibility = Visibility.Visible;
         private void ImageHandleActivation_MouseLeave(object sender, MouseEventArgs e) => ImageHandle.Visibility = Visibility.Collapsed;
 
 
         private void ImageHandle_PreviewMouseDown(object sender, MouseButtonEventArgs e) {
-            WindowManager.MainWindow.SelectedWorkstation.HideImage();
-
-            _tempImageHandle = ImageHandleActivation.Children[0];
             ImageHandleActivation.Children.RemoveAt(0);
             ImageHandleActivation.Height = 0;
 
-            var width = Image.ActualWidth;
-            var height = Image.ActualHeight;
             Image.Margin = new Thickness(0);
             _workstationImage.ImageMargin = new Thickness(0);
-            _imageWindow = new WorkstationImageWindow(this, width, height);
+            _imageWindow = new WorkstationImageWindow(Image.ActualWidth, Image.ActualHeight);
             _imageWindow.Show();
             _imageWindow.Top = Mouse.GetPosition(WindowManager.MainWindow).Y + WindowManager.MainWindow.Top - 10;
-            _imageWindow.Left = Mouse.GetPosition(WindowManager.MainWindow).X + WindowManager.MainWindow.Left - width / 2;
+            _imageWindow.Left = Mouse.GetPosition(WindowManager.MainWindow).X + WindowManager.MainWindow.Left - Image.ActualWidth / 2;
 
             CaptureWindow(_imageWindow);
 
-            WindowManager.MainWindow.Activated += ActivateOnce;
+            ///WindowManager.MainWindow.Activated += ActivateOnce;
 
+            WindowInitiated?.Invoke(_imageWindow);
+
+            WindowManager.MainWindow.SelectedWorkstation.HideImageUI();
         }
         private void CaptureWindow(Window window) {
             Mouse.Capture(window);

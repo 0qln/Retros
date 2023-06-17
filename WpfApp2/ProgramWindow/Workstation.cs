@@ -12,6 +12,7 @@ using System.Windows.Navigation;
 using Retros.ProgramWindow.Interactive.Tabs.Bodies;
 using Retros.ProgramWindow.Interactive.Tabs.Handles;
 using Retros.ProgramWindow.Interactive.Tabs;
+using System.Windows.Media;
 
 namespace Retros.ProgramWindow {
     public partial class Workstation {
@@ -25,8 +26,8 @@ namespace Retros.ProgramWindow {
         public FrameworkElement FrameworkElement => _pageFrame;
 
         // System
-        public WorkstationImage ImageElement = new(DefaultPath);
-        public WorkstationTable TableElement = new();
+        public WorkstationImage ImageElement { get; } = new(DefaultPath);
+        public WorkstationTable TableElement { get; } = new();
 
         public readonly static string DefaultPath =
             @"C:\Users\User\OneDrive\Bilder\Wallpapers\43666-Kaf-Virtual-YoutuberVirtual-Youtuber-HD-Wallpaper.jpg";
@@ -39,7 +40,13 @@ namespace Retros.ProgramWindow {
             TableElement.SelectTab(0);
 
             // Image
-
+            ImageElement.Page.WindowInitiated += (window) => {
+                window.Closed += (_,_) => {
+                    ShowImageUI();
+                    // Show ImageElement page
+                    // Hide ImageElementWindow Page
+                };
+            };
 
             // Page
             _page = new WorkstationPage(ImageElement, TableElement, topPadding);
@@ -57,12 +64,13 @@ namespace Retros.ProgramWindow {
         }
 
 
-
-        public void HideImage() {
+        private double prevWidth;
+        public void HideImageUI() {
+            prevWidth = _page.MainGrid.ColumnDefinitions[0].ActualWidth;
             _page.MainGrid.ColumnDefinitions[0].Width = new GridLength(0);
         }
-        public void ShowImage() {
-
+        public void ShowImageUI() {
+            _page.MainGrid.ColumnDefinitions[0].Width = new GridLength(prevWidth);
         }
     }
 }
