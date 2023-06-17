@@ -27,19 +27,19 @@
                 Grid.Row="0"
                 MouseEnter="ImageHandleActivation_MouseEnter"
                 MouseLeave="ImageHandleActivation_MouseLeave"
-                Background="Transparent"
+                Background="Red"
                 Height="20"
                 Width="{Binding ActualWidth, ElementName=MainGrid}">
 
-                <Grid Width="{Binding ActualWidth, ElementName=ImageHandleActivation}"
-                  Height="20">
+            <Grid Width="{Binding ActualWidth, ElementName=ImageHandleActivation}"
+                    Height="20">
 
-                    <Button x:Name="ImageHandle" 
-                        Margin="5"
-                        PreviewMouseDown="ImageHandle_PreviewMouseDown"
-                        Visibility="Collapsed"/>
-                </Grid>
-            </Canvas>
+                <Button x:Name="ImageHandle" 
+                    Margin="5"
+                    PreviewMouseDown="ImageHandle_PreviewMouseDown"
+                    Visibility="Collapsed"/>
+            </Grid>
+        </Canvas>
 
         
         <Image x:Name="Image"

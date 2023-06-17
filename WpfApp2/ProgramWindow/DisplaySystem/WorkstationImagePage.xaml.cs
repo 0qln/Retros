@@ -44,6 +44,8 @@ namespace Retros.ProgramWindow.DisplaySystem {
                 if (enabled) Image.Effect = ImageEffect;
                 else Image.Effect = null;
             };
+
+            Image.Source = workstationImage.DummyImage;
         }
 
 
@@ -123,27 +125,24 @@ namespace Retros.ProgramWindow.DisplaySystem {
 
 
         private void ImageHandleActivation_MouseEnter(object sender, MouseEventArgs e) => ImageHandle.Visibility = Visibility.Visible;
-        private void ImageHandleActivation_MouseLeave(object sender, MouseEventArgs e) => ImageHandle.Visibility = Visibility.Collapsed;
+        private void ImageHandleActivation_MouseLeave(object sender, MouseEventArgs e) => ImageHandle.Visibility = Visibility.Hidden;
 
 
         private void ImageHandle_PreviewMouseDown(object sender, MouseButtonEventArgs e) {
-            ImageHandleActivation.Children.RemoveAt(0);
-            ImageHandleActivation.Height = 0;
-
-            Image.Margin = new Thickness(0);
-            ImageMargin = new Thickness(0);
             _imageWindow = new WorkstationImageWindow(Image.ActualWidth, Image.ActualHeight);
             _imageWindow.Show();
             _imageWindow.Top = Mouse.GetPosition(WindowManager.MainWindow).Y + WindowManager.MainWindow.Top - 10;
             _imageWindow.Left = Mouse.GetPosition(WindowManager.MainWindow).X + WindowManager.MainWindow.Left - Image.ActualWidth / 2;
+            _workstationImage.FrameworkElement.Visibility = Visibility.Collapsed;
 
             CaptureWindow(_imageWindow);
 
-            ///WindowManager.MainWindow.Activated += ActivateOnce;
+            WindowManager.MainWindow.SelectedWorkstation.HideImageUI();
 
             WindowInitiated?.Invoke(_imageWindow);
 
-            WindowManager.MainWindow.SelectedWorkstation.HideImageUI();
+            /*This is needed if the CaptureWindow() function is no longer used*/
+            ///WindowManager.MainWindow.Activated += ActivateOnce; 
         }
         private void CaptureWindow(Window window) {
             Mouse.Capture(window);

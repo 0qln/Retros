@@ -7,11 +7,11 @@
         mc:Ignorable="d"
         Title="WorkstatoinImageWindow" Height="450" Width="800"
         x:Name="Window"
-        SizeChanged="PageFrame_SizeChanged">
+        SizeChanged="Window_SizeChanged">
 
     <Canvas x:Name="MainCanvas"
                VerticalAlignment="Stretch"
                HorizontalAlignment="Stretch">
-
+        <Frame x:Name="PageFrame"/>
     </Canvas>
 </Window>

@@ -19,22 +19,14 @@ namespace Retros {
 
         public readonly WindowHandle WindowHandle;
         public readonly WorkstationImagePage Page = new WorkstationImagePage(WindowManager.MainWindow.SelectedWorkstation.ImageElement);
-        public Frame PageFrame { get; private set; } = new();
 
         public WorkstationImageWindow(double width, double height) {
             InitializeComponent();
-
-            WindowManager.MainWindow.SelectedWorkstation.ImageElement.Pages.Add(Page);
-            PageFrame.Content = Page;
-
-            Width = width;
-            Height = height;
-
-
+            // Window Handle
             WindowHandle = new(this);
             UIManager.ColorThemeManager.Set_BG6(b => WindowHandle.SetBGColor(b));
             UIManager.ColorThemeManager.Set_BG1(b => Background = b);
-            UIManager.ColorThemeManager.Set_BGh1(b => WindowHandle.ApplicationButtons.ColorWhenButtonHover = b);
+            UIManager.ColorThemeManager.Set_BGh2(b => WindowHandle.ApplicationButtons.ColorWhenButtonHover = b);
 
             WindowHandle.ApplicationButtons.AddFullcreenButton();
             WindowHandle.ApplicationButtons.FullscreenButtonImageSource = UIManager.FullscreenIconPath;
@@ -53,12 +45,26 @@ namespace Retros {
             WindowHandle.ApplicationButtons.ActivateMinimizeButtonSprite();
             WindowHandle.ApplicationButtons.MinimizeButtonImageSource = UIManager.MinimizeIconPath;
             WindowHandle.ApplicationButtons.MinimizeButtonImagePadding = new Thickness(5);
+
+
+            // UI
+            WindowManager.MainWindow.SelectedWorkstation.ImageElement.Pages.Add(Page);
+            PageFrame.Content = Page;
+
+            Page.Width = width;
+            Page.Height = height;
+            Page.ImageMargin = new Thickness(0);
+            Page.MainGrid.Children.Remove(Page.ImageHandleActivation);
+
+            Width = width;
+            Height = height;
+
         }
 
-        private void PageFrame_SizeChanged(object sender, SizeChangedEventArgs e) {
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e) {
             if (PageFrame.Content is not null) {
-                (PageFrame.Content as Page)!.Width = e.NewSize.Width;
-                (PageFrame.Content as Page)!.Height = e.NewSize.Height;
+                Page.Width = e.NewSize.Width;
+                Page.Height = e.NewSize.Height;
             }
         }
     }

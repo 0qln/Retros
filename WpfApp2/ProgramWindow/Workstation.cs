@@ -43,8 +43,7 @@ namespace Retros.ProgramWindow {
             ImageElement.Page.WindowInitiated += (window) => {
                 window.Closed += (_,_) => {
                     ShowImageUI();
-                    // Show ImageElement page
-                    // Hide ImageElementWindow Page
+                    ImageElement.FrameworkElement.Visibility = Visibility.Visible;
                 };
             };
 
