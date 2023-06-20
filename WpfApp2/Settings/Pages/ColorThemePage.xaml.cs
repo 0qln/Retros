@@ -22,7 +22,7 @@ namespace Retros.Settings.Pages {
         public ColorTheme()
         {
             InitializeComponent();
-
+                        
             UIManager.ColorThemeManager.SetStyle(Headline, TabDetail.Body.HeadlineStyle);
             UIManager.ColorThemeManager.SetStyle(ChangeButton, TabDetail.Body.ButtonStyle);
             UIManager.ColorThemeManager.SetStyle(ImportButton, TabDetail.Body.ButtonStyle);
@@ -42,8 +42,7 @@ namespace Retros.Settings.Pages {
 
         private void ChangeButton_Click(object sender, RoutedEventArgs e) {
             var selected = ThemeSelectionBox.Selected;
-            var selectedTheme = 
-                UIManager.ColorThemeManager.ColorThemes.Find(
+            var selectedTheme = UIManager.ColorThemeManager.ColorThemes.Find(
                 theme => theme.Name == selected);
 
             if (selectedTheme != null) {

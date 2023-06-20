@@ -12,16 +12,15 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using Utillities.Wpf;
-using Retros.ProgramWindow.Interactive.Tabs;
-using Retros.ProgramWindow.Interactive.Tabs.Bodies;
-using Retros.ProgramWindow.Interactive.Tabs.Handles;
+using Retros.Program.Workstation.TabUI.Tabs;
 using Retros;
 using System.Windows.Media.Imaging;
-using Retros.ProgramWindow;
+using Retros.Program;
 using System.IO.Pipes;
-using Retros.ProgramWindow.DisplaySystem;
+using Retros.Program.Workstation.Image;
 
-namespace Retros {
+namespace Retros
+{
     public static class UIManager {
         public static ColorThemeManager ColorThemeManager => colorThemeManager;
         private static ColorThemeManager colorThemeManager = new(new ColorThemes.DefaultDark());

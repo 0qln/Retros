@@ -7181,7 +7181,7 @@
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
-        "net7.0-windows"
+        "net7.0-windows7.0"
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -7189,7 +7189,7 @@
       },
       "frameworks": {
         "net7.0-windows7.0": {
-          "targetAlias": "net7.0-windows",
+          "targetAlias": "net7.0-windows7.0",
           "projectReferences": {
             "D:\\Programmmieren\\Projects\\Retros\\Retros\\CustomControlLibrary\\CustomControlLibrary.csproj": {
               "projectPath": "D:\\Programmmieren\\Projects\\Retros\\Retros\\CustomControlLibrary\\CustomControlLibrary.csproj"
@@ -7205,7 +7205,7 @@
     },
     "frameworks": {
       "net7.0-windows7.0": {
-        "targetAlias": "net7.0-windows",
+        "targetAlias": "net7.0-windows7.0",
         "dependencies": {
           "SharpDX": {
             "target": "Package",

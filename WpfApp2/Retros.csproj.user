@@ -9,10 +9,10 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="ProgramWindow\DisplaySystem\WorkstationImagePage.xaml.cs">
+    <Compile Update="Program\Workstation\Image\WorkstationImagePage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="ProgramWindow\WorkstationPage.xaml.cs">
+    <Compile Update="Program\Workstation\WorkstationPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Settings\Pages\ColorThemePage.xaml.cs">
@@ -24,18 +24,18 @@
     <Compile Update="Settings\SettingsWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="ProgramWindow\Interactive\WorkstatoinImageWindow.xaml.cs">
+    <Compile Update="Program\Workstation\Image\WorkstatoinImageWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="ProgramWindow\DisplaySystem\WorkstationImagePage.xaml">
+    <Page Update="Program\Workstation\Image\WorkstationImagePage.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="ProgramWindow\MainWindow.xaml">
+    <Page Update="Program\MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="ProgramWindow\WorkstationPage.xaml">
+    <Page Update="Program\Workstation\WorkstationPage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Settings\Pages\ColorThemePage.xaml">
@@ -47,7 +47,7 @@
     <Page Update="Settings\SettingsWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="ProgramWindow\Interactive\WorkstatoinImageWindow.xaml">
+    <Page Update="Program\Workstation\Image\WorkstatoinImageWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

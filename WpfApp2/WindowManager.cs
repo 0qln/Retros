@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Threading.Tasks;
 using Utillities.Wpf;
+using Retros.Program;
 
 namespace Retros {
     public static class WindowManager {

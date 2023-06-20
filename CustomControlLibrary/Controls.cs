@@ -66,7 +66,7 @@ namespace CustomControlLibrary {
             get => (Brush)GetValue(OptionsBackgroundProperty);
             set {
                 SetValue(OptionsBackgroundProperty, value);
-                foreach (Border option in _options!.Children) {
+                foreach (Border option in _options.Children) {
                     option.Background = value;
                 }
             }
@@ -178,7 +178,6 @@ namespace CustomControlLibrary {
         private bool _isCollapsed = true;
         private HashSet<string> _optionSet = new();
         private StackPanel? _options;
-
         private Queue<Action> _doAfterLoadedActions = new();
         
 
@@ -211,27 +210,34 @@ namespace CustomControlLibrary {
             )).Value;
         }
 
-        public override void OnApplyTemplate() {
-            base.OnApplyTemplate();
+        private void OnInitialized() {
+            if (!IsLoaded) {
+                _doAfterLoadedActions.Enqueue(() => {
+                    if (_toggleRegion != null) {
+                        _toggleRegion.PreviewMouseDown += (s, e) => Toggle();
+                        _toggleRegion.MouseEnter += (s, e) => SetToggleButtonBorderBrush(true);
+                        _toggleRegion.MouseLeave += (s, e) => SetToggleButtonBorderBrush(false);
+                    }
+                });
 
-
-            _toggleRegion = GetTemplateChild("_toggleRegion") as Border;
-            if (_toggleRegion != null) {
-                _toggleRegion.PreviewMouseDown += (s, e) => Toggle();
-                _toggleRegion.MouseEnter += (s, e) => SetToggleButtonBorderBrush(true);
-                _toggleRegion.MouseLeave += (s, e) => SetToggleButtonBorderBrush(false);
+                _doAfterLoadedActions.Enqueue(() => {
+                    Window window = Window.GetWindow(_toggleRegion);
+                    window.LocationChanged += (s, e) => UpadteOptionsPosition();
+                    window.Deactivated += delegate {
+                        if (!IsCollapsed) {
+                            Toggle();
+                        }
+                    };
+                });
             }
-
-            _popup = GetTemplateChild("_popup") as Popup;
-
-            _textText = GetTemplateChild("_textText") as TextBlock;
-
-            _arrowText = GetTemplateChild("_arrowText") as TextBlock;
-
-            _options = GetTemplateChild("_options") as StackPanel;
+            else {
+                if (_toggleRegion != null) {
+                    _toggleRegion.PreviewMouseDown += (s, e) => Toggle();
+                    _toggleRegion.MouseEnter += (s, e) => SetToggleButtonBorderBrush(true);
+                    _toggleRegion.MouseLeave += (s, e) => SetToggleButtonBorderBrush(false);
+                }
 
 
-            _doAfterLoadedActions.Enqueue(() => {
                 Window window = Window.GetWindow(_toggleRegion);
                 window.LocationChanged += (s, e) => UpadteOptionsPosition();
                 window.Deactivated += delegate {
@@ -239,13 +245,25 @@ namespace CustomControlLibrary {
                         Toggle();
                     }
                 };
-            });
+            }
 
             Loaded += delegate {
                 while (_doAfterLoadedActions.Count > 0) {
                     _doAfterLoadedActions.Dequeue().Invoke();
                 }
             };
+        }
+
+        public override void OnApplyTemplate() {
+            base.OnApplyTemplate();
+
+            _toggleRegion = GetTemplateChild("_toggleRegion") as Border;
+            _popup = GetTemplateChild("_popup") as Popup;
+            _textText = GetTemplateChild("_textText") as TextBlock;
+            _arrowText = GetTemplateChild("_arrowText") as TextBlock;
+            _options = GetTemplateChild("_options") as StackPanel;
+
+            OnInitialized();
         }
 
         public void UpadteOptionsPosition() {

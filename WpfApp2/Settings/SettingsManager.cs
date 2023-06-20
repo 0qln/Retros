@@ -25,5 +25,14 @@ namespace Retros.Settings {
             public static event DoubleHandler? Direction;
             public static void InvokeDirection(double value) => Direction?.Invoke(value);
         }
+
+        public static class ImageHistory {
+            public static bool ShowFilterIntensityInNameValue = true;
+            public static event BooleanHandler? ShowFilterIntensityInName;
+            public static void InvokeShowFilterIntensityInName(bool value) {
+                ShowFilterIntensityInNameValue = value;
+                ShowFilterIntensityInName?.Invoke(value);
+            }
+        }
     }
 }
