@@ -142,7 +142,7 @@ namespace Retros.Program.Workstation.TabUI.Tabs
 
                     if (!filterDisplay.Contains(_filterType)) {
                         filterDisplay.AddFilter(_filterInstance);
-                    }
+                    }                    
                 }
             }
 

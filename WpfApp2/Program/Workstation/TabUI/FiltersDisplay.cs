@@ -91,12 +91,12 @@ namespace Retros.Program.Workstation.TabUI
 
             _items.Remove(removeItem);
             StackPanel.Children.Remove(removeItem.FrameworkElement);
-            _itemTypes.Add(item.GetType());
+            _itemTypes.Remove(item.GetType());
 
             InvokeItemListOrderChanged();
         }
 
-        private void Print()
+        public void Print()
         {
             DebugLibrary.Console.Log("--------Items: ");
             _items.ForEach(DebugLibrary.Console.Log);
