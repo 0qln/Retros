@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using Utillities.Wpf;
 using Retros.Program.Workstation.Changes;
 using Slider = Retros.CustomUI.Slider;
+using System.Windows.Threading;
 
 // Bodies Manage the Tab body UIElements and functionality
 namespace Retros.Program.Workstation.TabUI.Tabs
@@ -74,6 +75,7 @@ namespace Retros.Program.Workstation.TabUI.Tabs
             UIManager.ColorThemeManager.Set_AC1(b => resetButton.Background = b);
             resetButton.Click += (_,_) => _image.Reset();
             resetButton.Content = "Back to original";
+
         }
 
 
@@ -137,7 +139,7 @@ namespace Retros.Program.Workstation.TabUI.Tabs
                     bool success = image.GetFilterManager.AddFilter(_filterInstance);
 
                     if (!success) {
-                        image.GetFilterManager.SetFilterIntensity(_filterInstance, _slider.SliderElement.Value);
+                        image.GetFilterManager.SetFilterIntensity(FilterInstance, _slider.SliderElement.Value);
                     }
 
                     if (!filterDisplay.Contains(_filterType)) {
@@ -256,7 +258,7 @@ namespace Retros.Program.Workstation.TabUI.Tabs
             style.Setters.Add(new Setter(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Top));
             style.Setters.Add(new Setter(Control.FontWeightProperty, FontWeights.ExtraBold));
             style.Setters.Add(new Setter(FrameworkElement.HeightProperty, 20.0));
-            style.Setters.Add(new Setter(FrameworkElement.WidthProperty, 20.0));
+            style.Setters.Add(new Setter(FrameworkElement.MinWidthProperty, 20.0));
             style.Setters.Add(new Setter(Control.FontSizeProperty, 11.0));
             style.Setters.Add(new Setter(ContentControl.ContentProperty, new TextBlock { Margin = new Thickness(15, 0, 10, 0) }));
 
@@ -297,7 +299,7 @@ namespace Retros.Program.Workstation.TabUI.Tabs
             style.Setters.Add(new Setter(FrameworkElement.HorizontalAlignmentProperty, HorizontalAlignment.Left));
             style.Setters.Add(new Setter(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Top));
             style.Setters.Add(new Setter(FrameworkElement.HeightProperty, 20.0));
-            style.Setters.Add(new Setter(FrameworkElement.WidthProperty , 20.0));
+            style.Setters.Add(new Setter(FrameworkElement.MinWidthProperty , 20.0));
             style.Setters.Add(new Setter(Control.FontSizeProperty, 11.0));
             style.Setters.Add(new Setter(ContentControl.ContentProperty, new TextBlock { Margin = new Thickness(15, 0, 10, 0) }));
 

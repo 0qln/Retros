@@ -40,7 +40,10 @@ namespace Retros.Program.Workstation.Changes {
 
         public IFilter[] CurrentFilters {
             set {
-                _filters = value.ToList();
+                _filters = new List<IFilter>();
+                for (int i = 0; i < value.Length; i++) {
+                    _filters.Add((IFilter)value[i].Clone());
+                }
 
                 // Update sliders
                 Tab? tab = WindowManager.MainWindow!.SelectedWorkstation.TableElement.

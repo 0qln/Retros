@@ -132,7 +132,10 @@ namespace Retros.Program.Workstation.Image
 
         public void SyncHistoryCurrentWithChangeManager()
         {
+            // Update filter manager
             _filterManager.CurrentFilters = _changeHistory.CurrentNode.Value.Filters;
+
+            // Update UI
             ChangeCurentImages(_filterManager.ApplyChanges(new WriteableBitmap(ResizedSourceBitmap)));
         }
 

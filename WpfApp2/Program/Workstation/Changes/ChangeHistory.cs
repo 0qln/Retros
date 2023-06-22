@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Windows.Threading;
 
 namespace Retros.Program.Workstation.Changes {
     public class ChangeHistory {
@@ -39,6 +40,24 @@ namespace Retros.Program.Workstation.Changes {
             MoveBack += (_) => ImageChanged?.Invoke();
             MoveForward += (_) => ImageChanged?.Invoke();
             PositionChanged += (_) => ImageChanged?.Invoke();
+
+            //DebugLibrary.Console.Log("---NEW ARR");
+            /*
+            DispatcherTimer dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Interval = TimeSpan.FromMilliseconds(300);
+            dispatcherTimer.Tick += delegate {
+                try {
+                    FilterManager filterManager = WindowManager.MainWindow.SelectedWorkstation.ImageElement.GetFilterManager;
+                    DebugLibrary.Console.Log(filterManager.ContainsFilter(_current.Value.Filters[0]));
+                    DebugLibrary.Console.Log(filterManager.GetFilter(_current.Value.Filters[0]).GetHashCode());
+                    DebugLibrary.Console.Log((_current.Value.Filters[0]).GetHashCode());
+                }
+                catch {
+                    
+                }
+            };
+            dispatcherTimer.Start();
+            */
         }
 
 
@@ -51,21 +70,23 @@ namespace Retros.Program.Workstation.Changes {
 
 
         public void Add(ImageState imageState) {
-            Node newNode = new Node(_current, imageState);
+            Node newNode = new(_current, imageState);
             _current.Add(newNode);
             _allNodes.Add(newNode);
             ChangeAdded?.Invoke(newNode);
+
+            //DebugLibrary.Console.Log("Add:" + imageState.Filters[0].ToString());
         }
         public void AddAndStep(ImageState imageState) {
-            uint index = _current.Children is not null
+            uint index = 
+                _current.Children is not null
                 ? (uint)_current.Children.Count
                 : 0;
 
             Add(imageState);
 
-            uint uindex = index >= 0 ? index : throw new IndexOutOfRangeException();
-            Node? next = _current?.Next(uindex);
-            _current = next is not null ? next : _current!;
+            Node next = _current.Next(index)!;
+            _current = next;
 
             MoveForward?.Invoke(new uint[] { index });
         }
@@ -137,7 +158,7 @@ namespace Retros.Program.Workstation.Changes {
             private List<Node>? _nodes;
             private Node? _prev;
 
-            public ImageState Value { get; private set; }
+            public ImageState Value { get; }
             public List<Node>? Children => _nodes;
             public string Name => _name;
 

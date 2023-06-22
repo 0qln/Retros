@@ -43,7 +43,9 @@ namespace Retros.Program.Workstation.Changes {
             }
         }
         public double FilterIntensity {
-            get => _filterIntensity;
+            get {
+                return _filterIntensity;
+            }
             set {
                 _filterIntensity = value;
                 _applied = false;
@@ -57,6 +59,10 @@ namespace Retros.Program.Workstation.Changes {
             clone._applied = _applied;
             clone._filterIntensity = _filterIntensity;
             return clone;
+        }
+
+        public override string ToString() {
+            return typeof(T).Name.ToString() + " " + _filterIntensity;
         }
 
         public abstract void Generate(WriteableBitmap writeableBitmap);
