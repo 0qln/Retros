@@ -79,7 +79,7 @@ namespace Retros.Program.Workstation.Changes {
             _timer.Tick += (s, e) => ApplyFilters();
             _timer.Start();
 
-            HierachyOrderChanged += SendHierachyOrderUpdateToHistory;
+            HierachyOrderChanged += SendHierachyOrderChangeToHistory;
 
             _image = image;
         }
@@ -117,9 +117,8 @@ namespace Retros.Program.Workstation.Changes {
             HierachyOrderChanged?.Invoke();
         }
 
-        // TODO: EXTRACT METHOD
-        public void SendHierachyOrderUpdateToHistory() {
-            //_history?.AddAndStep(new FilterHierachyChange(CurrentChanges));
+        public void SendHierachyOrderChangeToHistory() {
+            _image.GetHistoryManager.AddAndStep(ImageState.FromImage(_image));
         }
 
         public void Clear() {

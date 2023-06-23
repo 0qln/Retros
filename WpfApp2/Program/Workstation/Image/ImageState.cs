@@ -48,16 +48,10 @@ namespace Retros.Program.Workstation.Image {
 
             if (equalFilterLength) {
                 for (int i = 0; i < prev.Filters.Length; i++) {
-                    DebugLibrary.Console.Log(prev.GetHashCode() + ", " + next.GetHashCode());
-                    DebugLibrary.Console.Log(prev.Filters.GetHashCode() + ", " + next.Filters.GetHashCode());
-                    DebugLibrary.Console.Log(prev.Filters[i].ToString()! + ", " + next.Filters[i].ToString()!);
-                    DebugLibrary.Console.Log(prev.Filters[i].GetHashCode().ToString()! + ", " + next.Filters[i].GetHashCode().ToString()!);
-
+                    ///DebugLibrary.Console.Log(prev.Filters[i].GetType().Name + ", " + next.Filters[i].GetType().Name);
                     if (prev.Filters[i].GetType() != next.Filters[i].GetType()) {
                         return "Filter order changed";
                     }
-                    DebugLibrary.Console.Log(next.Filters[i].ToString()!);
-                    DebugLibrary.Console.Log(prev.Filters[i].ToString()!);
                     if (prev.Filters[i].FilterIntensity != next.Filters[i].FilterIntensity) {
                         return "Filter intensity changed";
                     }

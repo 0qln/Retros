@@ -110,7 +110,6 @@ namespace Retros.Settings {
             public static Style ButtonStyle() {
                 Style style = new Style(typeof(Button));
 
-                style.Setters.Add(new Setter(Button.PaddingProperty, new Thickness(10, 0, 10, 0)));
                 style.Setters.Add(new Setter(Button.BackgroundProperty, UIManager.ColorThemeManager.Current.BG6));
                 style.Setters.Add(new Setter(Button.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
                 style.Setters.Add(new Setter(Button.BorderBrushProperty, UIManager.ColorThemeManager.Current.BC2));
@@ -118,7 +117,7 @@ namespace Retros.Settings {
                 style.Setters.Add(new Setter(Button.HorizontalAlignmentProperty, HorizontalAlignment.Left));
                 style.Setters.Add(new Setter(Button.VerticalAlignmentProperty, VerticalAlignment.Center));
                 style.Setters.Add(new Setter(Button.HeightProperty, 20.0));
-                style.Setters.Add(new Setter(Button.ContentProperty, new TextBlock { Margin = new Thickness(10, 0, 10, 0) } ));
+                style.Setters.Add(new Setter(Button.ContentProperty, new TextBlock { Margin = new Thickness(SettingsManager.SettingsPages.LineMarginLeft, 0, SettingsManager.SettingsPages.LineMarginTopValue, 0) } ));
 
 
                 ControlTemplate buttonTemplate = new ControlTemplate(typeof(Button));
@@ -173,23 +172,26 @@ namespace Retros.Settings {
                 style.Setters.Add(new Setter(SelectionBox.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
                 style.Setters.Add(new Setter(SelectionBox.HeightProperty, 20.0));
 
-
-
                 return style;
             }
 
             public static Style CheckBoxStyle() {
                 Style style = new Style(typeof (CheckBox));
+                style.Setters.Add(new Setter(CheckBox.VerticalAlignmentProperty, VerticalAlignment.Center));
+                style.Setters.Add(new Setter(CheckBox.MarginProperty, new Thickness(SettingsManager.SettingsPages.LineMarginLeft, SettingsManager.SettingsPages.LineMarginTopValue, 0, 0)));
+                style.Setters.Add(new Setter(CheckBox.BackgroundProperty, UIManager.ColorThemeManager.Current.BG6));
+                style.Setters.Add(new Setter(CheckBox.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
 
                 return style;
             }
 
             public static Style TextblockStyle() {
                 Style style = new Style(typeof(TextBlock));
-                style.Setters.Add(new Setter(TextBlock.MarginProperty, new Thickness(0, 5, 0, 0)));
+                //style.Setters.Add(new Setter(TextBlock.MarginProperty, new Thickness(0, UIManager.SettingsPages.LineMarginTop, 0, 0)));
                 style.Setters.Add(new Setter(TextBlock.BackgroundProperty, UIManager.ColorThemeManager.Current.BG2));
                 style.Setters.Add(new Setter(TextBlock.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
-                style.Setters.Add(new Setter(TextBlock.FontSizeProperty, 13.0));
+                style.Setters.Add(new Setter(TextBlock.HeightProperty, SettingsManager.SettingsPages.TextBlockHeight_Normal));
+                style.Setters.Add(new Setter(TextBlock.FontSizeProperty, SettingsManager.SettingsPages.TextBlockFontSize_Normal));
                 style.Setters.Add(new Setter(TextBlock.FontStyleProperty, FontStyles.Italic));
                 style.Setters.Add(new Setter(TextBlock.TextWrappingProperty, TextWrapping.Wrap));
 

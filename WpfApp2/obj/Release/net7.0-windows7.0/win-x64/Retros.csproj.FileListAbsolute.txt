@@ -506,3 +506,5 @@ D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Release\net7.0-windows7.0\w
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Release\net7.0-windows7.0\win-x64\Program\Workstation\Image\WorkstationImagePage.baml
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Release\net7.0-windows7.0\win-x64\Program\Workstation\Image\WorkstatoinImageWindow.baml
 D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Release\net7.0-windows7.0\win-x64\Program\Workstation\WorkstationPage.baml
+D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Release\net7.0-windows7.0\win-x64\Settings\Pages\ImageHistoryTab.g.cs
+D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Release\net7.0-windows7.0\win-x64\Settings\Pages\ImageHistoryTab.baml

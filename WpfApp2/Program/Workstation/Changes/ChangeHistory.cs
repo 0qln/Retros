@@ -40,24 +40,6 @@ namespace Retros.Program.Workstation.Changes {
             MoveBack += (_) => ImageChanged?.Invoke();
             MoveForward += (_) => ImageChanged?.Invoke();
             PositionChanged += (_) => ImageChanged?.Invoke();
-
-            //DebugLibrary.Console.Log("---NEW ARR");
-            /*
-            DispatcherTimer dispatcherTimer = new DispatcherTimer();
-            dispatcherTimer.Interval = TimeSpan.FromMilliseconds(300);
-            dispatcherTimer.Tick += delegate {
-                try {
-                    FilterManager filterManager = WindowManager.MainWindow.SelectedWorkstation.ImageElement.GetFilterManager;
-                    DebugLibrary.Console.Log(filterManager.ContainsFilter(_current.Value.Filters[0]));
-                    DebugLibrary.Console.Log(filterManager.GetFilter(_current.Value.Filters[0]).GetHashCode());
-                    DebugLibrary.Console.Log((_current.Value.Filters[0]).GetHashCode());
-                }
-                catch {
-                    
-                }
-            };
-            dispatcherTimer.Start();
-            */
         }
 
 

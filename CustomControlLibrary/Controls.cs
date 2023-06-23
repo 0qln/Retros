@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 
 namespace CustomControlLibrary {
     /// <summary>
@@ -367,7 +368,133 @@ namespace CustomControlLibrary {
     }
 
 
+    public class CustomCheckBox : Control {
+        static CustomCheckBox() {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(CustomCheckBox), new FrameworkPropertyMetadata(typeof(CustomCheckBox)));
+        }
 
+
+        public double Diameter {
+            get => (double)GetValue(DiameterProperty);
+            set {
+                SetValue(DiameterProperty, value);
+
+
+                TryExecuteThenAnyway(_border, delegate {
+                    _border!.CornerRadius = new CornerRadius(value / 2);
+                });
+
+                TryExecuteThenAnyway(_rect, delegate {
+                    _rect.Rect = new Rect(0, 0, value, value);
+                    _rect.RadiusX = value / 2;
+                    _rect.RadiusY = value / 2;
+                });
+            }
+        }
+        public static readonly DependencyProperty DiameterProperty = DependencyProperty.Register(
+            "Diameter",
+            typeof(double),
+            typeof(CustomCheckBox),
+            new PropertyMetadata(0.0));
+
+        public CornerRadius CornerRadius {
+            get => (CornerRadius)GetValue(CornerRadiusProperty);
+            set => SetValue(CornerRadiusProperty, value);
+        }
+        public static readonly DependencyProperty CornerRadiusProperty = DependencyProperty.Register(
+            "CornerRadius", 
+            typeof(CornerRadius), 
+            typeof(CustomCheckBox), 
+            new PropertyMetadata(new CornerRadius(0)));
+
+
+        public Button? ButtonElement => _button;
+        public event Action? TemplateApplied;
+        public event Action<bool>? Toggled;
+        public bool IsToggled => _toggled;
+
+        private bool _toggled = false;
+        private Button? _button;
+        private Border? _border;
+        private RectangleGeometry? _rect;
+
+        private Queue<Action> _doAfterInit = new();
+
+        public override void OnApplyTemplate() {
+            base.OnApplyTemplate();
+
+            _border = GetTemplateChild("_border") as Border;
+            _button = GetTemplateChild("_button") as Button;
+            _rect = GetTemplateChild("_rect") as RectangleGeometry;
+
+            if (_border != null) 
+                _border.BorderThickness = new Thickness(1);
+
+            if (_button != null) 
+                _button.Click += (s, e) => Toggle();
+
+            while (_doAfterInit.Count > 0) 
+                _doAfterInit.Dequeue().Invoke();
+            
+            TemplateApplied?.Invoke();
+        }
+
+
+        public void TryExecuteThenAnyway(object? element, Action action) {
+            if (element is null) {
+                _doAfterInit.Enqueue(action);
+            }
+            else {
+                action.Invoke();
+            }
+        }
+
+        public void Toggle() {
+            if (_toggled) {
+                _toggled = false;
+                if (_border != null) _border.Background = Brushes.Transparent;
+            }
+            else {
+                _toggled = true;
+                if (_border != null) _border.Background = Background;
+            }
+            Toggled?.Invoke(_toggled);
+        }
+
+
+        private void _border_SizeChanged(object sender, SizeChangedEventArgs e) {
+            if (e.NewSize.Width > e.NewSize.Height) {
+                Width = e.NewSize.Height;
+            }
+            else {
+                Height = e.NewSize.Width;
+            }
+
+            _rect.Rect = new Rect(0, 0, e.NewSize.Width, e.NewSize.Height);
+            DebugLibrary.Console.Log(e.NewSize);
+            ((Border)sender).CornerRadius = new CornerRadius(e.NewSize.Width/2);
+        }
+    }
+
+
+
+    public class CircleBorder : ContentControl {
+        static CircleBorder() {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(CircleBorder), new FrameworkPropertyMetadata(typeof(CircleBorder)));
+        }
+
+
+        private void _border_SizeChanged(object sender, SizeChangedEventArgs e) {
+            if (e.NewSize.Width > e.NewSize.Height) {
+                Width = e.NewSize.Height;
+            }
+            else {
+                Height = e.NewSize.Width;
+            }
+
+            ((Border)sender).CornerRadius = new CornerRadius(e.NewSize.Width);
+        }
+    }
 
     public class TextField : Control {
         static TextField() {

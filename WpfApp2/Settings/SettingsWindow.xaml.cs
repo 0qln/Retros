@@ -57,6 +57,7 @@ namespace Retros {
                 Tab appearance = new Tab("Appearance");
                 appearance.AddDetail(new TabDetail(new Settings.Pages.ColorTheme()));
                 appearance.AddDetail(new TabDetail(new Settings.Pages.WorkstationImageSettingsPage()));
+                appearance.AddDetail(new TabDetail(new Settings.Pages.ImageHistoryTab()));
 
                 appearance._Body.Show();
             };

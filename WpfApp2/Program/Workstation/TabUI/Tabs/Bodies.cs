@@ -319,11 +319,14 @@ namespace Retros.Program.Workstation.TabUI.Tabs
             buttonTemplate.VisualTree = borderFactory;
 
             Trigger mouseOverTrigger = new Trigger { Property = UIElement.IsMouseOverProperty, Value = true };
-            //mouseOverTrigger.Setters.Add(new Setter(Button.BackgroundProperty, UIManager.ColorThemeManager.Current.BG4));
+            mouseOverTrigger.Setters.Add(new Setter(Button.BackgroundProperty, UIManager.ColorThemeManager.Current.BG4));
             mouseOverTrigger.Setters.Add(new Setter(Control.BorderBrushProperty, UIManager.ColorThemeManager.Current.BCh2));
             mouseOverTrigger.Setters.Add(new Setter(Control.BorderThicknessProperty, new Thickness(0, 0, 0, 0.8)));
-
             buttonTemplate.Triggers.Add(mouseOverTrigger);
+
+            Trigger mouseNotOverTrigger = new Trigger { Property = UIElement.IsMouseOverProperty, Value = false };
+            if (SettingsManager.ImageHistory.CompactNodeLayoutValue) mouseNotOverTrigger.Setters.Add(new Setter(Button.MaxWidthProperty, SettingsManager.ImageHistory.CompactNodeMaxWidthValue));
+            buttonTemplate.Triggers.Add(mouseNotOverTrigger);
 
             style.Setters.Add(new Setter(Control.TemplateProperty, buttonTemplate));
 
@@ -364,9 +367,12 @@ namespace Retros.Program.Workstation.TabUI.Tabs
                 string name = source.Name;
                 _button = new Button { Content = name };
                 _button.Click += (s, e) => history.History.Jump(source);
+                _buttonStackPanel.Children.Add(_button);
 
                 UIManager.ColorThemeManager.SetStyle(_button, NodeStyle);
-                _buttonStackPanel.Children.Add(_button);
+                SettingsManager.ImageHistory.CompactNodeLayout += (value) => UIManager.ColorThemeManager.SetStyle(_button, NodeStyle);
+                SettingsManager.ImageHistory.CompactNodeMaxWidth += (value) => UIManager.ColorThemeManager.SetStyle(_button, NodeStyle);
+
 
                 _lineVertical = new Line {
                     VerticalAlignment = VerticalAlignment.Top,
