@@ -36,7 +36,7 @@ namespace Retros.Program.Workstation.Changes {
         public string UITypeName {
             get {
                 string output = $"Filter <{typeof(T).Name}>";
-                if (Settings.SettingsManager.ImageHistory.ShowFilterIntensityInNameValue) {
+                if (Settings.SettingsManager.ImageHistory.ShowFilterIntensityInName.Value) {
                     output += $" {Math.Round(_filterIntensity, 3)}";
                 }
                 return output;

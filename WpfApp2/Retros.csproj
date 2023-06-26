@@ -37,15 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="DebugLibrary">
-      <HintPath>..\..\..\..\Github\Projects\DebugLibrary\DebugLibrary\bin\Release\net7.0\DebugLibrary.dll</HintPath>
-    </Reference>
-    <Reference Include="Utillities">
-      <HintPath>..\..\..\Utillities\Release\Utillities.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
 	<Resource Include="sprites\settings-24.png" />
 	<Resource Include="sprites\settings-96.png" />
     <Resource Include="sprites\close.png" />
@@ -69,6 +60,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CustomControlLibrary\CustomControlLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DebugLibrary">
+      <HintPath>..\..\..\repos\DebugLibrary\Release\DebugLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Utillities">
+      <HintPath>..\..\..\repos\Utillities\Release\Utillities.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

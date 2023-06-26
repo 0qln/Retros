@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-D:\Programmmieren\Projects\Retros\Retros\WpfApp2\obj\Release\net7.0-windows7.0\win-x64\
+D:\Coding\retros\Retros\WpfApp2\obj\Release\net7.0-windows7.0\win-x64\
 Retros
 none
 false
 TRACE;RELEASE;NET;NET7_0;NETCOREAPP
-D:\Programmmieren\Projects\Retros\Retros\WpfApp2\App.xaml
+D:\Coding\retros\Retros\WpfApp2\App.xaml
 10-1363532597
 
 4167761152
-203-1482936680
+203-124597177
 Program\MainWindow.xaml;Program\Workstation\Image\WorkstationImagePage.xaml;Program\Workstation\Image\WorkstatoinImageWindow.xaml;Program\Workstation\WorkstationPage.xaml;Settings\Pages\ColorThemePage.xaml;Settings\Pages\ImageHistoryTab.xaml;Settings\Pages\WorkstationImageSettingsPage.xaml;Settings\SettingsWindow.xaml;sprites\settings_thicker.xaml;sprites\Zeichnung.xaml;
 
-True
+False
 

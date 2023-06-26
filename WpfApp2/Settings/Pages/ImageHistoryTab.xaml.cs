@@ -23,15 +23,18 @@ namespace Retros.Settings.Pages {
             //UIManager.ColorThemeManager.SetStyle(ShowFilterIntensityInName_Checkbox, TabDetail.Body.CheckBoxStyle);
             UIManager.ColorThemeManager.Set_FC1(b => ShowFilterIntensityInName_Checkbox.Background = b);
             UIManager.ColorThemeManager.Set_FC1(b => ShowFilterIntensityInName_Checkbox.BorderBrush = b);
-            ShowFilterIntensityInName_Checkbox.Diameter = SettingsManager.SettingsPages.TextBlockHeight_Normal;
+
+            SettingsManager.SettingsPages.TextBlockHeight_Normal.ValueChanged += (value) 
+                => ShowFilterIntensityInName_Checkbox.Diameter = value;
+
             ShowFilterIntensityInName_Checkbox.TemplateApplied += () 
                 => UIManager.ColorThemeManager.SetStyle(ShowFilterIntensityInName_Checkbox.ButtonElement!, TabDetail.Body.ButtonStyle);
 
             foreach (FrameworkElement child in SubStackpanel.Children) {
                 if (child.Tag.ToString() == "isLine") {
-                    SettingsManager.SettingsPages.LineMarginTop += delegate {
-                        child.Margin = new Thickness(0, SettingsManager.SettingsPages.LineMarginTopValue, 0, 0);
-                    };
+                    SettingsManager.SettingsPages.LineMarginTop.ValueChanged += (value) => 
+                        child.Margin = new Thickness(0, value, 0, 0);
+                    
                 }
             }
         }

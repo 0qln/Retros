@@ -63,13 +63,13 @@ namespace Retros.Program.Workstation.Changes {
             }
         }
         public void PrintChanges() {
-            DebugLibrary.Console.Log("filter list:");
+            //DebugLibrary.Console.Log("filter list:");
             foreach (var filter in _filters) {
-                DebugLibrary.Console.Log(filter.GetType().Name.ToString());
+                //DebugLibrary.Console.Log(filter.GetType().Name.ToString());
             }
-            DebugLibrary.Console.Log("filter set:");
+            //DebugLibrary.Console.Log("filter set:");
             foreach (var filter in _filterTypes) {
-                DebugLibrary.Console.Log(filter.Name.ToString());
+                //DebugLibrary.Console.Log(filter.Name.ToString());
             }
         }
 

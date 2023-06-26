@@ -117,7 +117,7 @@ namespace Retros.Settings {
                 style.Setters.Add(new Setter(Button.HorizontalAlignmentProperty, HorizontalAlignment.Left));
                 style.Setters.Add(new Setter(Button.VerticalAlignmentProperty, VerticalAlignment.Center));
                 style.Setters.Add(new Setter(Button.HeightProperty, 20.0));
-                style.Setters.Add(new Setter(Button.ContentProperty, new TextBlock { Margin = new Thickness(SettingsManager.SettingsPages.LineMarginLeft, 0, SettingsManager.SettingsPages.LineMarginTopValue, 0) } ));
+                style.Setters.Add(new Setter(Button.ContentProperty, new TextBlock { Margin = new Thickness(SettingsManager.SettingsPages.LineMarginLeft.Value, 0, SettingsManager.SettingsPages.LineMarginTop.Value, 0) } ));
 
 
                 ControlTemplate buttonTemplate = new ControlTemplate(typeof(Button));
@@ -178,7 +178,7 @@ namespace Retros.Settings {
             public static Style CheckBoxStyle() {
                 Style style = new Style(typeof (CheckBox));
                 style.Setters.Add(new Setter(CheckBox.VerticalAlignmentProperty, VerticalAlignment.Center));
-                style.Setters.Add(new Setter(CheckBox.MarginProperty, new Thickness(SettingsManager.SettingsPages.LineMarginLeft, SettingsManager.SettingsPages.LineMarginTopValue, 0, 0)));
+                style.Setters.Add(new Setter(CheckBox.MarginProperty, new Thickness(SettingsManager.SettingsPages.LineMarginLeft.Value, SettingsManager.SettingsPages.LineMarginTop.Value, 0, 0)));
                 style.Setters.Add(new Setter(CheckBox.BackgroundProperty, UIManager.ColorThemeManager.Current.BG6));
                 style.Setters.Add(new Setter(CheckBox.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
 

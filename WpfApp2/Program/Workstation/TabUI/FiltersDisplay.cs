@@ -98,8 +98,8 @@ namespace Retros.Program.Workstation.TabUI
 
         public void Print()
         {
-            DebugLibrary.Console.Log("--------Items: ");
-            _items.ForEach(DebugLibrary.Console.Log);
+            //DebugLibrary.Console.Log("--------Items: ");
+            //_items.ForEach(DebugLibrary.Console.Log);
         }
         private Point GetPos(FrameworkElement item)
         {

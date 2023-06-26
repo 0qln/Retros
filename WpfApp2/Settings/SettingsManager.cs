@@ -9,58 +9,50 @@ namespace Retros.Settings {
     public static class SettingsManager {
 
         public static class WorkstationImageShadow {
-            public static event Action<bool>? Enabled;
-            public static void InvokeEnabled(bool enabled) => Enabled?.Invoke(enabled);
-
-            public static event Action<double>? BlurRadius;
-            public static void InvokeBlurRadius(double value) => BlurRadius?.Invoke(value);
-
-            public static event Action<double>? ShadowDepth;
-            public static void InvokeShadowDepth(double value) => ShadowDepth?.Invoke(value);
-
-            public static event Action<double>? Opacity;
-            public static void InvokeOpacity(double value) => Opacity?.Invoke(value);
-
-            public static event Action<double>? Direction;
-            public static void InvokeDirection(double value) => Direction?.Invoke(value);
+            public static Setting<bool> Enabled = new (true);
+            public static Setting<double> BlurRadius = new Setting<double>(50);
+            public static Setting<double> ShadowDepth;
+            public static Setting<double> Opacity;
+            public static Setting<double> Direction;
         }
 
         public static class ImageHistory {
-            public static bool ShowFilterIntensityInNameValue = true;
-            public static event Action<bool>? ShowFilterIntensityInName;
-            public static void InvokeShowFilterIntensityInName(bool value) {
-                ShowFilterIntensityInNameValue = value;
-                ShowFilterIntensityInName?.Invoke(value);
-            }
-
-            public static bool CompactNodeLayoutValue = true;
-            public static event Action<bool>? CompactNodeLayout;
-            public static void InvokeCompactNodeLayout(bool value) {
-                CompactNodeLayoutValue = value;
-                CompactNodeLayout?.Invoke(value);
-            }
-
-            public static double CompactNodeMaxWidthValue = 30;
-            public static event Action<double>? CompactNodeMaxWidth;
-            public static void InvokeCompactNodeMaxWidth(double value) {
-                CompactNodeMaxWidthValue = value;
-                CompactNodeMaxWidth?.Invoke(value);
-            }
+            public static Setting<bool> ShowFilterIntensityInName = new Setting<bool>(true);
+            public static Setting<bool> CompactNodeLayout = new Setting<bool>(true);
+            public static Setting<double> CompactNodeMaxWidth = new Setting<double>(30);
         }
 
         public static class SettingsPages {
-
-            public static double TextBlockHeight_Normal = 18;
-            public static double TextBlockFontSize_Normal = 14;
-            public static double LineMarginLeft = 5;
-
-            public static double LineMarginTopValue = 5;
-            public static event Action? LineMarginTop;
-            public static void InvokeLineMarginTop(double value) {
-                LineMarginTopValue = value;
-                LineMarginTop?.Invoke();
-            }
+            public static Setting<double> TextBlockHeight_Normal = new Setting<double>(18);
+            public static Setting<double> TextBlockFontSize_Normal = new(14);
+            public static Setting<double> LineMarginLeft = new(5);
+            public static Setting<double> LineMarginTop = new(5);
         }
 
+
+        public class Setting<T>
+        {
+            public event Action<T>? ValueChanged;
+            public T Value
+            {
+                set
+                {
+                    _value = value;
+                    ValueChanged?.Invoke(value);
+                }
+                get
+                {
+                    return _value;
+                }
+            }
+
+            private T _value;
+
+
+            public Setting(T startValue)
+            {
+                _value = startValue;
+            }
+        }
     }
 }

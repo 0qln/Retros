@@ -7160,23 +7160,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\User\\.nuget\\packages\\": {},
+    "C:\\Users\\linus\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Programmmieren\\Projects\\Retros\\Retros\\WpfApp2\\Retros.csproj",
+      "projectUniqueName": "D:\\Coding\\retros\\Retros\\WpfApp2\\Retros.csproj",
       "projectName": "Retros",
-      "projectPath": "D:\\Programmmieren\\Projects\\Retros\\Retros\\WpfApp2\\Retros.csproj",
-      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "D:\\Programmmieren\\Projects\\Retros\\Retros\\WpfApp2\\obj\\",
+      "projectPath": "D:\\Coding\\retros\\Retros\\WpfApp2\\Retros.csproj",
+      "packagesPath": "C:\\Users\\linus\\.nuget\\packages\\",
+      "outputPath": "D:\\Coding\\retros\\Retros\\WpfApp2\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\linus\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -7185,14 +7185,15 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net7.0-windows7.0": {
           "targetAlias": "net7.0-windows7.0",
           "projectReferences": {
-            "D:\\Programmmieren\\Projects\\Retros\\Retros\\CustomControlLibrary\\CustomControlLibrary.csproj": {
-              "projectPath": "D:\\Programmmieren\\Projects\\Retros\\Retros\\CustomControlLibrary\\CustomControlLibrary.csproj"
+            "D:\\Coding\\retros\\Retros\\CustomControlLibrary\\CustomControlLibrary.csproj": {
+              "projectPath": "D:\\Coding\\retros\\Retros\\CustomControlLibrary\\CustomControlLibrary.csproj"
             }
           }
         }
@@ -7230,15 +7231,15 @@
         "downloadDependencies": [
           {
             "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
-            "version": "[7.0.5, 7.0.5]"
+            "version": "[7.0.7, 7.0.7]"
           },
           {
             "name": "Microsoft.NETCore.App.Runtime.win-x64",
-            "version": "[7.0.5, 7.0.5]"
+            "version": "[7.0.7, 7.0.7]"
           },
           {
             "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
-            "version": "[7.0.5, 7.0.5]"
+            "version": "[7.0.7, 7.0.7]"
           }
         ],
         "frameworkReferences": {
@@ -7249,7 +7250,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
       }
     },
     "runtimes": {

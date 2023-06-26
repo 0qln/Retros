@@ -159,7 +159,7 @@ namespace Retros.Program.Workstation.Image
 
         public static WriteableBitmap ResizeWritableBitmap(BitmapImage originalBitmap, int newWidth, int newHeight)
         {
-            DebugLibrary.Console.Log(newHeight + ", " + newHeight);
+            //DebugLibrary.Console.Log(newHeight + ", " + newHeight);
 
             // Check if resizing is required
             if (newWidth >= originalBitmap.PixelWidth && newHeight >= originalBitmap.PixelHeight)
@@ -174,7 +174,7 @@ namespace Retros.Program.Workstation.Image
             double aspectRatioOriginal = (double)originalBitmap.PixelWidth / originalBitmap.PixelHeight;
             double aspectRatioNew = (double)newWidth / newHeight;
 
-            DebugLibrary.Console.Log(aspectRatioOriginal + " -> " + aspectRatioNew);
+            //DebugLibrary.Console.Log(aspectRatioOriginal + " -> " + aspectRatioNew);
 
             // Determine the scaling factor to use (based on the aspect ratios)
             double scale = aspectRatioNew >= aspectRatioOriginal ? (double)newHeight / originalBitmap.PixelHeight : (double)newWidth / originalBitmap.PixelWidth;
@@ -203,8 +203,8 @@ namespace Retros.Program.Workstation.Image
             // Create a new WriteableBitmap with the resized RenderTargetBitmap
             WriteableBitmap resizedBitmap = new WriteableBitmap(resizedRenderTarget);
 
-            DebugLibrary.Console.Log(originalBitmap.Width + ", " + originalBitmap.Height + ", " + originalBitmap.Width / originalBitmap.Height);
-            DebugLibrary.Console.Log(resizedBitmap.Width + ", " + resizedBitmap.Height + ", " + resizedBitmap.Width / resizedBitmap.Height);
+            //DebugLibrary.Console.Log(originalBitmap.Width + ", " + originalBitmap.Height + ", " + originalBitmap.Width / originalBitmap.Height);
+            //DebugLibrary.Console.Log(resizedBitmap.Width + ", " + resizedBitmap.Height + ", " + resizedBitmap.Width / resizedBitmap.Height);
 
             return resizedBitmap;
         }

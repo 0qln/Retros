@@ -38,11 +38,11 @@ namespace Retros.Program.DisplaySystem
             InitializeComponent();
 
             ImageEffect = new DropShadowEffect { BlurRadius = 30, ShadowDepth = 15, Color = Colors.Black, Opacity = 0.8, Direction = 270 };
-            SettingsManager.WorkstationImageShadow.BlurRadius += (value) => ImageEffect.BlurRadius = value;
-            SettingsManager.WorkstationImageShadow.ShadowDepth += (value) => ImageEffect.ShadowDepth = value;
-            SettingsManager.WorkstationImageShadow.Opacity += (value) => ImageEffect.Opacity = value;
-            SettingsManager.WorkstationImageShadow.Direction += (value) => ImageEffect.Direction = value;
-            SettingsManager.WorkstationImageShadow.Enabled += (enabled) => {
+            SettingsManager.WorkstationImageShadow.BlurRadius.ValueChanged += (value) => ImageEffect.BlurRadius = value;
+            SettingsManager.WorkstationImageShadow.ShadowDepth.ValueChanged += (value) => ImageEffect.ShadowDepth = value;
+            SettingsManager.WorkstationImageShadow.Opacity.ValueChanged += (value) => ImageEffect.Opacity = value;
+            SettingsManager.WorkstationImageShadow.Direction.ValueChanged += (value) => ImageEffect.Direction = value;
+            SettingsManager.WorkstationImageShadow.Enabled.ValueChanged += (enabled) => {
                 if (enabled) Image.Effect = ImageEffect;
                 else Image.Effect = null;
             };

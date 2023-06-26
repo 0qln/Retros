@@ -325,7 +325,7 @@ namespace Retros.Program.Workstation.TabUI.Tabs
             buttonTemplate.Triggers.Add(mouseOverTrigger);
 
             Trigger mouseNotOverTrigger = new Trigger { Property = UIElement.IsMouseOverProperty, Value = false };
-            if (SettingsManager.ImageHistory.CompactNodeLayoutValue) mouseNotOverTrigger.Setters.Add(new Setter(Button.MaxWidthProperty, SettingsManager.ImageHistory.CompactNodeMaxWidthValue));
+            if (SettingsManager.ImageHistory.CompactNodeLayout.Value) mouseNotOverTrigger.Setters.Add(new Setter(Button.MaxWidthProperty, SettingsManager.ImageHistory.CompactNodeMaxWidth.Value));
             buttonTemplate.Triggers.Add(mouseNotOverTrigger);
 
             style.Setters.Add(new Setter(Control.TemplateProperty, buttonTemplate));
@@ -370,8 +370,8 @@ namespace Retros.Program.Workstation.TabUI.Tabs
                 _buttonStackPanel.Children.Add(_button);
 
                 UIManager.ColorThemeManager.SetStyle(_button, NodeStyle);
-                SettingsManager.ImageHistory.CompactNodeLayout += (value) => UIManager.ColorThemeManager.SetStyle(_button, NodeStyle);
-                SettingsManager.ImageHistory.CompactNodeMaxWidth += (value) => UIManager.ColorThemeManager.SetStyle(_button, NodeStyle);
+                SettingsManager.ImageHistory.CompactNodeLayout.ValueChanged += (value) => UIManager.ColorThemeManager.SetStyle(_button, NodeStyle);
+                SettingsManager.ImageHistory.CompactNodeMaxWidth.ValueChanged += (value) => UIManager.ColorThemeManager.SetStyle(_button, NodeStyle);
 
 
                 _lineVertical = new Line {
@@ -535,7 +535,7 @@ namespace Retros.Program.Workstation.TabUI.Tabs
 
         public void Run() {
             ///Debugger.Console.ClearAll();
-            DebugLibrary.Console.Log("Begin test func");
+            //DebugLibrary.Console.Log("Begin test func");
 
             Button normal = new Button { Content = "Execute normal" };
             ///normal.Click += (s, e) => DebugLibrary.Benchmark.Measure.Execute(Compute);

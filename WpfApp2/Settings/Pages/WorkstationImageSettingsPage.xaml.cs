@@ -32,7 +32,7 @@ namespace Retros.Settings.Pages {
         }
 
         private void ToggleSahdow(object sender, RoutedEventArgs e) {
-            SettingsManager.WorkstationImageShadow.InvokeEnabled(Enable_CheckBox.IsChecked.Value);
+            SettingsManager.WorkstationImageShadow.Enabled.Value = Enable_CheckBox.IsChecked.Value;
         }
 
     }

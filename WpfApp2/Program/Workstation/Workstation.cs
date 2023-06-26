@@ -23,11 +23,11 @@ namespace Retros.Program.Workstation {
         public FrameworkElement FrameworkElement => _pageFrame;
 
         // System
-        public WorkstationImage ImageElement { get; } = new(DefaultPath);
+        public WorkstationImage ImageElement { get; } = new();
         public WorkstationTabPresenter TableElement { get; } = new();
 
         public readonly static string DefaultPath =
-            @"C:\Users\User\OneDrive\Bilder\Wallpapers\43666-Kaf-Virtual-YoutuberVirtual-Youtuber-HD-Wallpaper.jpg";
+            @"";
 
 
         public Workstation(double topPadding) {
