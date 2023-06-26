@@ -23,17 +23,20 @@ namespace Retros.Settings.Pages {
             UIManager.ColorThemeManager.SetStyle(Headline, TabDetail.Body.HeadlineStyle);
 
             UIManager.ColorThemeManager.SetStyle(Enable_Text, TabDetail.Body.TextblockStyle);
-            UIManager.ColorThemeManager.SetStyle(Enable_CheckBox, TabDetail.Body.CheckBoxStyle);
 
             //UIManager.ColorThemeManager.SetStyle(BlurRadius_Text, () => TabDetail);
 
-            Enable_CheckBox.Checked += ToggleSahdow;
-            Enable_CheckBox.Unchecked += ToggleSahdow;
+            Enable_CheckBox.Toggled += (value) => SettingsManager.WorkstationImageShadow.Enabled.Value = value;
+            Enable_CheckBox.Diameter = SettingsManager.SettingsPages.TextBlockHeight_Normal.Value;
+            SettingsManager.SettingsPages.TextBlockHeight_Normal.ValueChanged += (value)
+                => Enable_CheckBox.Diameter = value;
+            UIManager.ColorThemeManager.Set_FC1(b => Enable_CheckBox.Background = b);
+            UIManager.ColorThemeManager.Set_FC1(b => Enable_CheckBox.BorderBrush = b);
+            Enable_CheckBox.TemplateApplied += ()
+                => UIManager.ColorThemeManager.SetStyle(Enable_CheckBox.ButtonElement!, TabDetail.Body.ButtonStyle);
+
         }
 
-        private void ToggleSahdow(object sender, RoutedEventArgs e) {
-            SettingsManager.WorkstationImageShadow.Enabled.Value = Enable_CheckBox.IsChecked.Value;
-        }
 
     }
 }

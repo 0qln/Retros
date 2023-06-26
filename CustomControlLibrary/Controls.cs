@@ -410,8 +410,9 @@ namespace CustomControlLibrary {
 
         public Button? ButtonElement => _button;
         public event Action? TemplateApplied;
+        public event Action? Checked;
+        public event Action? Unchecked;
         public event Action<bool>? Toggled;
-        public bool IsToggled => _toggled;
 
         private bool _toggled = false;
         private Button? _button;
@@ -449,16 +450,19 @@ namespace CustomControlLibrary {
             }
         }
 
-        public void Toggle() {
+        private void Toggle() {
             if (_toggled) {
                 _toggled = false;
                 if (_border != null) _border.Background = Brushes.Transparent;
+                Unchecked?.Invoke();
+                Toggled?.Invoke(false);
             }
             else {
                 _toggled = true;
                 if (_border != null) _border.Background = Background;
+                Checked?.Invoke();
+                Toggled?.Invoke(true);
             }
-            Toggled?.Invoke(_toggled);
         }
 
 

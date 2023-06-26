@@ -187,11 +187,10 @@ namespace Retros.Settings {
 
             public static Style TextblockStyle() {
                 Style style = new Style(typeof(TextBlock));
-                //style.Setters.Add(new Setter(TextBlock.MarginProperty, new Thickness(0, UIManager.SettingsPages.LineMarginTop, 0, 0)));
                 style.Setters.Add(new Setter(TextBlock.BackgroundProperty, UIManager.ColorThemeManager.Current.BG2));
                 style.Setters.Add(new Setter(TextBlock.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
-                style.Setters.Add(new Setter(TextBlock.HeightProperty, SettingsManager.SettingsPages.TextBlockHeight_Normal));
-                style.Setters.Add(new Setter(TextBlock.FontSizeProperty, SettingsManager.SettingsPages.TextBlockFontSize_Normal));
+                style.Setters.Add(new Setter(TextBlock.HeightProperty, SettingsManager.SettingsPages.TextBlockHeight_Normal.Value));
+                style.Setters.Add(new Setter(TextBlock.FontSizeProperty, SettingsManager.SettingsPages.TextBlockFontSize_Normal.Value));
                 style.Setters.Add(new Setter(TextBlock.FontStyleProperty, FontStyles.Italic));
                 style.Setters.Add(new Setter(TextBlock.TextWrappingProperty, TextWrapping.Wrap));
 

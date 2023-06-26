@@ -10,10 +10,10 @@ namespace Retros.Settings {
 
         public static class WorkstationImageShadow {
             public static Setting<bool> Enabled = new (true);
-            public static Setting<double> BlurRadius = new Setting<double>(50);
-            public static Setting<double> ShadowDepth;
-            public static Setting<double> Opacity;
-            public static Setting<double> Direction;
+            public static Setting<double> BlurRadius = new Setting<double>(30);
+            public static Setting<double> ShadowDepth = new Setting<double>(15);
+            public static Setting<double> Opacity = new Setting<double>(0.8);
+            public static Setting<double> Direction = new Setting<double>(270);
         }
 
         public static class ImageHistory {

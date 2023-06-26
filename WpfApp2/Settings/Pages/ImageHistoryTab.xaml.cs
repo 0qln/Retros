@@ -20,12 +20,12 @@ namespace Retros.Settings.Pages {
 
             UIManager.ColorThemeManager.SetStyle(Headline, TabDetail.Body.HeadlineStyle);
             UIManager.ColorThemeManager.SetStyle(ShowFilterIntensityInName_Text, TabDetail.Body.TextblockStyle);
-            //UIManager.ColorThemeManager.SetStyle(ShowFilterIntensityInName_Checkbox, TabDetail.Body.CheckBoxStyle);
             UIManager.ColorThemeManager.Set_FC1(b => ShowFilterIntensityInName_Checkbox.Background = b);
             UIManager.ColorThemeManager.Set_FC1(b => ShowFilterIntensityInName_Checkbox.BorderBrush = b);
 
             SettingsManager.SettingsPages.TextBlockHeight_Normal.ValueChanged += (value) 
                 => ShowFilterIntensityInName_Checkbox.Diameter = value;
+            ShowFilterIntensityInName_Checkbox.Diameter = SettingsManager.SettingsPages.TextBlockHeight_Normal.Value;
 
             ShowFilterIntensityInName_Checkbox.TemplateApplied += () 
                 => UIManager.ColorThemeManager.SetStyle(ShowFilterIntensityInName_Checkbox.ButtonElement!, TabDetail.Body.ButtonStyle);
