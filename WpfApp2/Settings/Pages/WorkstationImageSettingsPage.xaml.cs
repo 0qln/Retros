@@ -16,9 +16,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Retros.Settings.Pages {
-    /// <summary>
-    /// Interaktionslogik für WorkstationImageSettingsPage.xaml
-    /// </summary>
     public partial class WorkstationImageSettingsPage : Page {
 
         public WorkstationImageSettingsPage() {
@@ -32,6 +29,8 @@ namespace Retros.Settings.Pages {
             UIManager.ColorThemeManager.SetStyle(Opacity_Text, TabDetail.Body.TextblockStyle);
             UIManager.ColorThemeManager.SetStyle(Enable_CheckBox, TabDetail.Body.CheckBoxStyle);
             UIManager.ColorThemeManager.SetStyle(Opacity_Value, TabDetail.Body.SliderStyle);
+            UIManager.ColorThemeManager.SetStyle(Direction_Text, TabDetail.Body.TextblockStyle);
+            UIManager.ColorThemeManager.SetStyle(Direction_Value, TabDetail.Body.SliderStyle);
             Enable_CheckBox.TemplateApplied += ()
                 => UIManager.ColorThemeManager.SetStyle(Enable_CheckBox.ButtonElement!, TabDetail.Body.CheckBoxButtonStyle);
 
@@ -44,6 +43,13 @@ namespace Retros.Settings.Pages {
             ShadowDepth_Value.Text = SettingsManager.WorkstationImageShadow.ShadowDepth.Value.ToString();
             Opacity_Value.ValueChanged += Opacity_Value_ValueChanged;
             Opacity_Value.Value = SettingsManager.WorkstationImageShadow.Opacity.Value;
+            Direction_Value.ValueChanged += Direction_Value_ValueChanged;
+            Direction_Value.Value = SettingsManager.WorkstationImageShadow.Direction.Value;
+        }
+
+        private void Direction_Value_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            SettingsManager.WorkstationImageShadow.Direction.Value = e.NewValue;
         }
 
         private void Opacity_Value_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

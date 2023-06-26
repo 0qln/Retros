@@ -54,6 +54,24 @@
                                 HorizontalAlignment="Stretch"/>
                     </Grid>
 
+                    <Grid
+                        HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock x:Name="Direction_Text"
+                                    Grid.Column="0"
+                                    Text="Direction"/>
+
+                        <Slider x:Name="Direction_Value"
+                                Minimum="0"
+                                Maximum="360"
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"/>
+                    </Grid>
+
 
                 </StackPanel>
 
