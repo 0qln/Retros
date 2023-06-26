@@ -27,8 +27,8 @@ namespace Retros.Settings.Pages {
             UIManager.ColorThemeManager.SetStyle(ChangeButton, TabDetail.Body.ButtonStyle);
             UIManager.ColorThemeManager.SetStyle(ImportButton, TabDetail.Body.ButtonStyle);
             UIManager.ColorThemeManager.SetStyle(ExportButton, TabDetail.Body.ButtonStyle);
-            UIManager.ColorThemeManager.SetStyle(ImportText, TabDetail.Body.TextboxStyle);
-            UIManager.ColorThemeManager.SetStyle(ExportText, TabDetail.Body.TextboxStyle);
+            UIManager.ColorThemeManager.SetStyle(ImportText, TabDetail.Body.Textbox_TextStyle);
+            UIManager.ColorThemeManager.SetStyle(ExportText, TabDetail.Body.Textbox_TextStyle);
             UIManager.ColorThemeManager.SetStyle(ImportDescription, TabDetail.Body.TextblockStyle);
             UIManager.ColorThemeManager.SetStyle(ExportDescription, TabDetail.Body.TextblockStyle);
             UIManager.ColorThemeManager.SetStyle(ThemeSelectionBox, TabDetail.Body.SelectionBoxStyle);

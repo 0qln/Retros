@@ -175,16 +175,6 @@ namespace Retros.Settings {
                 return style;
             }
 
-            public static Style CheckBoxStyle() {
-                Style style = new Style(typeof (CheckBox));
-                style.Setters.Add(new Setter(CheckBox.VerticalAlignmentProperty, VerticalAlignment.Center));
-                style.Setters.Add(new Setter(CheckBox.MarginProperty, new Thickness(SettingsManager.SettingsPages.LineMarginLeft.Value, SettingsManager.SettingsPages.LineMarginTop.Value, 0, 0)));
-                style.Setters.Add(new Setter(CheckBox.BackgroundProperty, UIManager.ColorThemeManager.Current.BG6));
-                style.Setters.Add(new Setter(CheckBox.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
-
-                return style;
-            }
-
             public static Style TextblockStyle() {
                 Style style = new Style(typeof(TextBlock));
                 style.Setters.Add(new Setter(TextBlock.BackgroundProperty, UIManager.ColorThemeManager.Current.BG2));
@@ -197,7 +187,71 @@ namespace Retros.Settings {
                 return style;
             }
 
-            public static Style TextboxStyle() {
+            public static Style SliderStyle()
+            {
+                Style style = new Style(typeof(Slider));
+
+                style.Setters.Add(new Setter(Slider.MarginProperty, new Thickness(SettingsManager.SettingsPages.LineMarginLeft.Value, 0, 0, 0)));
+
+                return style;
+            }
+
+            public static Style CheckBoxStyle()
+            {
+                Style style = new Style(typeof(CustomCheckBox));
+
+                style.Setters.Add(new Setter(CustomCheckBox.VerticalAlignmentProperty, VerticalAlignment.Center));
+                style.Setters.Add(new Setter(CustomCheckBox.MarginProperty, new Thickness(SettingsManager.SettingsPages.LineMarginLeft.Value, 0, 0, 0)));
+                style.Setters.Add(new Setter(CustomCheckBox.BackgroundProperty, UIManager.ColorThemeManager.Current.BG1));
+                style.Setters.Add(new Setter(CustomCheckBox.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
+                style.Setters.Add(new Setter(CustomCheckBox.BorderBrushProperty, UIManager.ColorThemeManager.Current.BC1));
+                style.Setters.Add(new Setter(CustomCheckBox.BorderThicknessProperty, new Thickness(1)));
+                style.Setters.Add(new Setter(CustomCheckBox.DiameterProperty, SettingsManager.SettingsPages.TextBlockHeight_Normal.Value));
+
+                return style;
+            }
+
+            public static Style CheckBoxButtonStyle()
+            {
+
+                Style style = new Style(typeof(Button));
+
+                style.Setters.Add(new Setter(Button.BackgroundProperty, UIManager.ColorThemeManager.Current.BG6));
+                style.Setters.Add(new Setter(Button.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
+                style.Setters.Add(new Setter(Button.BorderBrushProperty, UIManager.ColorThemeManager.Current.BC3));
+                style.Setters.Add(new Setter(Button.BorderThicknessProperty, new Thickness(1)));
+                style.Setters.Add(new Setter(Button.HorizontalAlignmentProperty, HorizontalAlignment.Left));
+                style.Setters.Add(new Setter(Button.VerticalAlignmentProperty, VerticalAlignment.Center));
+                style.Setters.Add(new Setter(Button.HeightProperty, 20.0));
+                style.Setters.Add(new Setter(Button.ContentProperty, new TextBlock { Margin = new Thickness(SettingsManager.SettingsPages.LineMarginLeft.Value, 0, SettingsManager.SettingsPages.LineMarginTop.Value, 0) }));
+
+
+                ControlTemplate buttonTemplate = new ControlTemplate(typeof(Button));
+                FrameworkElementFactory borderFactory = new FrameworkElementFactory(typeof(Border));
+                borderFactory.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Button.BackgroundProperty));
+                borderFactory.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Button.BorderBrushProperty));
+                borderFactory.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Button.BorderThicknessProperty));
+
+                FrameworkElementFactory contentPresenterFactory = new FrameworkElementFactory(typeof(ContentPresenter));
+                contentPresenterFactory.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+                contentPresenterFactory.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+
+                borderFactory.AppendChild(contentPresenterFactory);
+
+                buttonTemplate.VisualTree = borderFactory;
+
+                Trigger mouseOverTrigger = new Trigger { Property = Button.IsMouseOverProperty, Value = true };
+
+                buttonTemplate.Triggers.Add(mouseOverTrigger);
+
+                style.Setters.Add(new Setter(Button.TemplateProperty, buttonTemplate));
+
+                style.Seal();
+
+                return style;
+            }
+
+            public static Style Textbox_TextStyle() {
                 Style style = new Style(typeof(TextBox));
                 style.Setters.Add(new Setter(TextBox.MinWidthProperty, 100.0));
                 style.Setters.Add(new Setter(TextBox.BackgroundProperty, UIManager.ColorThemeManager.Current.BG1));
@@ -205,6 +259,7 @@ namespace Retros.Settings {
                 style.Setters.Add(new Setter(TextBox.MaxLinesProperty, 1));
                 style.Setters.Add(new Setter(TextBox.TextWrappingProperty, TextWrapping.Wrap));
                 style.Setters.Add(new Setter(TextBox.CaretBrushProperty, UIManager.ColorThemeManager.Current.AC1));
+                style.Setters.Add(new Setter(TextBox.BorderBrushProperty, UIManager.ColorThemeManager.Current.BC1));
 
                 style.Setters.Add(new Setter(TextBox.TextProperty, new Binding("Text") { RelativeSource = new RelativeSource(RelativeSourceMode.Self) }));
 
@@ -225,7 +280,48 @@ namespace Retros.Settings {
                 textBoxTemplate.VisualTree = borderFactory;
 
                 Trigger mouseOverTrigger = new Trigger { Property = TextBox.IsMouseOverProperty, Value = true };
-                mouseOverTrigger.Setters.Add(new Setter(TextBox.BorderBrushProperty, UIManager.ColorThemeManager.Current.BCh2));
+                mouseOverTrigger.Setters.Add(new Setter(TextBox.BorderBrushProperty, UIManager.ColorThemeManager.Current.BCh1));
+
+                textBoxTemplate.Triggers.Add(mouseOverTrigger);
+
+                style.Setters.Add(new Setter(TextBox.TemplateProperty, textBoxTemplate));
+
+                style.Seal();
+                return style;
+            }
+
+            public static Style Textbox_NumericStyle()
+            {
+                Style style = new Style(typeof(TextBox));
+                style.Setters.Add(new Setter(TextBox.MinWidthProperty, 100.0));
+                style.Setters.Add(new Setter(TextBox.BackgroundProperty, UIManager.ColorThemeManager.Current.BG1));
+                style.Setters.Add(new Setter(TextBox.ForegroundProperty, UIManager.ColorThemeManager.Current.FC1));
+                style.Setters.Add(new Setter(TextBox.MaxLinesProperty, 1));
+                style.Setters.Add(new Setter(TextBox.TextWrappingProperty, TextWrapping.Wrap));
+                style.Setters.Add(new Setter(TextBox.BorderBrushProperty, UIManager.ColorThemeManager.Current.BC1));
+                style.Setters.Add(new Setter(TextBox.CaretBrushProperty, UIManager.ColorThemeManager.Current.AC1));
+                style.Setters.Add(new Setter(TextBox.MarginProperty, new Thickness(SettingsManager.SettingsPages.LineMarginLeft.Value, 0, 0, 0)));
+
+                style.Setters.Add(new Setter(TextBox.TextProperty, new Binding("Text") { RelativeSource = new RelativeSource(RelativeSourceMode.Self) }));
+
+                ControlTemplate textBoxTemplate = new ControlTemplate(typeof(TextBox));
+                FrameworkElementFactory borderFactory = new FrameworkElementFactory(typeof(Border));
+                borderFactory.SetValue(Border.BackgroundProperty, new Binding("Background") { RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent) });
+                borderFactory.SetValue(Border.BorderBrushProperty, new Binding("BorderBrush") { RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent) });
+                borderFactory.SetValue(Border.BorderThicknessProperty, new Binding("BorderThickness") { RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent) });
+
+                FrameworkElementFactory contentPresenterFactory = new FrameworkElementFactory(typeof(ContentPresenter));
+                contentPresenterFactory.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Right);
+                contentPresenterFactory.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+                contentPresenterFactory.SetValue(TextBox.CaretBrushProperty, UIManager.ColorThemeManager.Current.AC1);
+                contentPresenterFactory.SetBinding(ContentPresenter.ContentProperty, new Binding("Text") { RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent) });
+
+                borderFactory.AppendChild(contentPresenterFactory);
+
+                textBoxTemplate.VisualTree = borderFactory;
+
+                Trigger mouseOverTrigger = new Trigger { Property = TextBox.IsMouseOverProperty, Value = true };
+                mouseOverTrigger.Setters.Add(new Setter(TextBox.BorderBrushProperty, UIManager.ColorThemeManager.Current.BCh1));
 
                 textBoxTemplate.Triggers.Add(mouseOverTrigger);
 

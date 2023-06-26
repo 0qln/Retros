@@ -14,7 +14,7 @@ namespace Retros.ColorThemes {
         public string Name { get; } = "DefaultDark";
 
         public Brush FC1 { get; } = Helper.StringToSolidColorBrush("#FFFFFF", 1);
-        public Brush FC2 { get; } = Helper.StringToSolidColorBrush("#0078d4", 1);
+        public Brush FC2 { get; } = Helper.StringToSolidColorBrush("#2198f4", 1);
 
         public Brush BG1 { get; } = Helper.StringToSolidColorBrush("#1f1f1f", 1);
         public Brush BG2 { get; } = Helper.StringToSolidColorBrush("#2e2e2e", 1);
@@ -33,7 +33,7 @@ namespace Retros.ColorThemes {
         public Brush BC2 { get; } = Helper.StringToSolidColorBrush("#999999", 1);
         public Brush BC3 { get; } = Helper.StringToSolidColorBrush("#000000", 0);
 
-        public Brush BCh1 { get; } = Helper.StringToSolidColorBrush("#000000", 0);
+        public Brush BCh1 { get; } = Helper.StringToSolidColorBrush("#FFFFFF", 0.2);
         public Brush BCh2 { get; } = Helper.StringToSolidColorBrush("#FFFFFF", 1);
         public Brush BCh3 { get; } = Helper.StringToSolidColorBrush("#000000", 0);
     }

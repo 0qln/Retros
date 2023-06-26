@@ -25,19 +25,34 @@
 
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock x:Name="BlurRadius_Text"/>
+                        <TextBlock x:Name="BlurRadius_Text"
+                                   Text="Blur Radius"/>
                         <TextBox x:Name="BlurRadius_Value"/>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock x:Name="ShadowDepth_Text"/>
+                        <TextBlock x:Name="ShadowDepth_Text"
+                                   Text="Shadow Depth"/>
                         <TextBox x:Name="ShadowDepth_Value"/>
                     </StackPanel>
 
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock x:Name="Opacity_Text"/>
-                        <Slider x:Name="Opacity_Slider" Orientation="Horizontal"/>
-                    </StackPanel>
+                    <Grid
+                        HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                            
+                        <TextBlock x:Name="Opacity_Text"
+                                    Grid.Column="0"
+                                    Text="Opacity"/>
+
+                        <Slider x:Name="Opacity_Value"
+                                Minimum="0"
+                                Maximum="1"
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"/>
+                    </Grid>
 
 
                 </StackPanel>

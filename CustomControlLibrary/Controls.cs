@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -428,8 +429,8 @@ namespace CustomControlLibrary {
             _button = GetTemplateChild("_button") as Button;
             _rect = GetTemplateChild("_rect") as RectangleGeometry;
 
-            if (_border != null) 
-                _border.BorderThickness = new Thickness(1);
+            if (_border != null)
+                _border.Background = Background;
 
             if (_button != null) 
                 _button.Click += (s, e) => Toggle();
@@ -453,13 +454,17 @@ namespace CustomControlLibrary {
         private void Toggle() {
             if (_toggled) {
                 _toggled = false;
-                if (_border != null) _border.Background = Brushes.Transparent;
+
+                if (_border != null) _border.Background = Background;
+                
                 Unchecked?.Invoke();
                 Toggled?.Invoke(false);
             }
             else {
                 _toggled = true;
-                if (_border != null) _border.Background = Background;
+                
+                if (_border != null) _border.Background = Foreground;
+                
                 Checked?.Invoke();
                 Toggled?.Invoke(true);
             }
