@@ -484,11 +484,6 @@ namespace Retros.Program.Workstation.TabUI.Tabs
 
 
     public class PixelSorting : Body {
-
-        private Orientation _orientation;
-        private SortDirection _direction;
-        private int _lowThreshhold = 50, _highThreshhold = 200;
-
         public readonly StackPanel OrientationPanel = new();
         public readonly TextBlock OrientationText = new();
         public readonly SelectionBox OrientationSelection = new();
@@ -497,6 +492,9 @@ namespace Retros.Program.Workstation.TabUI.Tabs
         public readonly TextBlock DirectionText = new();
         public readonly SelectionBox DirectionSelection = new();
 
+        public readonly Button GenerateButton = new();
+
+        private readonly PixelSorter _sorter = new();
 
         public PixelSorting(WorkstationImage image) : base(image) {
             OrientationText.Text = "Filter Orientation";
@@ -517,10 +515,18 @@ namespace Retros.Program.Workstation.TabUI.Tabs
             UIManager.ColorThemeManager.Set_FC1(b => DirectionText.Foreground = b);
             UIManager.ColorThemeManager.SetStyle(DirectionSelection, TabDetail.Body.SelectionBoxStyle);
 
+            GenerateButton.Content = "Generate";
+            GenerateButton.Click += GenerateButton_Click;
+
             _stackPanel.Children.Add(OrientationPanel);
             _stackPanel.Children.Add(DirectionPanel);
+            _stackPanel.Children.Add(GenerateButton);
         }
 
+        private void GenerateButton_Click(object sender, RoutedEventArgs e)
+        {
+            _sorter.Generate(_image.DummyImage);
+        }
 
         public override void Reset() {
             throw new NotImplementedException();

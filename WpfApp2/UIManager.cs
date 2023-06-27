@@ -1,22 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Effects;
-using Utillities.Wpf;
-using Retros.Program.Workstation.TabUI.Tabs;
-using Retros;
-using System.Windows.Media.Imaging;
-using Retros.Program;
-using System.IO.Pipes;
 using Retros.Program.Workstation.Image;
 
 namespace Retros
@@ -114,8 +99,5 @@ namespace Retros
 
             return "";
         }
-
-
-
     }
 }

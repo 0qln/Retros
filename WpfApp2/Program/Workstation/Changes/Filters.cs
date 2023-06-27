@@ -3,12 +3,14 @@ using DebugLibrary.Benchmark;
 using Retros.Program.DisplaySystem;
 using System;
 using System.Collections.Generic;
+using System.DirectoryServices;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -17,7 +19,7 @@ namespace Retros.Program.Workstation.Changes
 
     public class OnlyRedChannel : FilterBase<OnlyRedChannel>, IFilter
     {
-        public override void Generate(WriteableBitmap writeableBitmap)
+        public void Generate(WriteableBitmap writeableBitmap)
         {
             int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
             int pixelHeight = writeableBitmap.PixelHeight;
@@ -55,7 +57,7 @@ namespace Retros.Program.Workstation.Changes
     }
     public class OnlyGreenChannel : FilterBase<OnlyGreenChannel>, IFilter
     {
-        public override void Generate(WriteableBitmap writeableBitmap)
+        public void Generate(WriteableBitmap writeableBitmap)
         {
             int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
             int pixelHeight = writeableBitmap.PixelHeight;
@@ -93,7 +95,7 @@ namespace Retros.Program.Workstation.Changes
     }
     public class OnlyBlueChannel : FilterBase<OnlyBlueChannel>, IFilter
     {
-        public override void Generate(WriteableBitmap writeableBitmap)
+        public void Generate(WriteableBitmap writeableBitmap)
         {
             int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
             int pixelHeight = writeableBitmap.PixelHeight;
@@ -131,7 +133,7 @@ namespace Retros.Program.Workstation.Changes
     }
     public class TestBlue : FilterBase<TestBlue>, IFilter
     {
-        public override void Generate(WriteableBitmap writeableBitmap)
+        public void Generate(WriteableBitmap writeableBitmap)
         {
             int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
             int pixelHeight = writeableBitmap.PixelHeight;
@@ -168,7 +170,7 @@ namespace Retros.Program.Workstation.Changes
     }
     public class GrayScale : FilterBase<GrayScale>, IFilter
     {
-        public override void Generate(WriteableBitmap writeableBitmap)
+        public void Generate(WriteableBitmap writeableBitmap)
         {
             int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
             int pixelHeight = writeableBitmap.PixelHeight;
@@ -217,6 +219,88 @@ namespace Retros.Program.Workstation.Changes
         }
     }
 
+    public class PixelSorter : FilterBase<PixelSorter>, IFilter
+    {
+        private Orientation _orientation = Orientation.Horizontal;
+        private SortDirection _direction = SortDirection.Ascending;
+        private int _lowThreshhold = 50, _highThreshhold = 200;
 
+
+        public void Generate(WriteableBitmap writeableBitmap)
+        {
+
+            if (_orientation == Orientation.Horizontal)
+            {
+                if (_direction == SortDirection.Ascending)
+                {
+                    GenerateHorizontalAscending(writeableBitmap);
+                }
+                else
+                {
+
+                }
+            }
+            else
+            {
+                if (_direction == SortDirection.Ascending)
+                {
+
+                }
+                else
+                {
+
+                }
+            }
+        }
+
+        private void GenerateHorizontalAscending(WriteableBitmap writeableBitmap)
+        {
+            int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
+            int pixelHeight = writeableBitmap.PixelHeight;
+            int pixelWidth = writeableBitmap.PixelWidth;
+            int stride = writeableBitmap.BackBufferStride;
+
+            writeableBitmap.Lock();
+
+            try
+            {
+                unsafe
+                {
+                    IntPtr bufferPtr = writeableBitmap.BackBuffer;
+                    byte* pixelData = (byte*)bufferPtr;
+
+                    Parallel.For(0, pixelHeight, y =>
+                    {
+                        byte* row = pixelData + y * stride;
+                        Parallel.For(0, pixelWidth, x =>
+                        {
+                            int index = x * bytesPerPixel;
+                            byte r = row[index + 2];
+                            byte g = row[index + 1];
+                            byte b = row[index + 0];
+
+                            pixelData[index + 2] = (byte)(r * ((byte)(_filterIntensity * 255)));
+                            pixelData[index + 1] = (byte)(g * ((byte)(_filterIntensity * 255)));
+                            pixelData[index + 0] = (byte)(b * ((byte)(_filterIntensity * 255)));
+                        });
+                    });
+
+                }
+            }
+            finally
+            {
+                writeableBitmap.Unlock();
+            }
+
+            _applied = true;
+        }
+
+
+
+        public override IChange Clone()
+        {
+            return base.Clone();
+        }
+    }
 
 }

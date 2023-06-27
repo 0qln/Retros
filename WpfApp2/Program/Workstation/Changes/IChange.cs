@@ -18,7 +18,10 @@ namespace Retros.Program.Workstation.Changes {
         public string UITypeName { get; }
     }
     
-
+    public interface IPixelSorter : IChange
+    {
+        
+    }
 
     // add a layer of abstraction
     public interface IFilter : IChange {
@@ -54,7 +57,7 @@ namespace Retros.Program.Workstation.Changes {
         public bool Applied => _applied;
 
 
-        public IChange Clone() {
+        public virtual IChange Clone() {
             var clone = new T();
             clone._applied = _applied;
             clone._filterIntensity = _filterIntensity;
@@ -65,10 +68,7 @@ namespace Retros.Program.Workstation.Changes {
             return typeof(T).Name.ToString() + " " + _filterIntensity;
         }
 
-        public abstract void Generate(WriteableBitmap writeableBitmap);
     }
-
-
 
     public interface IRemoveFilter : IChange {
 
