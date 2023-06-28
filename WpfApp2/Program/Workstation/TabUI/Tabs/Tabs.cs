@@ -38,6 +38,16 @@ namespace Retros.Program.Workstation.TabUI.Tabs
             this.body = body;
             this.handle = handle;
         }
+        public Tab(Body body)
+        {
+            this.body = body;
+            string handleName = body.GetType().Name;
+            if (handleName.Substring(handleName.Length-4) == "Body") { 
+                handleName = handleName.Substring(0, handleName.Length - 4);
+            }
+            this.handle = new DefaultHandle(handleName);
+            border.Child = handle.FrameworkElement;
+        }
 
         public void Reset() => body.Reset();
     }
@@ -46,22 +56,25 @@ namespace Retros.Program.Workstation.TabUI.Tabs
     public class ImageHistoryTab : Tab
     {
         public ImageHistoryTab(Body body, Handle handle) : base(body, handle) { }
+        public ImageHistoryTab(Body body) : base(body) { }
     }
 
     public class ImageFilterTab : Tab
     {
         public ImageFilterTab(Body body, Handle handle) : base(body, handle) { }
+        public ImageFilterTab(Body body) : base(body) { }
     }
 
     public class TestTab : Tab
     {
         public TestTab(Body body, Handle handle) : base(body, handle) { }
+        public TestTab(Body body) : base(body) { }
     }
 
     public class PixelSortingTab : Tab
     {
         public PixelSortingTab(Body body, Handle handle) : base(body, handle) { }
-
+        public PixelSortingTab(Body body) : base(body) { }
     }
 
 }

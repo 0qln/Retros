@@ -214,7 +214,7 @@ namespace CustomControlLibrary
 
         public bool IsCollapsed => _isCollapsed;
         public string? Selected => _textText!.Text;
-
+        public event Action<string>? SelectedChanged;
 
         static SelectionBox()
         {
@@ -319,15 +319,48 @@ namespace CustomControlLibrary
             }
         }
 
-        public void ChooseOption(string option)
+        public void SelectOption(string option)
         {
             if (_textText is null ||
                 !_optionSet.Contains(option)) return;
             _textText.Text = option;
 
             Toggle();
+
+            SelectedChanged?.Invoke(option);
+        }
+        
+        public void SelectOption(int index)
+        {
+            if (!IsLoaded)
+            {
+                _doAfterLoadedActions.Enqueue(() => SelectOption(index));
+                return;
+            }
+
+            if (_textText is null ||
+                _options is null ||
+                _options.Children.Count <= index) return;
+
+            _textText.Text = ((TextBlock)((Border)_options.Children[index]).Child).Text;
+
+            SelectedChanged?.Invoke(_textText.Text);
         }
 
+        public void AddOptions<E>()  
+        {
+            if (!IsLoaded)
+            {
+                _doAfterLoadedActions.Enqueue(() => AddOptions<E>());
+                return;
+            }
+
+            foreach (var option in Enum.GetValues(typeof(E)))
+            {
+                AddOption(option.ToString());
+            }
+
+        }
         public void AddOption(string newOption)
         {
             if (!IsLoaded)
@@ -340,7 +373,7 @@ namespace CustomControlLibrary
 
             _optionSet.Add(newOption);
             var newButton = GetNewOptionButton(newOption);
-            newButton.PreviewMouseDown += (s, e) => ChooseOption(newOption);
+            newButton.PreviewMouseDown += (s, e) => SelectOption(newOption);
             _options.Children.Add(newButton);
         }
 

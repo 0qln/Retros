@@ -23,18 +23,27 @@ namespace Retros.Program.Workstation {
         public FrameworkElement FrameworkElement => _pageFrame;
 
         // System
-        public WorkstationImage ImageElement { get; } = new();
+        public WorkstationImage ImageElement { get; }
         public WorkstationTabPresenter TableElement { get; } = new();
 
         public readonly static string DefaultPath =
-            @"";
+            @"C:\Users\linus\Documents\Pictures\Wallpapers\wallpaperflare.com_wallpaper (4).jpg";
 
 
         public Workstation(double topPadding) {
+            try
+            {
+                ImageElement = new WorkstationImage(DefaultPath);
+            }
+            catch
+            {
+                ImageElement = new WorkstationImage();
+            }
+
             // Table
-            TableElement.AddTab(new ImageFilterTab(new ImageFilterBody(ImageElement), new DefaultHandle("Filters")));
-            TableElement.AddTab(new ImageHistoryTab(new ImageHistoryBody(ImageElement), new DefaultHandle("Change History")));
-            TableElement.AddTab(new PixelSortingTab(new PixelSorting(ImageElement), new DefaultHandle("Pixel Sorting")));
+            TableElement.AddTab(new ImageFilterTab(new ImageFilterBody(ImageElement)));
+            TableElement.AddTab(new ImageHistoryTab(new ImageHistoryBody(ImageElement)));
+            TableElement.AddTab(new PixelSortingTab(new PixelSortingBody(ImageElement)));
             TableElement.SelectTab(0);
 
             // Image

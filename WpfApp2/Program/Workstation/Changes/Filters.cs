@@ -7,6 +7,7 @@ using System.DirectoryServices;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -219,82 +220,224 @@ namespace Retros.Program.Workstation.Changes
         }
     }
 
+    public enum SortBy
+    {
+        Hue,
+        Luminance,
+        Saturation,
+        BrightnessAvarage,
+        BrightnessGreen,
+        BrightnessBlue,
+        BrightnessRed,
+    }
     public class PixelSorter : FilterBase<PixelSorter>, IFilter
     {
-        private Orientation _orientation = Orientation.Horizontal;
-        private SortDirection _direction = SortDirection.Ascending;
-        private int _lowThreshhold = 50, _highThreshhold = 200;
+        public SortBy SortBy { get; set; } = SortBy.BrightnessAvarage;
+        public Orientation Orientation { get; set; } = Orientation.Horizontal;
+        public SortDirection Direction { get; set; } = SortDirection.Ascending;
+        public int LowThreshhold { get; set; } = 50;
+        public int HighThreshhold { get; set; } = 200;
 
 
         public void Generate(WriteableBitmap writeableBitmap)
         {
-
-            if (_orientation == Orientation.Horizontal)
+            if (Orientation == Orientation.Horizontal)
             {
-                if (_direction == SortDirection.Ascending)
-                {
-                    GenerateHorizontalAscending(writeableBitmap);
-                }
-                else
-                {
 
-                }
+                GenerateHorizontal(writeableBitmap);
+
             }
             else
             {
-                if (_direction == SortDirection.Ascending)
-                {
 
-                }
-                else
-                {
+                GenerateVertical(writeableBitmap);
 
-                }
             }
         }
 
-        private void GenerateHorizontalAscending(WriteableBitmap writeableBitmap)
+
+        private unsafe void GenerateHorizontal(WriteableBitmap writeableBitmap)
+        {
+           // MessageBox.Show(Sat((130, 200, 111)).ToString());
+           // return;
+            int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
+            int pixelHeight = writeableBitmap.PixelHeight;
+            int pixelWidth = writeableBitmap.PixelWidth;
+            int stride = writeableBitmap.BackBufferStride;
+
+            // Lock the WriteableBitmap to get a reference to its pixel buffer
+            writeableBitmap.Lock();
+
+            try
+            {
+
+                IntPtr bufferPtr = writeableBitmap.BackBuffer;
+                byte* pixelData = (byte*)bufferPtr;
+
+                Parallel.For(0, pixelHeight, y =>
+                {
+                    byte* row = pixelData + y * stride;
+
+                    List<(byte, byte, byte)> pixels = new();
+
+                    for (int x = 0; x < pixelWidth; x++)
+                    {
+                        int index = x * bytesPerPixel;
+                        pixels.Add((row[index + 0], row[index + 1], row[index + 2]));
+                    }
+
+                    pixels.Sort(Compare/*Choose from the SortBy variable*/);
+
+                    int i = 0;
+                    for (int x = 0; x < pixelWidth; x++)
+                    {
+                        int index = x * bytesPerPixel;
+                        row[index + 0] = pixels[i].Item1;
+                        row[index + 1] = pixels[i].Item2;
+                        row[index + 2] = pixels[i].Item3;
+                        i++;
+                    }
+                });
+
+            }
+            finally
+            {
+                // Unlock the WriteableBitmap to release the pixel buffer
+                writeableBitmap.Unlock();
+            }
+
+            _applied = true;
+        }
+        private int Compare((byte, byte, byte) a, (byte, byte, byte) b)
+        {
+            if (Direction == SortDirection.Ascending)
+            {
+                return CompareSwitch(a, b);
+            }
+            else
+            {
+                return -1 * CompareSwitch(a, b);
+            }
+        }
+        private int CompareSwitch((byte, byte, byte) a, (byte, byte, byte) b)
+        {
+            switch (this.SortBy)
+            {
+                case SortBy.Hue: return Hue(a) - Hue(b);
+                case SortBy.Saturation: return Sat(a) - Sat(b);
+                case SortBy.Luminance: return Lum(a) - Lum(b);
+                case SortBy.BrightnessAvarage: return Avg(a)- Avg(b);
+                case SortBy.BrightnessRed: return a.Item3 - b.Item3;
+                case SortBy.BrightnessGreen: return a.Item2 - b.Item2;
+                case SortBy.BrightnessBlue: return a.Item1 - b.Item1;
+
+                default: return a.CompareTo(b);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int Hue((byte, byte, byte) bgr) {
+            double max = Max(bgr) / 255.0;
+            double min = Min(bgr) / 255.0;
+            double delta = (min - max) / 255.0;
+            double angle = 0;
+
+            if (delta == 0) return 0;
+
+            if (max == bgr.Item3)
+            {
+                //red
+                //(g-b)/delta % 6
+                angle = (bgr.Item2 - bgr.Item1) / delta % 6;
+            }
+            else if (max == bgr.Item2)
+            {
+                //green
+                //(b-r)/delta + 2
+                angle = (bgr.Item1 - bgr.Item3) / delta + 2;
+            }
+            else
+            {
+                //blue
+                //(r-g)/delta + 4
+                angle = (bgr.Item3 - bgr.Item2) / delta + 4; 
+            }
+
+            return (int)(angle * 60);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int Sat((byte, byte, byte) bgr) {
+            byte min = Min(bgr);
+            byte max = Max(bgr);
+            byte lum = (byte)((min + max) / 2);
+
+            if (min == max) return 0;
+            
+            return (int)((max - min) / (255.0-Math.Abs(2.0*lum-255.0)) * 255.0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int Lum((byte, byte, byte) bgr) {
+            return (Min(bgr) + Max(bgr)) /2;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] private byte Max((byte, byte, byte) bgr) => Max(bgr.Item1, Max(bgr.Item2, bgr.Item3));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] private byte Max(byte a, byte b) => (a > b) ? a : b;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] private byte Min((byte, byte, byte) bgr) => Min(bgr.Item1, Min(bgr.Item2, bgr.Item3));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] private byte Min(byte a, byte b) => (a < b) ? a : b;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] private int Avg((byte, byte, byte) bgr) => (bgr.Item1 + bgr.Item2 + bgr.Item3) / 3;
+
+
+        private unsafe void GenerateVertical(WriteableBitmap writeableBitmap)
         {
             int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
             int pixelHeight = writeableBitmap.PixelHeight;
             int pixelWidth = writeableBitmap.PixelWidth;
             int stride = writeableBitmap.BackBufferStride;
 
+            // Lock the WriteableBitmap to get a reference to its pixel buffer
             writeableBitmap.Lock();
 
             try
             {
-                unsafe
+                IntPtr bufferPtr = writeableBitmap.BackBuffer;
+                byte* pixelData = (byte*)bufferPtr;
+
+                for (int x = 0; x < pixelWidth; x++)
                 {
-                    IntPtr bufferPtr = writeableBitmap.BackBuffer;
-                    byte* pixelData = (byte*)bufferPtr;
+                    byte* column = pixelData + x * bytesPerPixel;
+                    List<(byte, byte, byte)> columnPixels = new();
 
-                    Parallel.For(0, pixelHeight, y =>
+                    // aquire the column
+                    for (int y = 0; y < pixelHeight; y++)
                     {
-                        byte* row = pixelData + y * stride;
-                        Parallel.For(0, pixelWidth, x =>
-                        {
-                            int index = x * bytesPerPixel;
-                            byte r = row[index + 2];
-                            byte g = row[index + 1];
-                            byte b = row[index + 0];
+                        int index = y * stride;
+                        columnPixels.Add((column[index+0], column[index+1], column[index+2]));
+                    }
 
-                            pixelData[index + 2] = (byte)(r * ((byte)(_filterIntensity * 255)));
-                            pixelData[index + 1] = (byte)(g * ((byte)(_filterIntensity * 255)));
-                            pixelData[index + 0] = (byte)(b * ((byte)(_filterIntensity * 255)));
-                        });
-                    });
+                    columnPixels.Sort(Compare);
 
+                    // write the column to the buffer
+                    int i = 0;
+                    for (int y = 0; y < pixelHeight; y++)
+                    {
+                        int index = y * stride;
+                        column[index+0] = columnPixels[i].Item1;
+                        column[index+1] = columnPixels[i].Item2;
+                        column[index+2] = columnPixels[i].Item3;
+                        i++;
+                    }
                 }
             }
             finally
             {
+                // Unlock the WriteableBitmap to release the pixel buffer
                 writeableBitmap.Unlock();
             }
 
             _applied = true;
         }
-
 
 
         public override IChange Clone()

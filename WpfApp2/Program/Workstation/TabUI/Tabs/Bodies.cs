@@ -47,7 +47,107 @@ namespace Retros.Program.Workstation.TabUI.Tabs
 
 
 
+    public class PixelSortingBody : Body
+    {
+        public readonly Button GenerateButton = new();
+        
+        public readonly StackPanel OrientationPanel = new();
+        public readonly TextBlock OrientationText = new();
+        public readonly SelectionBox OrientationSelection = new();
+
+        public readonly StackPanel DirectionPanel = new();
+        public readonly TextBlock DirectionText = new();
+        public readonly SelectionBox DirectionSelection = new();
+
+        public readonly StackPanel SortByPanel = new();
+        public readonly TextBlock SortByText = new();
+        public readonly SelectionBox SortBySelection = new();
+
+        private readonly PixelSorter _sorter = new();
+
+        public PixelSortingBody(WorkstationImage image) : base(image) { 
+            OrientationText.Text = "Filter Orientation";
+            UIManager.ColorThemeManager.Set_FC1(b => OrientationText.Foreground = b);
+
+            OrientationSelection.AddOptions<Orientation>();
+            OrientationSelection.SelectOption(0);
+            OrientationSelection.SelectedChanged += OrientationSelection_SelectedChanged;
+            UIManager.ColorThemeManager.SetStyle(OrientationSelection, TabDetail.Body.SelectionBoxStyle);
+
+            OrientationPanel.Children.Add(OrientationText);
+            OrientationPanel.Children.Add(OrientationSelection);
+            OrientationPanel.Orientation = Orientation.Horizontal;
+
+
+            DirectionText.Text = "Filter Direction";
+            UIManager.ColorThemeManager.Set_FC1(b => DirectionText.Foreground = b);
+            
+            DirectionSelection.AddOptions<SortDirection>();
+            DirectionSelection.SelectOption(0);
+            DirectionSelection.SelectedChanged += DirectionSelection_SelectedChanged;
+            UIManager.ColorThemeManager.SetStyle(DirectionSelection, TabDetail.Body.SelectionBoxStyle);
+            
+            DirectionPanel.Children.Add(DirectionText);
+            DirectionPanel.Children.Add(DirectionSelection);
+            DirectionPanel.Orientation = Orientation.Horizontal;
+
+
+            SortByText.Text = "Sort By";
+            UIManager.ColorThemeManager.Set_FC1(b => SortByText.Foreground = b);
+            
+            SortBySelection.AddOptions<SortBy>();
+            SortBySelection.SelectOption(0);
+            SortBySelection.SelectedChanged += SortBySelection_SelectedChanged; ;
+            UIManager.ColorThemeManager.SetStyle(SortBySelection, TabDetail.Body.SelectionBoxStyle);
+
+            SortByPanel.Children.Add(SortByText);
+            SortByPanel.Children.Add(SortBySelection);
+            SortByPanel.Orientation = Orientation.Horizontal;            
+
+
+            GenerateButton.Content = "Generate";
+            GenerateButton.Click += GenerateButton_Click;
+
+            _stackPanel.Children.Add(OrientationPanel);
+            _stackPanel.Children.Add(DirectionPanel);
+            _stackPanel.Children.Add(SortByPanel);
+            _stackPanel.Children.Add(GenerateButton);
+        
+        }
+
+        private void SortBySelection_SelectedChanged(string obj)
+        {
+            _sorter.SortBy = (SortBy)Enum.Parse(typeof(SortBy), obj);
+        }
+
+        private void OrientationSelection_SelectedChanged(string obj)
+        {
+            _sorter.Orientation = (Orientation)Enum.Parse(typeof(Orientation), obj);
+        }
+
+        private void DirectionSelection_SelectedChanged(string obj)
+        {
+            _sorter.Direction = (SortDirection)Enum.Parse(typeof(SortDirection), obj);
+        }
+
+        private void GenerateButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_image.GetFilterManager.AddFilter(_sorter))
+            {
+                _image.GetFilterManager.RemoveFilter(_sorter);
+                _image.GetFilterManager.AddFilter(_sorter);
+            }
+        }
+
+        public override void Reset()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
     public class ImageFilterBody : Body {
+
         public Button resetButton = new();
         public FilterDisplay FilterDisplay;
 
@@ -62,7 +162,7 @@ namespace Retros.Program.Workstation.TabUI.Tabs
             ChangeAccess blueChannel = ChangeAccess.Instanciate<OnlyBlueChannel>(FilterDisplay, image);
             ChangeAccess testBlue = ChangeAccess.Instanciate<TestBlue>(FilterDisplay, image);
 
-            filters = new List<ChangeAccess> { grayscale, redChannel, greenChannel, blueChannel, testBlue };
+            filters = new List<ChangeAccess> { grayscale, redChannel, greenChannel, blueChannel, testBlue, };
 
             _stackPanel.Children.Add(resetButton);
             _stackPanel.Children.Add(grayscale.FrameworkElement);
@@ -75,6 +175,7 @@ namespace Retros.Program.Workstation.TabUI.Tabs
             UIManager.ColorThemeManager.Set_AC1(b => resetButton.Background = b);
             resetButton.Click += (_,_) => _image.Reset();
             resetButton.Content = "Back to original";
+
 
         }
 
@@ -482,56 +583,6 @@ namespace Retros.Program.Workstation.TabUI.Tabs
     }
 
 
-
-    public class PixelSorting : Body {
-        public readonly StackPanel OrientationPanel = new();
-        public readonly TextBlock OrientationText = new();
-        public readonly SelectionBox OrientationSelection = new();
-
-        public readonly StackPanel DirectionPanel = new();
-        public readonly TextBlock DirectionText = new();
-        public readonly SelectionBox DirectionSelection = new();
-
-        public readonly Button GenerateButton = new();
-
-        private readonly PixelSorter _sorter = new();
-
-        public PixelSorting(WorkstationImage image) : base(image) {
-            OrientationText.Text = "Filter Orientation";
-            OrientationSelection.AddOption("Vertical");
-            OrientationSelection.AddOption("Horizontal");
-            OrientationPanel.Children.Add(OrientationText);
-            OrientationPanel.Children.Add(OrientationSelection);
-            OrientationPanel.Orientation = Orientation.Horizontal;
-            UIManager.ColorThemeManager.Set_FC1(b => OrientationText.Foreground = b);
-            UIManager.ColorThemeManager.SetStyle(OrientationSelection, TabDetail.Body.SelectionBoxStyle);
-
-            DirectionText.Text = "Filter Direction";
-            DirectionSelection.AddOption("Ascending");
-            DirectionSelection.AddOption("Descending");
-            DirectionPanel.Children.Add(DirectionText);
-            DirectionPanel.Children.Add(DirectionSelection);
-            DirectionPanel.Orientation = Orientation.Horizontal;
-            UIManager.ColorThemeManager.Set_FC1(b => DirectionText.Foreground = b);
-            UIManager.ColorThemeManager.SetStyle(DirectionSelection, TabDetail.Body.SelectionBoxStyle);
-
-            GenerateButton.Content = "Generate";
-            GenerateButton.Click += GenerateButton_Click;
-
-            _stackPanel.Children.Add(OrientationPanel);
-            _stackPanel.Children.Add(DirectionPanel);
-            _stackPanel.Children.Add(GenerateButton);
-        }
-
-        private void GenerateButton_Click(object sender, RoutedEventArgs e)
-        {
-            _sorter.Generate(_image.DummyImage);
-        }
-
-        public override void Reset() {
-            throw new NotImplementedException();
-        }
-    }
 
 
 
