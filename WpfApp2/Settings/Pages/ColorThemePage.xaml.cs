@@ -37,7 +37,7 @@ namespace Retros.Settings.Pages {
         }
 
         public void UpdateAvailableThemes() {
-            UIManager.ColorThemeManager.ColorThemes.ForEach(theme => ThemeSelectionBox.AddOption(theme.Name));
+            foreach (var theme in UIManager.ColorThemeManager.ColorThemes) ThemeSelectionBox.AddOption(theme.Name);
         }
 
         private void ChangeButton_Click(object sender, RoutedEventArgs e) {
