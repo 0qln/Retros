@@ -27,7 +27,7 @@ namespace Retros.Program.Workstation {
         public WorkstationTabPresenter TableElement { get; } = new();
 
         public readonly static string DefaultPath =
-            @"C:\Users\linus\Documents\Pictures\Wallpapers\wallpaperflare.com_wallpaper (4).jpg";
+            @"C:\Users\linus\Documents\Pictures\HSLS255.jpg";
 
 
         public Workstation(double topPadding) {

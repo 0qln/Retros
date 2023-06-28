@@ -258,8 +258,7 @@ namespace Retros.Program.Workstation.Changes
 
         private unsafe void GenerateHorizontal(WriteableBitmap writeableBitmap)
         {
-           // MessageBox.Show(Sat((130, 200, 111)).ToString());
-           // return;
+            MessageBox.Show(Sat((130, 200, 111)).ToString());
             int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
             int pixelHeight = writeableBitmap.PixelHeight;
             int pixelWidth = writeableBitmap.PixelWidth;
@@ -326,7 +325,7 @@ namespace Retros.Program.Workstation.Changes
                 case SortBy.Hue: return Hue(a) - Hue(b);
                 case SortBy.Saturation: return Sat(a) - Sat(b);
                 case SortBy.Luminance: return Lum(a) - Lum(b);
-                case SortBy.BrightnessAvarage: return Avg(a)- Avg(b);
+                case SortBy.BrightnessAvarage: return Avg(a) - Avg(b);
                 case SortBy.BrightnessRed: return a.Item3 - b.Item3;
                 case SortBy.BrightnessGreen: return a.Item2 - b.Item2;
                 case SortBy.BrightnessBlue: return a.Item1 - b.Item1;
@@ -336,11 +335,11 @@ namespace Retros.Program.Workstation.Changes
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int Hue((byte, byte, byte) bgr) {
-            double max = Max(bgr) / 255.0;
-            double min = Min(bgr) / 255.0;
-            double delta = (min - max) / 255.0;
-            double angle = 0;
+        private int Hue((byte, byte, byte) bgr)
+        {
+            double max = Max(bgr);
+            double min = Min(bgr);
+            double delta = (max-min)/255.0;
 
             if (delta == 0) return 0;
 
@@ -348,37 +347,38 @@ namespace Retros.Program.Workstation.Changes
             {
                 //red
                 //(g-b)/delta % 6
-                angle = (bgr.Item2 - bgr.Item1) / delta % 6;
+                return (int)((((bgr.Item2/255.0 - bgr.Item1/255.0) / delta) % 6) * 60);
             }
             else if (max == bgr.Item2)
             {
                 //green
                 //(b-r)/delta + 2
-                angle = (bgr.Item1 - bgr.Item3) / delta + 2;
+                return (int)(((bgr.Item1 / 255.0 - bgr.Item3 / 255.0) / delta + 2) * 60);
             }
             else
             {
                 //blue
                 //(r-g)/delta + 4
-                angle = (bgr.Item3 - bgr.Item2) / delta + 4; 
+                return (int)(((bgr.Item3 / 255.0 - bgr.Item2 / 255.0) / delta + 4) * 60);
             }
-
-            return (int)(angle * 60);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int Sat((byte, byte, byte) bgr) {
-            byte min = Min(bgr);
-            byte max = Max(bgr);
-            byte lum = (byte)((min + max) / 2);
-
+        private int Sat((byte, byte, byte) bgr)
+        {
+            decimal min = Min(bgr)/(decimal)255.0;
+            decimal max = Max(bgr)/(decimal)255.0;
             if (min == max) return 0;
-            
-            return (int)((max - min) / (255.0-Math.Abs(2.0*lum-255.0)) * 255.0);
+
+            decimal delta = max - min;
+            decimal lum = min + max;
+
+            return (int)(100000*(delta / (1-Math.Abs(lum - 1))));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int Lum((byte, byte, byte) bgr) {
-            return (Min(bgr) + Max(bgr)) /2;
+        private int Lum((byte, byte, byte) bgr)
+        {
+            return (Min(bgr) + Max(bgr));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)] private byte Max((byte, byte, byte) bgr) => Max(bgr.Item1, Max(bgr.Item2, bgr.Item3));
@@ -413,7 +413,7 @@ namespace Retros.Program.Workstation.Changes
                     for (int y = 0; y < pixelHeight; y++)
                     {
                         int index = y * stride;
-                        columnPixels.Add((column[index+0], column[index+1], column[index+2]));
+                        columnPixels.Add((column[index + 0], column[index + 1], column[index + 2]));
                     }
 
                     columnPixels.Sort(Compare);
@@ -423,9 +423,9 @@ namespace Retros.Program.Workstation.Changes
                     for (int y = 0; y < pixelHeight; y++)
                     {
                         int index = y * stride;
-                        column[index+0] = columnPixels[i].Item1;
-                        column[index+1] = columnPixels[i].Item2;
-                        column[index+2] = columnPixels[i].Item3;
+                        column[index + 0] = columnPixels[i].Item1;
+                        column[index + 1] = columnPixels[i].Item2;
+                        column[index + 2] = columnPixels[i].Item3;
                         i++;
                     }
                 }

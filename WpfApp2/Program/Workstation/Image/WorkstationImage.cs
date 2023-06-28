@@ -58,7 +58,10 @@ namespace Retros.Program.Workstation.Image
         /// <summary>Gets the ChangeHistory instance for this WorkstationImage.</summary>
         public ChangeHistory GetHistoryManager => _changeHistory;
 
+        /// <summary>Specifies wether the image was upscaled when Loaded or not.</summary>
+        public readonly bool Upscaled = true;
 
+        
         private List<float> _dp_tValues = new(); /// caches the opacity curve
         private static int _smoothness = 1;
         private bool _enableStartboost = false;
@@ -159,9 +162,7 @@ namespace Retros.Program.Workstation.Image
 
         public static WriteableBitmap ResizeWritableBitmap(BitmapImage originalBitmap, int newWidth, int newHeight)
         {
-            //DebugLibrary.Console.Log(newHeight + ", " + newHeight);
-
-            // Check if resizing is required
+            // Check if resizing is required, only resize if the original image is to big.
             if (newWidth >= originalBitmap.PixelWidth && newHeight >= originalBitmap.PixelHeight)
             {
                 return new WriteableBitmap(originalBitmap);
