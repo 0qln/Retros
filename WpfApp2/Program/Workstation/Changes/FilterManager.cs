@@ -46,7 +46,7 @@ namespace Retros.Program.Workstation.Changes {
                 }
 
                 // Update sliders
-                Tab? tab = WindowManager.MainWindow!.SelectedWorkstation.TableElement.
+                Tab? tab = WindowManager.MainWindow!.SelectedWorkstation.TabElement.
                     GetTab(typeof(ImageFilterTab));
 
                 if (tab is null)

@@ -24,7 +24,7 @@ namespace Retros.Program.Workstation.Changes {
 
                 workstation.ImageElement.Page.Image = new System.Windows.Controls.Image { Source = new BitmapImage(workstation.ImageElement.Source) };
 
-                IEnumerator<Tab> enumerator = workstation.TableElement.GetEnumerator();
+                IEnumerator<Tab> enumerator = workstation.TabElement.GetEnumerator();
                 while (enumerator.MoveNext()) {
                     if (enumerator.Current.GetType() != typeof(ImageHistoryTab)) {
                         enumerator.Current.Reset();

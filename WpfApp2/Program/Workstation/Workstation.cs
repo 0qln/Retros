@@ -24,7 +24,7 @@ namespace Retros.Program.Workstation {
 
         // System
         public WorkstationImage ImageElement { get; }
-        public WorkstationTabPresenter TableElement { get; } = new();
+        public WorkstationTabPresenter TabElement { get; } = new();
 
         public readonly static string DefaultPath =
             @"C:\Users\linus\Documents\Pictures\HSLS255.jpg";
@@ -41,11 +41,11 @@ namespace Retros.Program.Workstation {
             }
 
             // Table
-            TableElement.AddTab(new FilterHierachyTab(new FilterHierachyBody(ImageElement)));
-            TableElement.AddTab(new ImageFilterTab(new ImageFilterBody(this)));
-            TableElement.AddTab(new ImageHistoryTab(new ImageHistoryBody(ImageElement)));
-            TableElement.AddTab(new PixelSortingTab(new PixelSortingBody(ImageElement)));
-            TableElement.SelectTab(0);
+            TabElement.AddTab(new FilterHierachyTab(new FilterHierachyBody(this)));
+            TabElement.AddTab(new ImageHistoryTab(new ImageHistoryBody(this)));
+            TabElement.AddTab(new ImageFilterTab(new ImageFilterBody(this)));
+            TabElement.AddTab(new PixelSortingTab(new PixelSortingBody(this)));
+            TabElement.SelectTab(0);
 
             // Image
             ImageElement.Page.WindowInitiated += (window) => {
@@ -53,7 +53,7 @@ namespace Retros.Program.Workstation {
             };
 
             // Page
-            _page = new WorkstationPage(ImageElement, TableElement, topPadding);
+            _page = new WorkstationPage(ImageElement, TabElement, topPadding);
             _pageFrame.Content = _page;
 
             // Border

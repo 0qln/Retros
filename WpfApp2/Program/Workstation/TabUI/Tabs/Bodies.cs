@@ -16,13 +16,14 @@ using Utillities.Wpf;
 using Retros.Program.Workstation.Changes;
 using Slider = Retros.CustomUI.Slider;
 using System.Windows.Threading;
+using System.Windows.Data;
 
 // Bodies Manage the Tab body UIElements and functionality
 namespace Retros.Program.Workstation.TabUI.Tabs
 {
     public abstract class Body {
 
-        protected readonly WorkstationImage _image;
+        protected readonly Workstation _ws;
         protected readonly StackPanel _stackPanel = new();
         protected readonly Grid _mainGrid = new();
         protected readonly Border _border = new();
@@ -30,8 +31,8 @@ namespace Retros.Program.Workstation.TabUI.Tabs
         public FrameworkElement FrameworkElement => _border;
 
 
-        public Body(WorkstationImage image) {
-            _image = image;
+        public Body(Workstation workstation) {
+            _ws = workstation;
             UIManager.ColorThemeManager.Set_BC1(newBrush => _border.BorderBrush = newBrush);
             _border.Child = _mainGrid;
             _border.BorderThickness = new Thickness(1);
@@ -63,9 +64,34 @@ namespace Retros.Program.Workstation.TabUI.Tabs
         public readonly TextBlock SortByText = new();
         public readonly SelectionBox SortBySelection = new();
 
+        public readonly Slider LowThreshholdSlider = new("Lower Threshhold");
+        public readonly Slider HighThreshholdSlider = new("Higher Threshhold");
+
         private readonly PixelSorter _sorter = new();
 
-        public PixelSortingBody(WorkstationImage image) : base(image) { 
+        public PixelSortingBody(Workstation workstation) : base(workstation) { 
+            LowThreshholdSlider.SliderElement.Minimum = 0;
+            LowThreshholdSlider.BindMaxToValue(HighThreshholdSlider);
+            HighThreshholdSlider.BindMinToValue(LowThreshholdSlider);
+            HighThreshholdSlider.SliderElement.Maximum = 500;
+
+            LowThreshholdSlider.MaxText.IsReadOnly = true;
+            HighThreshholdSlider.MinText.IsReadOnly = true;
+
+            LowThreshholdSlider.ShowMaximum = true;
+            LowThreshholdSlider.ShowMinimum = true;
+            HighThreshholdSlider.ShowMaximum = true;
+            HighThreshholdSlider.ShowMinimum = true;
+
+            LowThreshholdSlider.SliderElement.ValueChanged += (s, e) =>
+            {
+                _sorter.LowThreshhold = (int)e.NewValue;
+            };
+            HighThreshholdSlider.SliderElement.ValueChanged += (s, e) =>
+            {
+                _sorter.HighThreshhold = (int)e.NewValue;
+            };
+
             OrientationText.Text = "Filter Orientation";
             UIManager.ColorThemeManager.Set_FC1(b => OrientationText.Foreground = b);
 
@@ -108,11 +134,13 @@ namespace Retros.Program.Workstation.TabUI.Tabs
             GenerateButton.Content = "Generate";
             GenerateButton.Click += GenerateButton_Click;
 
+
             _stackPanel.Children.Add(OrientationPanel);
             _stackPanel.Children.Add(DirectionPanel);
             _stackPanel.Children.Add(SortByPanel);
             _stackPanel.Children.Add(GenerateButton);
-        
+            _stackPanel.Children.Add(LowThreshholdSlider.FrameworkElement);
+            _stackPanel.Children.Add(HighThreshholdSlider.FrameworkElement);
         }
 
         private void SortBySelection_SelectedChanged(string obj)
@@ -132,10 +160,14 @@ namespace Retros.Program.Workstation.TabUI.Tabs
 
         private void GenerateButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!_image.GetFilterManager.AddFilter(_sorter))
+            
+            _ws.ImageElement.GetFilterManager.RemoveFilter<PixelSorter>();
+            _ws.ImageElement.GetFilterManager.AddFilter(_sorter);
+            
+            FilterHierachyBody body = (FilterHierachyBody)_ws.TabElement.GetTab<FilterHierachyTab>().Body; 
+            if (!body.FilterDisplay.Contains(typeof(PixelSorter)))
             {
-                _image.GetFilterManager.RemoveFilter(_sorter);
-                _image.GetFilterManager.AddFilter(_sorter);
+                body.FilterDisplay.AddFilter(_sorter);
             }
         }
 
@@ -150,8 +182,8 @@ namespace Retros.Program.Workstation.TabUI.Tabs
     {
         public readonly FilterDisplay FilterDisplay;
 
-        public FilterHierachyBody(WorkstationImage image) : base(image) {
-            FilterDisplay = new(image);
+        public FilterHierachyBody(Workstation workstation) : base(workstation) {
+            FilterDisplay = new(workstation.ImageElement);
             _stackPanel.Children.Add(FilterDisplay.FrameworkElement);
         }
 
@@ -168,17 +200,12 @@ namespace Retros.Program.Workstation.TabUI.Tabs
 
         private List<ChangeAccess> filters;
 
-        public ImageFilterBody(Workstation ws) : base(ws.ImageElement) {
-            FilterHierachyTab? hierachyTab = ws.TableElement.GetTab<FilterHierachyTab>() as FilterHierachyTab;
-            FilterDisplay? filterDisplay = 
-                (hierachyTab != null) 
-                ? ((FilterHierachyBody)hierachyTab.Body).FilterDisplay 
-                : null;
-            ChangeAccess grayscale = ChangeAccess.Instanciate<GrayScale>(filterDisplay, ws.ImageElement);
-            ChangeAccess redChannel = ChangeAccess.Instanciate<OnlyRedChannel>(filterDisplay, ws.ImageElement);
-            ChangeAccess greenChannel = ChangeAccess.Instanciate<OnlyGreenChannel>(filterDisplay, ws.ImageElement);
-            ChangeAccess blueChannel = ChangeAccess.Instanciate<OnlyBlueChannel>(filterDisplay, ws.ImageElement);
-            ChangeAccess testBlue = ChangeAccess.Instanciate<TestBlue>(filterDisplay, ws.ImageElement);
+        public ImageFilterBody(Workstation ws) : base(ws) {
+            ChangeAccess grayscale = ChangeAccess.Instanciate<GrayScale>(ws);
+            ChangeAccess redChannel = ChangeAccess.Instanciate<OnlyRedChannel>(ws);
+            ChangeAccess greenChannel = ChangeAccess.Instanciate<OnlyGreenChannel>(ws);
+            ChangeAccess blueChannel = ChangeAccess.Instanciate<OnlyBlueChannel>(ws);
+            ChangeAccess testBlue = ChangeAccess.Instanciate<TestBlue>(ws);
 
             filters = new List<ChangeAccess> { grayscale, redChannel, greenChannel, blueChannel, testBlue, };
 
@@ -190,7 +217,7 @@ namespace Retros.Program.Workstation.TabUI.Tabs
             _stackPanel.Children.Add(testBlue.FrameworkElement);
 
             UIManager.ColorThemeManager.Set_AC1(b => resetButton.Background = b);
-            resetButton.Click += (_,_) => _image.Reset();
+            resetButton.Click += (_,_) => _ws.ImageElement.Reset();
             resetButton.Content = "Back to original";
 
 
@@ -219,13 +246,14 @@ namespace Retros.Program.Workstation.TabUI.Tabs
 
 
             private ChangeAccess() { }
-            public static ChangeAccess Instanciate<T>(FilterDisplay? filterDisplay, WorkstationImage image) where T : IFilter, new() {
+            public static ChangeAccess Instanciate<T>(Workstation ws) where T : IFilter, new() {
                 ChangeAccess instance = new();
                 instance._filterInstance = new T();
                 instance._filterType = typeof(T);
                 instance._slider = new Slider(instance._filterType.Name);
-                instance._slider.SliderElement.ValueChanged += (s, e) => instance.SetToManager(filterDisplay, image);
-                instance._slider.SliderElement.PreviewMouseUp += (s, e) => instance.SetChangeHistory(image);
+                instance._slider.SliderElement.ValueChanged += (s, e) => 
+                instance.SetToManager((ws.TabElement.GetTab<FilterHierachyTab>()?.Body as FilterHierachyBody)?.FilterDisplay, ws.ImageElement);
+                instance._slider.SliderElement.PreviewMouseUp += (s, e) => instance.SetChangeHistory(ws.ImageElement);
                 return instance;
             }
 
@@ -261,9 +289,10 @@ namespace Retros.Program.Workstation.TabUI.Tabs
                     }
 
                     if (filterDisplay != null &&
-                        filterDisplay.Contains(_filterType)) {
+                        !filterDisplay.Contains(_filterType))
+                    {
                         filterDisplay.AddFilter(_filterInstance);
-                    }                    
+                    }
                 }
             }
 
@@ -282,8 +311,8 @@ namespace Retros.Program.Workstation.TabUI.Tabs
         public ChangeHistory History => _history;
 
 
-        public ImageHistoryBody(WorkstationImage image) : base(image) {
-            _history = image.GetHistoryManager;
+        public ImageHistoryBody(Workstation workstation) : base(workstation) {
+            _history = _ws.ImageElement.GetHistoryManager;
 
             _root = new Node(null, _history.RootChange, this);
             _currentNode = _root;
@@ -605,7 +634,7 @@ namespace Retros.Program.Workstation.TabUI.Tabs
 
 
     public class Test : Body {
-        public Test(WorkstationImage image) : base(image) { }
+        public Test(Workstation workstation) : base(workstation) { }
 
 
         public void Run() {
@@ -650,7 +679,7 @@ namespace Retros.Program.Workstation.TabUI.Tabs
 
     public class Export : Body {
 
-        public Export(WorkstationImage image) : base(image) {
+        public Export(Workstation workstation) : base(workstation) {
 
         }
 
@@ -663,7 +692,7 @@ namespace Retros.Program.Workstation.TabUI.Tabs
 
     public class Import : Body {
 
-        public Import(WorkstationImage image) : base(image) {
+        public Import(Workstation workstation) : base(workstation) {
 
         }
 
