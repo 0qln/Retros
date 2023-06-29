@@ -82,6 +82,15 @@ namespace Retros.Program.Workstation.TabUI
             _itemTypes.Add(newItem.GetType());
         }
 
+
+        public void Clear()
+        {
+            foreach (var filter in _items)
+            {
+                RemoveItem(filter);
+            }
+        }
+
         public void RemoveItem(IFilter item)
         {
             if (!Contains(item.GetType())) return;

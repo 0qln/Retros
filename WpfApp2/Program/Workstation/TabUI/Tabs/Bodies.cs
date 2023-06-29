@@ -146,21 +146,39 @@ namespace Retros.Program.Workstation.TabUI.Tabs
     }
 
 
+    public class FilterHierachyBody : Body
+    {
+        public readonly FilterDisplay FilterDisplay;
+
+        public FilterHierachyBody(WorkstationImage image) : base(image) {
+            FilterDisplay = new(image);
+            _stackPanel.Children.Add(FilterDisplay.FrameworkElement);
+        }
+
+        public override void Reset()
+        {
+            FilterDisplay.Clear();
+        }
+    }
+
+
     public class ImageFilterBody : Body {
 
         public Button resetButton = new();
-        public FilterDisplay FilterDisplay;
 
         private List<ChangeAccess> filters;
 
-        public ImageFilterBody(WorkstationImage image) : base(image) {
-            FilterDisplay = new(image);
-
-            ChangeAccess grayscale = ChangeAccess.Instanciate<GrayScale>(FilterDisplay, image);
-            ChangeAccess redChannel = ChangeAccess.Instanciate<OnlyRedChannel>(FilterDisplay, image);
-            ChangeAccess greenChannel = ChangeAccess.Instanciate<OnlyGreenChannel>(FilterDisplay, image);
-            ChangeAccess blueChannel = ChangeAccess.Instanciate<OnlyBlueChannel>(FilterDisplay, image);
-            ChangeAccess testBlue = ChangeAccess.Instanciate<TestBlue>(FilterDisplay, image);
+        public ImageFilterBody(Workstation ws) : base(ws.ImageElement) {
+            FilterHierachyTab? hierachyTab = ws.TableElement.GetTab<FilterHierachyTab>() as FilterHierachyTab;
+            FilterDisplay? filterDisplay = 
+                (hierachyTab != null) 
+                ? ((FilterHierachyBody)hierachyTab.Body).FilterDisplay 
+                : null;
+            ChangeAccess grayscale = ChangeAccess.Instanciate<GrayScale>(filterDisplay, ws.ImageElement);
+            ChangeAccess redChannel = ChangeAccess.Instanciate<OnlyRedChannel>(filterDisplay, ws.ImageElement);
+            ChangeAccess greenChannel = ChangeAccess.Instanciate<OnlyGreenChannel>(filterDisplay, ws.ImageElement);
+            ChangeAccess blueChannel = ChangeAccess.Instanciate<OnlyBlueChannel>(filterDisplay, ws.ImageElement);
+            ChangeAccess testBlue = ChangeAccess.Instanciate<TestBlue>(filterDisplay, ws.ImageElement);
 
             filters = new List<ChangeAccess> { grayscale, redChannel, greenChannel, blueChannel, testBlue, };
 
@@ -170,7 +188,6 @@ namespace Retros.Program.Workstation.TabUI.Tabs
             _stackPanel.Children.Add(greenChannel.FrameworkElement);
             _stackPanel.Children.Add(blueChannel.FrameworkElement);
             _stackPanel.Children.Add(testBlue.FrameworkElement);
-            _stackPanel.Children.Add(FilterDisplay.FrameworkElement);
 
             UIManager.ColorThemeManager.Set_AC1(b => resetButton.Background = b);
             resetButton.Click += (_,_) => _image.Reset();
@@ -202,7 +219,7 @@ namespace Retros.Program.Workstation.TabUI.Tabs
 
 
             private ChangeAccess() { }
-            public static ChangeAccess Instanciate<T>(FilterDisplay filterDisplay, WorkstationImage image) where T : IFilter, new() {
+            public static ChangeAccess Instanciate<T>(FilterDisplay? filterDisplay, WorkstationImage image) where T : IFilter, new() {
                 ChangeAccess instance = new();
                 instance._filterInstance = new T();
                 instance._filterType = typeof(T);
@@ -231,10 +248,10 @@ namespace Retros.Program.Workstation.TabUI.Tabs
                 _filterInstance.FilterIntensity = 0;
             }
 
-            private void SetToManager(FilterDisplay filterDisplay, WorkstationImage image) {
+            private void SetToManager(FilterDisplay? filterDisplay, WorkstationImage image) {
                 if (_slider.SliderElement.Value == 0) {
                     image.GetFilterManager.RemoveFilter(_filterInstance);
-                    filterDisplay.RemoveItem(_filterInstance);
+                    filterDisplay?.RemoveItem(_filterInstance);
                 }
                 else {
                     bool success = image.GetFilterManager.AddFilter(_filterInstance);
@@ -243,7 +260,8 @@ namespace Retros.Program.Workstation.TabUI.Tabs
                         image.GetFilterManager.SetFilterIntensity(FilterInstance, _slider.SliderElement.Value);
                     }
 
-                    if (!filterDisplay.Contains(_filterType)) {
+                    if (filterDisplay != null &&
+                        filterDisplay.Contains(_filterType)) {
                         filterDisplay.AddFilter(_filterInstance);
                     }                    
                 }
@@ -618,12 +636,6 @@ namespace Retros.Program.Workstation.TabUI.Tabs
                 path1.Fill = Brushes.White;
             }
             */
-
-
-            Viewbox viewbox = Application.Current.FindResource("SettingsIcon3") as Viewbox;
-            viewbox.Width = 30;
-            viewbox.Height = 30;
-            WindowManager.MainWindow.WindowHandle.ApplicationButtons.SettingsButtonContent = viewbox;
 
 
             //stackPanel.Children.Add(viewbox);

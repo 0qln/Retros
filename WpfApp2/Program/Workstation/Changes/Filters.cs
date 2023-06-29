@@ -258,7 +258,6 @@ namespace Retros.Program.Workstation.Changes
 
         private unsafe void GenerateHorizontal(WriteableBitmap writeableBitmap)
         {
-            MessageBox.Show(Sat((130, 200, 111)).ToString());
             int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
             int pixelHeight = writeableBitmap.PixelHeight;
             int pixelWidth = writeableBitmap.PixelWidth;

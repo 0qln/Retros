@@ -52,6 +52,10 @@ namespace Retros.Program.Workstation.TabUI.Tabs
         public void Reset() => body.Reset();
     }
 
+    public class FilterHierachyTab : Tab
+    {
+        public FilterHierachyTab(Body body) : base(body) { }
+    }
 
     public class ImageHistoryTab : Tab
     {

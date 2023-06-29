@@ -41,7 +41,8 @@ namespace Retros.Program.Workstation {
             }
 
             // Table
-            TableElement.AddTab(new ImageFilterTab(new ImageFilterBody(ImageElement)));
+            TableElement.AddTab(new FilterHierachyTab(new FilterHierachyBody(ImageElement)));
+            TableElement.AddTab(new ImageFilterTab(new ImageFilterBody(this)));
             TableElement.AddTab(new ImageHistoryTab(new ImageHistoryBody(ImageElement)));
             TableElement.AddTab(new PixelSortingTab(new PixelSortingBody(ImageElement)));
             TableElement.SelectTab(0);
