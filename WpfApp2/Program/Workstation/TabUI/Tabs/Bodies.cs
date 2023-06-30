@@ -163,6 +163,8 @@ namespace Retros.Program.Workstation.TabUI.Tabs
             
             _ws.ImageElement.GetFilterManager.RemoveFilter<PixelSorter>();
             _ws.ImageElement.GetFilterManager.AddFilter(_sorter);
+
+            MessageBox.Show(_ws.ImageElement.GetFilterManager.CurrentFilters.Length.ToString());
             
             FilterHierachyBody body = (FilterHierachyBody)_ws.TabElement.GetTab<FilterHierachyTab>().Body; 
             if (!body.FilterDisplay.Contains(typeof(PixelSorter)))

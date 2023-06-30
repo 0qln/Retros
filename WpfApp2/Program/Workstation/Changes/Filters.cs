@@ -243,11 +243,11 @@ namespace Retros.Program.Workstation.Changes
         {
             if (Orientation == Orientation.Horizontal)
             {
-                GenerateHorizontal(writeableBitmap);
+                MessageBox.Show("Total: "+Measure.Execute(() =>GenerateHorizontal(writeableBitmap)).ElapsedMilliseconds.ToString());
             }
             else
             {
-                GenerateVertical(writeableBitmap);
+                MessageBox.Show("Total: "+Measure.Execute(() =>GenerateVertical(writeableBitmap)).ElapsedMilliseconds.ToString());
             }
         }
 

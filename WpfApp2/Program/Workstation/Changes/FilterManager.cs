@@ -166,7 +166,7 @@ namespace Retros.Program.Workstation.Changes {
         }
         public void RemoveFilter<T>() where T : IFilter {
             if (!ContainsFilter<T>()) return;
-
+            
             _filterTypes.Remove(typeof(T));
             _filters.Remove(GetFilter<T>()!);
             changed = true;
@@ -202,7 +202,7 @@ namespace Retros.Program.Workstation.Changes {
         }
         public IFilter? GetFilter<T>() where T : IFilter {
             return _filters.Count > 0
-                ? _filters.FirstOrDefault(filter => filter.GetType() is T)
+                ? _filters.FirstOrDefault(filter => filter.GetType() == typeof(T))
                 : null;
         }
         public bool ContainsFilter<T>() where T : IFilter {
