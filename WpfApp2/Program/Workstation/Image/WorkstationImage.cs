@@ -19,6 +19,7 @@ using Retros.Settings;
 using System.Windows.Automation;
 using Retros.Program.DisplaySystem;
 using Retros.Program.Workstation.Changes;
+using System.Threading.Tasks;
 
 namespace Retros.Program.Workstation.Image
 {
@@ -48,6 +49,14 @@ namespace Retros.Program.Workstation.Image
 
         /// <summary>Acts as the source image for the runtime image.</summary>
         public WriteableBitmap ResizedSourceBitmap => _resizedSourceBitmap;
+        public WriteableBitmap GetResizedSourceBitmapInstance()
+        {
+            WriteableBitmap result = Application.Current.Dispatcher.Invoke(() =>
+            {
+                return new WriteableBitmap(_resizedSourceBitmap);
+            });
+            return result;
+        }
 
         /// <summary>Works as a computation/backend image for the filters to work on.</summary>
         public WriteableBitmap DummyImage { get; set; }
@@ -139,7 +148,7 @@ namespace Retros.Program.Workstation.Image
             _filterManager.CurrentFilters = _changeHistory.CurrentNode.Value.Filters;
 
             // Update UI
-            ChangeCurentImages(_filterManager.ApplyChanges(new WriteableBitmap(ResizedSourceBitmap)));
+            _filterManager.ApplyFilters();
         }
 
         public void Reset() {
@@ -148,13 +157,18 @@ namespace Retros.Program.Workstation.Image
             ResetCurrents();
         }
 
+        public WriteableBitmap GetDownscaledSourceImage()
+        {
+            return new WriteableBitmap(new BitmapImage(_source));
+            return ResizeWritableBitmap(new BitmapImage(_source), (int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight);
+        }
         public void SetSourceImage(Uri source)
         {
             _source = source;
 
             double screenWidth = SystemParameters.PrimaryScreenWidth;
             double screenHeight = SystemParameters.PrimaryScreenHeight;
-            _resizedSourceBitmap = ResizeWritableBitmap(new BitmapImage(source), (int)screenWidth, (int)screenHeight);
+            _resizedSourceBitmap = GetDownscaledSourceImage();
 
             Pages.ForEach(Page => Page.Image.Source = _resizedSourceBitmap.Clone());
             DummyImage = new WriteableBitmap(_resizedSourceBitmap);
@@ -212,11 +226,9 @@ namespace Retros.Program.Workstation.Image
 
         public System.Drawing.Bitmap Render()
         {
-            // Get the image Source
-            WriteableBitmap writeableBitmap =
-                _filterManager.ApplyChanges(
-                    new WriteableBitmap(
-                        new BitmapImage(_source)));
+            // Get the image 
+            WriteableBitmap writeableBitmap = new WriteableBitmap(new BitmapImage(_source));
+            _filterManager.ApplyChanges(writeableBitmap);
 
             // Default the pixel format
             WriteableBitmap formattedBitmap = SwitchPixelFormat(writeableBitmap, PixelFormats.Bgra32);
@@ -415,76 +427,19 @@ namespace Retros.Program.Workstation.Image
             Pages.ForEach(Page => Page.Image.Source = new BitmapImage(_source));
         }
 
-        public void ChangeCurentImages(ImageSource imageSource)
+        public void ChangeCurrentImages(WriteableBitmap writeableBitmap)
         {
-            AddTaskToQueue(() => __Execute__ChangeCurentImages(imageSource));
+            AddTaskToQueue(() =>
+            {
+                __Execute__ChangeCurrentImages(writeableBitmap);
+            });
         }
-        private void __Execute__ChangeCurentImages(ImageSource imageSource)
+        private void __Execute__ChangeCurrentImages(ImageSource imageSource)
         {
             foreach (var page in Pages)
             {
                 page.ChangeCurrent(imageSource);
             }
-            /*
-            // Prepare
-            _imageCount++;
-            Dictionary<WorkstationImagePage, Image> newImages = new(Pages.Count);
-            Pages.ForEach(Page => {
-                if (Page.Visibility == Visibility.Visible) {
-                    newImages.Add(Page, CreateFadeImage(Page, imageSource));
-                }
-                else {
-                    newImages.Add(Page, null);
-                }
-            });
-
-            // Interpolate
-            if (_isCalculated) { // isCalculated
-                int i = (int)_startBoost;
-                var timer = new DispatcherTimer();
-                timer.Interval = TimeSpan.FromMilliseconds(_interval);
-                timer.Tick += (s, e) => {
-                    ForEach(newImages, kvp => kvp.Value.Opacity = _dp_tValues[i]);
-
-                    i++;
-                    if (i >= _dp_tValues.Count) {
-                        ForEach(newImages, kvp => kvp.Value.Effect = kvp.Key.ImageEffect);
-                        Pages.ForEach(Page => Page.Image.Effect = null);
-                        Pages.ForEach(Page => Page.MainGrid.Children.Remove(Page.Image));
-                        ForEach(newImages, kvp => kvp.Key.Image = kvp.Value);
-                        Pages.ForEach(Page => Page.Image.Margin = _margin);
-                        _imageCount--;
-                        timer.Stop();
-                    }
-                };
-                timer.Start();
-            }
-            else {
-                _dp_tValues.Clear();
-                float t = _startBoost;
-                var timer = new DispatcherTimer();
-                timer.Interval = TimeSpan.FromMilliseconds(_interval);
-                timer.Tick += (s, e) => {
-                    _isCalculated = true;
-                    float val = InterpolationFuntion(t);
-                    ForEach(newImages, kvp => kvp.Value.Opacity = val);
-                    _dp_tValues.Add(val);
-
-                    t += _interval;
-                    if (t >= _totalInterpolationTime) {
-                        ForEach(newImages, kvp => kvp.Value.Effect = kvp.Key.ImageEffect);
-                        Pages.ForEach(Page => Page.Image.Effect = null);
-                        Pages.ForEach(Page => Page.MainGrid.Children.Remove(Page.Image));
-                        ForEach(newImages, kvp => kvp.Key.Image = kvp.Value);
-                        _imageCount--;
-                        _isCalculated = true;
-                        timer.Stop();
-                    }
-                };
-                timer.Start();
-            }
-            */
-
         }
 
         private void ForEach<TKey, TValue>(Dictionary<TKey, TValue> dict, Action<KeyValuePair<TKey, TValue>> action) where TKey : notnull

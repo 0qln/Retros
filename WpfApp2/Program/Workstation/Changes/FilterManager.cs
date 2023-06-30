@@ -21,14 +21,15 @@ using System.Windows.Navigation;
 using DebugLibrary;
 using System.Windows.Input;
 using System.Security.Policy;
-using static System.Net.Mime.MediaTypeNames;
 using Retros.Program.Workstation.TabUI.Tabs;
 using Retros.Program.Workstation.Image;
-using static System.Net.WebRequestMethods;
 
-namespace Retros.Program.Workstation.Changes {
+
+namespace Retros.Program.Workstation.Changes
+{
     // Functionality -> Image Filters Tab Body
-    public class FilterManager {
+    public class FilterManager
+    {
         private HashSet<Type> _filterTypes = new();
         private List<IFilter> _filters = new();
         private DispatcherTimer _timer = new();
@@ -38,10 +39,13 @@ namespace Retros.Program.Workstation.Changes {
         public event Action? HierachyOrderChanged;
 
 
-        public IFilter[] CurrentFilters {
-            set {
+        public IFilter[] CurrentFilters
+        {
+            set
+            {
                 _filters = new List<IFilter>();
-                for (int i = 0; i < value.Length; i++) {
+                for (int i = 0; i < value.Length; i++)
+                {
                     _filters.Add((IFilter)value[i].Clone());
                 }
 
@@ -54,27 +58,33 @@ namespace Retros.Program.Workstation.Changes {
 
                 ((ImageFilterBody)tab.Body).AdjustSlisers(value);
             }
-            get {
+            get
+            {
                 IFilter[] arr = new IFilter[_filters.Count];
-                for (int i = 0; i < _filters.Count; i++) {
+                for (int i = 0; i < _filters.Count; i++)
+                {
                     arr[i] = (IFilter)_filters[i].Clone();
                 }
                 return arr;
             }
         }
-        public void PrintChanges() {
+        public void PrintChanges()
+        {
             //DebugLibrary.Console.Log("filter list:");
-            foreach (var filter in _filters) {
+            foreach (var filter in _filters)
+            {
                 //DebugLibrary.Console.Log(filter.GetType().Name.ToString());
             }
             //DebugLibrary.Console.Log("filter set:");
-            foreach (var filter in _filterTypes) {
+            foreach (var filter in _filterTypes)
+            {
                 //DebugLibrary.Console.Log(filter.Name.ToString());
             }
         }
 
 
-        public FilterManager(WorkstationImage image) {
+        public FilterManager(WorkstationImage image)
+        {
             _timer.Interval = _interval;
             _timer.Tick += (s, e) => ApplyFilters();
             _timer.Start();
@@ -85,19 +95,23 @@ namespace Retros.Program.Workstation.Changes {
         }
 
 
-        public void Order(List<string> filterStrings) {
+        public void Order(List<string> filterStrings)
+        {
             if (_filters.Count == 0) return;
             if (filterStrings.Count != _filters.Count) return;
 
             int i = 0; // types
             int j = 0; // strings
 
-            while (i < _filters.Count) {
+            while (i < _filters.Count)
+            {
 
-                if (_filters[i].GetType().Name != filterStrings[j]) {
+                if (_filters[i].GetType().Name != filterStrings[j])
+                {
                     int tempJ = j;
                     j++;
-                    while (_filters[i].GetType().Name != filterStrings[j]) {
+                    while (_filters[i].GetType().Name != filterStrings[j])
+                    {
                         j++;
                     }
                     //insert
@@ -107,7 +121,8 @@ namespace Retros.Program.Workstation.Changes {
 
                     j = tempJ;
                 }
-                else {
+                else
+                {
                     i++;
                     j++;
                 }
@@ -117,44 +132,62 @@ namespace Retros.Program.Workstation.Changes {
             HierachyOrderChanged?.Invoke();
         }
 
-        public void SendHierachyOrderChangeToHistory() {
+        public void SendHierachyOrderChangeToHistory()
+        {
             _image.GetHistoryManager.AddAndStep(ImageState.FromImage(_image));
         }
 
-        public void Clear() {
+        public void Clear()
+        {
             _filters.Clear();
             _filterTypes.Clear();
         }
 
         private bool justRemoved = false;
         private bool changed = false;
-        public void ApplyFilters() {
-            if (!changed) {
+        public unsafe void ApplyFilters()
+        {
+            if (!changed)
+            {
                 return;
             }
 
-            if (_filters.Count == 0) {
-                if (justRemoved) {
-                    _image.ChangeCurentImages(_image.ResizedSourceBitmap);
+            if (_filters.Count == 0)
+            {
+                if (justRemoved)
+                {
+                    _image.ChangeCurrentImages(_image.ResizedSourceBitmap);
                     justRemoved = false;
                 }
                 return;
             }
 
-
-            _image.ChangeCurentImages(ApplyChanges(new WriteableBitmap(_image.ResizedSourceBitmap)));
-
+            Task.Run(() =>
+            {
+                WriteableBitmap bitmap = _image.GetDownscaledSourceImage();
+                ApplyChanges(bitmap);
+                bitmap.Freeze();
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    _image.ChangeCurrentImages(bitmap);
+                });
+                MessageBox.Show("1");
+            });
+            MessageBox.Show("2");
 
             changed = false;
         }
-        public WriteableBitmap ApplyChanges(WriteableBitmap bitmap) {
-            for (int i = _filters.Count - 1; i >= 0; i--) {
+        public void ApplyChanges(WriteableBitmap bitmap)
+        {
+            for (int i = _filters.Count - 1; i >= 0; i--)
+            {
+                //MessageBox.Show(Measure.Execute(() => _filters[i].Generate(bitmap)).ElapsedMilliseconds.ToString());
                 _filters[i].Generate(bitmap);
             }
-            return bitmap;
         }
 
-        public bool AddFilter(IFilter filter) {
+        public bool AddFilter(IFilter filter)
+        {
             if (ContainsFilter(filter)) return false;
 
             _filters.Add(filter);
@@ -164,15 +197,17 @@ namespace Retros.Program.Workstation.Changes {
 
             return true;
         }
-        public void RemoveFilter<T>() where T : IFilter {
+        public void RemoveFilter<T>() where T : IFilter
+        {
             if (!ContainsFilter<T>()) return;
-            
+
             _filterTypes.Remove(typeof(T));
             _filters.Remove(GetFilter<T>()!);
             changed = true;
             justRemoved = true;
         }
-        public void RemoveFilter(IFilter filter) {
+        public void RemoveFilter(IFilter filter)
+        {
             if (!ContainsFilter(filter)) return;
 
             _filterTypes.Remove(filter.GetType());
@@ -181,34 +216,42 @@ namespace Retros.Program.Workstation.Changes {
             justRemoved = true;
         }
 
-        public void SetFilterIntensity(IFilter filter, double value) {
-            if (ContainsFilter(filter)) {
+        public void SetFilterIntensity(IFilter filter, double value)
+        {
+            if (ContainsFilter(filter))
+            {
                 GetFilter(filter)!.FilterIntensity = value;
                 changed = true;
             }
         }
-        public void SetFilterIntensity<T>(double value) where T : IFilter {
-            if (ContainsFilter<T>()) {
+        public void SetFilterIntensity<T>(double value) where T : IFilter
+        {
+            if (ContainsFilter<T>())
+            {
                 GetFilter<T>()!.FilterIntensity = value;
                 changed = true;
             }
         }
 
 
-        public IFilter? GetFilter(IFilter pFilter) {
+        public IFilter? GetFilter(IFilter pFilter)
+        {
             return _filters.Count > 0
                 ? _filters.FirstOrDefault(filter => filter.GetType() == pFilter.GetType())
                 : null;
         }
-        public IFilter? GetFilter<T>() where T : IFilter {
+        public IFilter? GetFilter<T>() where T : IFilter
+        {
             return _filters.Count > 0
                 ? _filters.FirstOrDefault(filter => filter.GetType() == typeof(T))
                 : null;
         }
-        public bool ContainsFilter<T>() where T : IFilter {
+        public bool ContainsFilter<T>() where T : IFilter
+        {
             return _filterTypes.Contains(typeof(T));
         }
-        public bool ContainsFilter(IFilter filter) {
+        public bool ContainsFilter(IFilter filter)
+        {
             return _filterTypes.Contains((filter).GetType());
         }
 
