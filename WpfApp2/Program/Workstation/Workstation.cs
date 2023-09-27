@@ -27,7 +27,8 @@ namespace Retros.Program.Workstation {
         public WorkstationTabPresenter TabElement { get; } = new();
 
         public readonly static string DefaultPath =
-            @"C:\Users\linus\Documents\Pictures\HSLS255.jpg";
+            //@"C:\Users\User\OneDrive\Bilder\Wallpapers\wide\women-artwork-warrior-sword-wallpaper-8a184fb8cf392d0984e2892e274450d4.jpg";
+            @"C:\Users\User\OneDrive\Bilder\Wallpapers\wide\women-artwork-warrior-sword-wallpaper-down_sampled.bak.jpg";
 
 
         public Workstation(double topPadding) {

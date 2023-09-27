@@ -24,7 +24,7 @@ namespace Retros {
             InitializeComponent();
             // Window Handle
             WindowHandle = new(this);
-            UIManager.ColorThemeManager.Set_BG6(b => WindowHandle.SetBGColor(b));
+            UIManager.ColorThemeManager.Set_BG6(b => WindowHandle.BackgroundColor = b);
             UIManager.ColorThemeManager.Set_BG1(b => Background = b);
             UIManager.ColorThemeManager.Set_BGh2(b => WindowHandle.ApplicationButtons.ColorWhenButtonHover = b);
 

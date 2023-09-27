@@ -71,6 +71,253 @@
             <param name="b">The second parameter.</param>
             <returns>The Pascal triangle coefficient value.</returns>
         </member>
+        <member name="T:Utillities.Wpf.WindowHandle">
+            <summary>
+            Represents a UIElement used in WPFs that provides a custom window title bar for windows that use window chrome and have no window style.
+            </summary>
+        </member>
+        <member name="T:Utillities.Wpf.WindowHandle.ApplicationButtonCollection">
+            <summary>
+            Represents a collection of application buttons within the WindowHandle.
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.IsFullscreen">
+            <summary>Gets the fullscreen state of the window.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.Height">
+            <summary>Gets or sets the height of the application buttons.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.Width">
+            <summary>Gets or sets the width of the application buttons.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ExitButton">
+            <summary>Gets the exit button.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ExitButtonImageSource">
+            <summary>Gets or sets the image source for the exit button.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ExitButtonImagePadding">
+            <summary>Gets or sets the padding for the exit button image.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MinimizeButton">
+            <summary>Gets the minimize button.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MinimizeButtonImageSource">
+            <summary>Gets or sets the image source for the minimize button.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MinimizeButtonImagePadding">
+            <summary>Gets or sets the padding for the minimize button image.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MaximizeButton">
+            <summary>Gets the maximize button.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MaximizeButtonImageSource">
+            <summary>Gets or sets the image source for the maximize button.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MaximizeButtonImageSourceWhenMaximized">
+            <summary>Gets or sets the image source for the maximize button when it is maximized.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MaximizeButtonImagePadding">
+            <summary>Gets or sets the padding for the maximize button image.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MaximizeButtonImageSourceWhenWindowed">
+            <summary>Gets or sets the image source for the maximize button when it is windowed</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SettingsButton">
+            <summary>Gets the settings button.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SettingsButtonImageSource">
+            <summary>Gets or sets the image source for the settings button. Expects an image file, like `png`.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SettingsButtonContent">
+            <summary>Set the content of the settings button directly.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SettingsButtonContentPadding">
+            <summary>Gets or sets the padding for the settings button image.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.FullscreenButton">
+            <summary>Gets the fullscreen button.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.FullscreenButtonImageSource">
+            <summary>Gets or sets the image source for the fullscreen button.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.FullscreenButtonImagePadding">
+            <summary>Gets or sets the padding for the settings button image.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.FrameworkElement">
+            <summary>Gets the framework element which contains the application buttons.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ColorWhenButtonHover">
+            <summary>Gets or sets the color of the application buttons when hovered.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.Color">
+            <summary>Gets or sets the color of the application buttons.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SymbolColor">
+            <summary>Gets or sets the color of the symbol within the application buttons.</summary>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.#ctor(Utillities.Wpf.WindowHandle,System.Windows.Window)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Utillities.Wpf.WindowHandle.ApplicationButtonCollection"/> class.
+            </summary>
+            <param name="windowHandle">The WindowHandle.</param>
+            <param name="window">The associated window.</param>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ActivateExitButtonSprite">
+            <summary>
+            Will prepare the exit button to have an image as content.
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ActivateMaximizeButtonSprite">
+            <summary>
+            Will prepare the exit button to have an image as content.
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ActivateMinimizeButtonSprite">
+            <summary>
+            Will prepare the exit button to have an image as content.
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.AddSettingsButton">
+            <summary>
+            Adds the settings button to the collection.
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.AddFullcreenButton">
+            <summary>
+            Adds the fullscreen button to the collection.
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ButtonStyle">
+            <summary>
+            Creates the button style for the application buttons.
+            </summary>
+            <returns>The button style.</returns>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SetWindowChromeActive">
+            <summary>
+            Sets the WindowChrome properties for the application buttons.
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.OverrideShutdown(System.Action)">
+            <summary>
+            Overrides the default shutdown behavior of the exit button with a custom action.
+            </summary>
+            <param name="action">The custom action to be executed on exit button click.</param>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.OverrideMinimize(System.Action)">
+            <summary>
+            Overrides the default minimize behavior of the minimize button with a custom action.
+            </summary>
+            <param name="action">The custom action to be executed on minimize button click.</param>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.OverrideMaximize(System.Action)">
+            <summary>
+            Overrides the default maximize behavior of the maximize button with a custom action.
+            </summary>
+            <param name="action">The custom action to be executed on maximize button click.</param>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.OverrideSettings(System.Action)">
+            <summary>
+            Overrides the default settings button behavior with a custom action.
+            </summary>
+            <param name="action">The custom action to be executed on settings button click.</param>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.OverrideFullscreen(System.Action)">
+            <summary>
+            Overrides the default fullscreen button behavior with a custom action.
+            </summary>
+            <param name="action"></param>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.UpdateButtonSize">
+            <summary>
+            Forces the Sizes of the buttons to update.
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.UpdateButtonColors">
+            <summary>
+            Forces the colors of the buttons to update.
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SetWindowChromeActive(System.Boolean)">
+            <summary>
+            Set `WindowChrome.SetIsHitTestVisibleInChrome` for this element.
+            </summary>
+            <param name="active"></param>
+        </member>
+        <member name="F:Utillities.Wpf.WindowHandle.Title">
+            <summary>
+            Window title
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.Wrap">
+            <summary>
+            The window wrapping for the parent window of the handle.
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.Height">
+            <summary>
+            Gets the hight of this WindowHandle.
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtons">
+            <summary>
+            Gets the application buttons. 
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ClientButtons">
+            <summary>
+            Gets the client button collection for this window handle.
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.FrameworkElement">
+            <summary>
+            Gets the FrameworkElement of the WindowHandle.
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.BackgroundColor">
+            <summary>
+            Gets or Sets the background color for the window handle.
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.#ctor(System.Windows.Window)">
+            <summary>
+            Initializes a new instance of the WindowHandle class.
+            </summary>
+            <param name="window">The window associated with the WindowHandle.</param>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.AddIcon(System.String)">
+            <summary>
+            Adds an icon to the WindowHandle.
+            </summary>
+            <param name="path">The path to the icon image.</param>
+            <returns>The WindowHandle instance.</returns>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.SetHeight(System.Double)">
+            <summary>
+            Sets the height of the WindowHandle.
+            </summary>
+            <param name="height">The desired height.</param>
+            <returns>The WindowHandle instance.</returns>
+        </member>
+        <member name="F:Utillities.Wpf.WindowHandle.POINT.x">
+            <summary>x coordinate of point.</summary>
+        </member>
+        <member name="F:Utillities.Wpf.WindowHandle.POINT.y">
+            <summary>y coordinate of point.</summary>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.POINT.#ctor(System.Int32,System.Int32)">
+            <summary>Construct a point of coordinates (x,y).</summary>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.RECT.GetHashCode">
+            <summary>Return the HashCode for this struct (not garanteed to be unique)</summary>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.RECT.op_Equality(Utillities.Wpf.WindowHandle.RECT,Utillities.Wpf.WindowHandle.RECT)">
+            <summary> Determine if 2 RECT are equal (deep compare)</summary>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.RECT.op_Inequality(Utillities.Wpf.WindowHandle.RECT,Utillities.Wpf.WindowHandle.RECT)">
+            <summary> Determine if 2 RECT are different(deep compare)</summary>
+        </member>
         <member name="T:Utillities.Wpf.DockDirection">
             <summary>
             Represents the direction the drop-down menus will be docking.
@@ -96,9 +343,73 @@
             
             </summary>
         </member>
+        <member name="T:Utillities.Wpf.DropDownMenuBuilder">
+            <summary>
+            A builder class to instanciate a DropDownMenu in a single line, for better readebility.
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.DropDownMenuBuilder.Menu">
+            <summary>
+            The Menu that is currently being contructed.
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.DropDownMenuBuilder.#ctor(System.String,System.Windows.Window)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="name"></param>
+            <param name="rootWindow"></param>
+        </member>
+        <member name="M:Utillities.Wpf.DropDownMenuBuilder.#ctor(System.String,System.Windows.Window,Utillities.Wpf.MenuOptionWrapper[])">
+            <summary>
+            Constructor with menu options.
+            </summary>
+            <param name="name"></param>
+            <param name="rootWindow"></param>
+            <param name="menuOptions"></param>
+        </member>
+        <member name="T:Utillities.Wpf.MenuOptionWrapper">
+            <summary>
+            A builder class to instanciate a MenuOption in a single line, for better readebility.
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.MenuOptionWrapper.#ctor(System.String,System.Windows.Window,System.Double)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="name"></param>
+            <param name="rootWindow"></param>
+            <param name="height"></param>
+        </member>
+        <member name="M:Utillities.Wpf.MenuOptionWrapper.#ctor(System.String,System.Windows.Window,System.Double,Utillities.Wpf.DropDownMenuBuilder[])">
+            <summary>
+            Constructor with the option to add child options.
+            </summary>
+            <param name="name"></param>
+            <param name="rootWindow"></param>
+            <param name="height"></param>
+            <param name="childMenus"></param>
+        </member>
+        <member name="M:Utillities.Wpf.MenuOptionWrapper.Build(Utillities.Wpf.DropDownMenu)">
+            <summary>
+            Instanciates a new MenuOption object.
+            </summary>
+            <param name="parentMenu"></param>
+            <returns></returns>
+        </member>
         <member name="T:Utillities.Wpf.DropDownMenu">
             <summary>
             Represents a drop-down menu in a WPF application. 
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.DropDownMenu.IsTopMenu">
+            <summary>
+            Used for internals.
+            </summary>
+        </member>
+        <member name="F:Utillities.Wpf.DropDownMenu.DefaultOptionHeight">
+            <summary>
+            The default height for menu options.
             </summary>
         </member>
         <member name="P:Utillities.Wpf.DropDownMenu.Position">
@@ -106,7 +417,7 @@
             Gets the position of the drop-down menu.
             </summary>
         </member>
-        <member name="P:Utillities.Wpf.DropDownMenu.UIElement">
+        <member name="P:Utillities.Wpf.DropDownMenu.FrameworkElement">
             <summary>
             Gets the UI element of the drop-down menu.
             </summary>
@@ -152,7 +463,7 @@
             Toggles the visibility of the drop-down menu.
             </summary>
         </member>
-        <member name="M:Utillities.Wpf.DropDownMenu.Show">
+        <member name="M:Utillities.Wpf.DropDownMenu.Expand">
             <summary>
             Shows the drop-down menu.
             </summary>
@@ -162,7 +473,7 @@
             Hides the drop-down menu.
             </summary>
         </member>
-        <member name="M:Utillities.Wpf.DropDownMenu.HideWidthChildrenMenus">
+        <member name="M:Utillities.Wpf.DropDownMenu.Collapse">
             <summary>
             Hides the drop-down menu and its child menus.
             </summary>
@@ -221,7 +532,7 @@
             <param name="name">The name of the menu option.</param>
             <returns>The menu option with the specified name, or null if not found.</returns>
         </member>
-        <member name="M:Utillities.Wpf.DropDownMenu.UpdateOptionLayout">
+        <member name="M:Utillities.Wpf.DropDownMenu.MeasureAndArrange">
             <summary>
             Updates the layout of the menu options in the drop-down menu.
             </summary>
@@ -400,321 +711,434 @@
             <param name="value">The width value of the column.</param>
             <param name="type">The type of width measurement for the column.</param>
         </member>
-        <member name="T:Utillities.Wpf.WindowHandle">
+        <member name="T:Utillities.Wpf.IFrameworkElement">
             <summary>
-            Represents a UIElement used in WPFs that provides a custom window title bar for windows that use window chrome and have no window style.
+            A contract that the class inheriting this interface is compatible with the System.Windows namespace.
             </summary>
         </member>
-        <member name="P:Utillities.Wpf.WindowHandle.Height">
+        <member name="P:Utillities.Wpf.IFrameworkElement.FrameworkElement">
             <summary>
-            Gets the hight of this WindowHandle.
+            The System.Windows.FrameworkElement to handle this object with the System.Windows API.
             </summary>
         </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtons">
+        <member name="F:Utillities.Wpf.IPopupMenuOptionDefaults.Background">
             <summary>
-            Gets the application buttons. 
+            Default bg color each popupmenuoption is initialized with.
             </summary>
         </member>
-        <member name="P:Utillities.Wpf.WindowHandle.FrameworkElement">
+        <member name="T:Utillities.Wpf.IPopupMenu">
             <summary>
-            Gets the FrameworkElement of the WindowHandle.
+            Popup menu type framework elements
             </summary>
         </member>
-        <member name="P:Utillities.Wpf.WindowHandle.BGColor">
+        <member name="M:Utillities.Wpf.IPopupMenu.Instanciate(System.Windows.FrameworkElement)">
             <summary>
-            Gets the background color of the WindowHandle.
+            Support for the old <see cref="T:Utillities.Wpf.DropDownMenu"/> class.
+            </summary>
+            <param name="parent"></param>
+        </member>
+        <member name="M:Utillities.Wpf.IPopupMenu.Collapse">
+            <summary>
+            Collapses all options and their children menus.
             </summary>
         </member>
-        <member name="M:Utillities.Wpf.WindowHandle.#ctor(System.Windows.Window)">
+        <member name="M:Utillities.Wpf.IPopupMenu.Expand">
             <summary>
-            Initializes a new instance of the WindowHandle class.
-            </summary>
-            <param name="window">The window associated with the WindowHandle.</param>
-            <param name="cornerRadius">The corner radius of the TopLeft and TopRight corners of the Window. If the window has no rounded corners, just pass in 0.</param>
-        </member>
-        <member name="M:Utillities.Wpf.WindowHandle.AddIcon(System.String)">
-            <summary>
-            Adds an icon to the WindowHandle.
-            </summary>
-            <param name="path">The path to the icon image.</param>
-            <returns>The WindowHandle instance.</returns>
-        </member>
-        <member name="M:Utillities.Wpf.WindowHandle.SetHeight(System.Double)">
-            <summary>
-            Sets the height of the WindowHandle.
-            </summary>
-            <param name="height">The desired height.</param>
-            <returns>The WindowHandle instance.</returns>
-        </member>
-        <member name="M:Utillities.Wpf.WindowHandle.SetBGColor(System.Windows.Media.Brush)">
-            <summary>
-            Sets the background color of the WindowHandle.
-            </summary>
-            <param name="color">The background color to set.</param>
-            <returns>The WindowHandle instance.</returns>
-        </member>
-        <member name="M:Utillities.Wpf.WindowHandle.SetColorWhenHover(System.Windows.Media.Brush)">
-            <summary>
-            Sets the color when a button is hovered over in the WindowHandle.
-            </summary>
-            <param name="color">The hover color to set.</param>
-            <returns>The WindowHandle instance.</returns>
-        </member>
-        <member name="M:Utillities.Wpf.WindowHandle.CreateClientButton(Utillities.Wpf.DropDownMenu)">
-            <summary>
-            Creates a client button in the WindowHandle.
-            </summary>
-            <param name="dropDownMenu">The DropDownMenu associated with the client button.</param>
-            <returns>The WindowHandle instance.</returns>
-        </member>
-        <member name="M:Utillities.Wpf.WindowHandle.ActivateAllClientButtons">
-            <summary>
-            Activates all client buttons in the WindowHandle.
+            Shows the menu with all it's options.
             </summary>
         </member>
-        <member name="M:Utillities.Wpf.WindowHandle.ActivateButtonFunction(System.String)">
+        <member name="M:Utillities.Wpf.IPopupMenu.Toggle">
             <summary>
-            Activates the function of the specified client button in the WindowHandle.
-            </summary>
-            <param name="name">The name of the client button.</param>
-        </member>
-        <member name="M:Utillities.Wpf.WindowHandle.SetButtonFunction(System.String,System.Action)">
-            <summary>
-            Sets the function of the specified client button in the WindowHandle.
-            </summary>
-            <param name="name">The name of the client button.</param>
-            <param name="action">The action to be performed when the client button is clicked.</param>
-        </member>
-        <member name="M:Utillities.Wpf.WindowHandle.GetClientButton(System.String)">
-            <summary>
-            Gets the client button and its associated DropDownMenu based on the name.
-            </summary>
-            <param name="name">The name of the client button.</param>
-            <returns>A tuple containing the client button and its associated DropDownMenu.</returns>
-        </member>
-        <member name="M:Utillities.Wpf.WindowHandle.GetClientButtonButton(System.String)">
-            <summary>
-            Gets the client button (Button) based on the name.
-            </summary>
-            <param name="name">The name of the client button.</param>
-            <returns>The client button (Button).</returns>
-        </member>
-        <member name="M:Utillities.Wpf.WindowHandle.HideAllMenus">
-            <summary>
-            Hides all the menus associated with the client buttons in the WindowHandle.
+            Toggle between expanded and collapsed.
             </summary>
         </member>
-        <member name="M:Utillities.Wpf.WindowHandle.ToggleMenu(Utillities.Wpf.DropDownMenu)">
+        <member name="M:Utillities.Wpf.IPopupMenu.MeasureAndArrange">
             <summary>
-            Toggles the visibility of a specific DropDownMenu associated with a client button in the WindowHandle.
-            </summary>
-            <param name="element">The DropDownMenu to toggle.</param>
-        </member>
-        <member name="M:Utillities.Wpf.WindowHandle.SetWindowChromeActiveAll">
-            <summary>
-            Sets the WindowChrome properties as active for all elements in the WindowHandle.
+            Correct the spacing of all options of this menu.
             </summary>
         </member>
-        <member name="M:Utillities.Wpf.WindowHandle.ClientButtonStyle">
+        <member name="T:Utillities.Wpf.IPopupMenu.IPopupMenuOption">
             <summary>
-            Gets the style for the client buttons in the WindowHandle.
-            </summary>
-            <returns>The style for the client buttons.</returns>
-        </member>
-        <member name="F:Utillities.Wpf.WindowHandle.POINT.x">
-            <summary>x coordinate of point.</summary>
-        </member>
-        <member name="F:Utillities.Wpf.WindowHandle.POINT.y">
-            <summary>y coordinate of point.</summary>
-        </member>
-        <member name="M:Utillities.Wpf.WindowHandle.POINT.#ctor(System.Int32,System.Int32)">
-            <summary>Construct a point of coordinates (x,y).</summary>
-        </member>
-        <member name="M:Utillities.Wpf.WindowHandle.RECT.GetHashCode">
-            <summary>Return the HashCode for this struct (not garanteed to be unique)</summary>
-        </member>
-        <member name="M:Utillities.Wpf.WindowHandle.RECT.op_Equality(Utillities.Wpf.WindowHandle.RECT,Utillities.Wpf.WindowHandle.RECT)">
-            <summary> Determine if 2 RECT are equal (deep compare)</summary>
-        </member>
-        <member name="M:Utillities.Wpf.WindowHandle.RECT.op_Inequality(Utillities.Wpf.WindowHandle.RECT,Utillities.Wpf.WindowHandle.RECT)">
-            <summary> Determine if 2 RECT are different(deep compare)</summary>
-        </member>
-        <member name="T:Utillities.Wpf.WindowHandle.ApplicationButtonCollection">
-            <summary>
-            Represents a collection of application buttons within the WindowHandle.
+            An option for the IPopupMenu class
             </summary>
         </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.IsFullscreen">
-            <summary>Gets the fullscreen state of the window.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.Height">
-            <summary>Gets or sets the height of the application buttons.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.Width">
-            <summary>Gets or sets the width of the application buttons.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ExitButton">
-            <summary>Gets the exit button.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ExitButtonImageSource">
-            <summary>Gets or sets the image source for the exit button.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ExitButtonImagePadding">
-            <summary>Gets or sets the padding for the exit button image.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MinimizeButton">
-            <summary>Gets the minimize button.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MinimizeButtonImageSource">
-            <summary>Gets or sets the image source for the minimize button.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MinimizeButtonImagePadding">
-            <summary>Gets or sets the padding for the minimize button image.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MaximizeButton">
-            <summary>Gets the maximize button.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MaximizeButtonImageSource">
-            <summary>Gets or sets the image source for the maximize button.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MaximizeButtonImageSourceWhenMaximized">
-            <summary>Gets or sets the image source for the maximize button when it is maximized.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MaximizeButtonImagePadding">
-            <summary>Gets or sets the padding for the maximize button image.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MaximizeButtonImageSourceWhenWindowed">
-            <summary>Gets or sets the image source for the maximize button when it is windowed</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SettingsButton">
-            <summary>Gets the settings button.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SettingsButtonImageSource">
-            <summary>Gets or sets the image source for the settings button. Expects an image file, like `png`.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SettingsButtonContent">
-            <summary>Set the content of the settings button directly.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SettingsButtonContentPadding">
-            <summary>Gets or sets the padding for the settings button image.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.FullscreenButton">
-            <summary>Gets the fullscreen button.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.FullscreenButtonImageSource">
-            <summary>Gets or sets the image source for the fullscreen button.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.FullscreenButtonImagePadding">
-            <summary>Gets or sets the padding for the settings button image.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.FrameworkElement">
-            <summary>Gets the framework element which contains the application buttons.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ColorWhenButtonHover">
-            <summary>Gets or sets the color of the application buttons when hovered.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.Color">
-            <summary>Gets or sets the color of the application buttons.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SymbolColor">
-            <summary>Gets or sets the color of the symbol within the application buttons.</summary>
-        </member>
-        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.#ctor(Utillities.Wpf.WindowHandle,System.Windows.Window)">
+        <member name="P:Utillities.Wpf.IPopupMenu.IPopupMenuOption.HasInnerMenu">
             <summary>
-            Initializes a new instance of the <see cref="T:Utillities.Wpf.WindowHandle.ApplicationButtonCollection"/> class.
-            </summary>
-            <param name="windowHandle">The WindowHandle.</param>
-            <param name="window">The associated window.</param>
-        </member>
-        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ActivateExitButtonSprite">
-            <summary>
-            Will prepare the exit button to have an image as content.
+            
             </summary>
         </member>
-        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ActivateMaximizeButtonSprite">
+        <member name="P:Utillities.Wpf.IPopupMenu.IPopupMenuOption.Icon">
             <summary>
-            Will prepare the exit button to have an image as content.
+            
             </summary>
         </member>
-        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ActivateMinimizeButtonSprite">
+        <member name="T:Utillities.Wpf.IWindowChromeElement">
             <summary>
-            Will prepare the exit button to have an image as content.
+            An element that can be window chrome activated.
             </summary>
         </member>
-        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.AddSettingsButton">
+        <member name="M:Utillities.Wpf.IWindowChromeElement.SetWindowChromeActive(System.Boolean)">
             <summary>
-            Adds the settings button to the collection.
+            Set the window chrome activation
+            </summary>
+            <param name="active"></param>
+        </member>
+        <member name="T:Utillities.Wpf.IWindowHandle">
+            <summary>
+            
             </summary>
         </member>
-        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.AddFullcreenButton">
+        <member name="T:Utillities.Wpf.PopupMenu">
             <summary>
-            Adds the fullscreen button to the collection.
+            A container for a collection of <see cref="T:Utillities.Wpf.PopupMenuOption"/> objects. <br />
+            An improvement to the <see cref="T:Utillities.Wpf.DropDownMenu"/> class.
             </summary>
         </member>
-        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ButtonStyle">
+        <member name="M:Utillities.Wpf.PopupMenu.Instanciate(System.Windows.FrameworkElement)">
             <summary>
-            Creates the button style for the application buttons.
+            Acting as a dummy. This implementation of the PopupMenu 
+            does not need an Instanciate method.
             </summary>
-            <returns>The button style.</returns>
+            <param name="parent"></param>
         </member>
-        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SetWindowChromeActive">
+        <member name="P:Utillities.Wpf.PopupMenu.Utillities#Wpf#IPopupMenu#IsTopMenu">
             <summary>
-            Sets the WindowChrome properties for the application buttons.
+            Whether this Menu is the top menu in the hierachy or not.
+            Used for internals.
             </summary>
         </member>
-        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.OverrideShutdown(System.Action)">
+        <member name="P:Utillities.Wpf.PopupMenu.IsExpanded">
             <summary>
-            Overrides the default shutdown behavior of the exit button with a custom action.
+            Whether this menu is expanded or not.
             </summary>
-            <param name="action">The custom action to be executed on exit button click.</param>
         </member>
-        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.OverrideMinimize(System.Action)">
+        <member name="P:Utillities.Wpf.PopupMenu.Options">
             <summary>
-            Overrides the default minimize behavior of the minimize button with a custom action.
+            All options.
             </summary>
-            <param name="action">The custom action to be executed on minimize button click.</param>
         </member>
-        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.OverrideMaximize(System.Action)">
+        <member name="P:Utillities.Wpf.PopupMenu.FrameworkElement">
             <summary>
-            Overrides the default maximize behavior of the maximize button with a custom action.
+            The System.Windows.FrameworkElement to handle this object with the System.Windows API.
             </summary>
-            <param name="action">The custom action to be executed on maximize button click.</param>
         </member>
-        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.OverrideSettings(System.Action)">
+        <member name="P:Utillities.Wpf.PopupMenu.Border">
             <summary>
-            Overrides the default settings button behavior with a custom action.
+            Border to add background and border brush.
             </summary>
-            <param name="action">The custom action to be executed on settings button click.</param>
         </member>
-        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.OverrideFullscreen(System.Action)">
+        <member name="P:Utillities.Wpf.PopupMenu.StackPanel">
             <summary>
-            Overrides the default fullscreen button behavior with a custom action.
+            Gets the stackpanel that contains the options.
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.PopupMenu.#ctor(Utillities.Wpf.IPopupMenu.IPopupMenuOption[])">
+            <summary>
+            Constructor
+            </summary>
+            <param name="options"></param>
+        </member>
+        <member name="M:Utillities.Wpf.PopupMenu.AddOption(Utillities.Wpf.IPopupMenu.IPopupMenuOption)">
+            <summary>
+            Adds an option.
+            </summary>
+            <param name="option"></param>
+        </member>
+        <member name="M:Utillities.Wpf.PopupMenu.MeasureAndArrange">
+            <summary>
+            Correct the spacing of all options of this menu and the menus position, 
+            if it is marked as the top menu.
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.PopupMenu.Toggle">
+            <summary>
+            Toggles between not visible and visible.
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.PopupMenu.Collapse">
+            <summary>
+            Collapses all options and their children menus.
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.PopupMenu.Expand">
+            <summary>
+            Expand this menu.
+            </summary>
+        </member>
+        <member name="T:Utillities.Wpf.PopupMenuOption">
+            <summary>
+            Representing an option in the <see cref="T:Utillities.Wpf.PopupMenu"/> class.
+            </summary>
+        </member>
+        <member name="F:Utillities.Wpf.PopupMenuOption.DefaultHeight">
+            <summary>
+            The height that every object of this class is instanciated with.
+            </summary>
+        </member>
+        <member name="F:Utillities.Wpf.PopupMenuOption.DefaultSpacingLeft">
+            <summary>
+            The space between the icon and the name that every object of this class is instanciated with.
+            </summary>
+        </member>
+        <member name="F:Utillities.Wpf.PopupMenuOption.DefaultSpacingRight">
+            <summary>
+            The space between the name and the arrow that every object of this class is instanciated with.
+            </summary>
+        </member>
+        <member name="F:Utillities.Wpf.PopupMenuOption._parentContainer">
+            <summary> | _stackPanel | _childMenuContainer </summary>
+        </member>
+        <member name="F:Utillities.Wpf.PopupMenuOption._stackPanel">
+            <summary> | Icon | SpacingLeft | Name | SpacingRight | Arrow | </summary>
+        </member>
+        <member name="P:Utillities.Wpf.PopupMenuOption.DesiredWidth">
+            <summary>
+            Desired width, let's see what we can do for you.
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.PopupMenuOption.Background">
+            <summary>
+            Background color
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.PopupMenuOption.IsExpanded">
+            <summary>
+            Whtether the inner menu is expanded or not.
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.PopupMenuOption.SpacingLeft">
+            <summary>
+            The space between the icon and the name.
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.PopupMenuOption.SpacingRight">
+            <summary>
+            The space between the name and the arrow
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.PopupMenuOption.HasInnerMenu">
+            <summary>
+            Wether this option has an inner menu or not.
+            </summary>
+        </member>
+        <member name="E:Utillities.Wpf.PopupMenuOption.OnClick">
+            <summary>
+            Get's invoked when this option is clicked.
+            </summary>
+        </member>
+        <member name="E:Utillities.Wpf.PopupMenuOption.OnSizeChanged">
+            <summary>
+            Get's invoked when the size changed.
+            </summary>
+        </member>
+        <member name="E:Utillities.Wpf.PopupMenuOption.OnMeasurable">
+            <summary>
+            Get's called when this ojbect is loaded.
+            </summary>
+        </member>
+        <member name="E:Utillities.Wpf.PopupMenuOption.OnIconAdded">
+            <summary>
+            Get's invoked when an icon is added to this option.
+            </summary>
+        </member>
+        <member name="E:Utillities.Wpf.PopupMenuOption.OnIconRemoved">
+            <summary>
+            Get's invoked when an icon is removed from this option.
+            </summary>
+        </member>
+        <member name="E:Utillities.Wpf.PopupMenuOption.OnIconChanged">
+            <summary>
+            Get's invoked when the icon get's accessed or written to.
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.PopupMenuOption.CanBeMeasured">
+            <summary>
+            Wether this object can be measured or not.
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.PopupMenuOption.Width">
+            <summary>
+            Width
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.PopupMenuOption.Height">
+            <summary>
+            Height
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.PopupMenuOption.IconWidth">
+            <summary>
+            Icon Width
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.PopupMenuOption.ArrowWidth">
+            <summary>
+            Arrow Width
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.PopupMenuOption.NameWidth">
+            <summary>
+            Name Width
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.PopupMenuOption.FrameworkElement">
+            <summary>
+            The System.Windows.FrameworkElement to handle this object with the System.Windows API.
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.PopupMenuOption.Icon">
+            <summary>
+            The icon next to this option.
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.PopupMenuOption.Name">
+            <summary>
+            The name of the option
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.PopupMenuOption.#ctor(System.String)">
+            <summary>
+            Contructor
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.PopupMenuOption.#ctor(System.String,Utillities.Wpf.PopupMenu)">
+            <summary>
+            Contructor
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.PopupMenuOption.SetAction(System.Action)">
+            <summary>
+            Adds the action to `OnClick` and returns this instance. 
+            Useful for Nested initializations.
             </summary>
             <param name="action"></param>
+            <returns></returns>
         </member>
-        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.UpdateButtonSize">
+        <member name="M:Utillities.Wpf.PopupMenuOption.Toggle">
             <summary>
-            Forces the Sizes of the buttons to update.
+            Toggle the visibility of the inner menu, if existend.
             </summary>
         </member>
-        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.UpdateButtonColors">
+        <member name="M:Utillities.Wpf.PopupMenuOption.Collapse">
             <summary>
-            Forces the colors of the buttons to update.
+            Collapse the inner menu, if existend.
             </summary>
+        </member>
+        <member name="M:Utillities.Wpf.PopupMenuOption.Expand">
+            <summary>
+            Expand the inner menu, if existend.
+            </summary>
+        </member>
+        <member name="T:Utillities.Wpf.ClientButtonCollection">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.ClientButtonCollection.FrameworkElement">
+            <summary>
+            FrameworkElement
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.ClientButtonCollection.Count">
+            <summary>
+            The total count of `ClientButton` objects in this collection
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.ClientButtonCollection.IsReadOnly">
+            <summary>
+            Wether this is readonly or not.
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.ClientButtonCollection.Item(System.Int32)">
+            <summary>
+            Get or Set the `ClientButton` at a specific index.
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Utillities.Wpf.ClientButtonCollection.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.ClientButtonCollection.SetWindowChromActiveAll(System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="active"></param>
+        </member>
+        <member name="T:Utillities.Wpf.ClientButton">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Utillities.Wpf.ClientButton.DefaultHeight">
+            <summary>
+            The default height every button will be initialized with.
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.ClientButton.Style">
+            <summary>
+            NOT The default style every button will be initialized with.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Utillities.Wpf.ClientButton.Button">
+            <summary>
+            Button 
+            </summary>
+        </member>
+        <member name="P:Utillities.Wpf.ClientButton.FrameworkElement">
+            <summary>
+            FrameworkElement
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.ClientButton.#ctor(System.String,Utillities.Wpf.IPopupMenu)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="menu"></param>
+            <param name="name"></param>
+        </member>
+        <member name="T:Utillities.Wpf.WindowWrapping">
+            <summary>
+            A wrapping for a WPF window.
+            </summary>
+        </member>
+        <member name="F:Utillities.Wpf.WindowWrapping.Panel">
+            <summary>
+            The new parent container, that is supposed to hold all 
+            the windows content.
+            </summary>
+        </member>
+        <member name="F:Utillities.Wpf.WindowWrapping.Border">
+            <summary>
+            The new Border that will surround the window.
+            </summary>
+        </member>
+        <member name="F:Utillities.Wpf.WindowWrapping.RectangleGeometry">
+            <summary>
+            A `RectangleGeometry` object to help the with border visuals, such as clipping.
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.WindowWrapping.#ctor(System.Windows.Controls.Panel,System.Windows.Controls.Border,System.Windows.Media.RectangleGeometry)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="panel"></param>
+            <param name="border"></param>
+            <param name="rectangleGeometry"></param>
         </member>
         <member name="T:Utillities.Wpf.WindowWrapper">
             <summary>
             Provides a quick way to wrap a window in a border for depper customization.
             </summary>
         </member>
-        <member name="M:Utillities.Wpf.WindowWrapper.Wrap(System.Windows.Window,System.Windows.Controls.Panel@,System.Windows.Controls.Border@,System.Windows.Media.RectangleGeometry@)">
+        <member name="M:Utillities.Wpf.WindowWrapper.Wrap(System.Windows.Window)">
             <summary>
             Will wrap the window in a border which allows for better customization.
             </summary>
             <param name="window">The window to be wrapped</param>
-            <param name="pPanel">Output parameter that receives the panel containing the window's content.</param>
-            <param name="pBorder">Output parameter that receives the border wrapping the window.</param>
-            <param name="pRectangleGeometry">Output parameter that receives the rectangle geometry used for clipping.</param>
             <remarks>
             If the old content of the window was not a Panel, a new Canvas is created, and the old content of the window is added to the newly created panel for further usage of the window.
             The original content of the window is set to null before wrapping it in the border.

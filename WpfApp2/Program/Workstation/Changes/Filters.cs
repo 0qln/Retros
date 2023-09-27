@@ -232,23 +232,247 @@ namespace Retros.Program.Workstation.Changes
     }
     public class PixelSorter : FilterBase<PixelSorter>, IFilter
     {
+        private IComparer<(byte,byte,byte)> _comparer;
+
         public SortBy SortBy { get; set; } = SortBy.BrightnessAvarage;
         public Orientation Orientation { get; set; } = Orientation.Horizontal;
         public SortDirection Direction { get; set; } = SortDirection.Ascending;
         public float LowThreshhold { get; set; } = float.MinValue;
         public float HighThreshhold { get; set; } = float.MaxValue;
+        public int MaxPixelSpanLength {get; set; } = 300;
+
+        
+        public PixelSorter() {
+            _comparer = new Comparer(this);
+        }
 
 
         public void Generate(WriteableBitmap writeableBitmap)
         {
             if (Orientation == Orientation.Horizontal)
             {
-                GenerateHorizontal(writeableBitmap);
+                DebugLibrary.Console.Log("Started sorting...");
+ 
+
+//                var array = new byte[100];
+//                var arraySpan = new Span<byte>(array);
+//
+//                byte data = 0;
+//                for (int ctr =arraySpan.Length-1; ctr >= 0; ctr--)
+//                    arraySpan[ctr] = data++;
+//
+//                foreach(var num in arraySpan)  
+//                    DebugLibrary.Console.Log(num);
+//
+//                arraySpan.QuickSort();
+//
+//                foreach(var num in array)  
+//                    DebugLibrary.Console.Log(num);
+
+
+                DebugLibrary.Console.Log("GenerateHorizontal_Parallel_0: "+DebugLibrary.Benchmark.Measure.Execute(()=>GenerateHorizontal_Parallel_0(writeableBitmap)).ElapsedMilliseconds);
+                DebugLibrary.Console.Log("GenerateHorizontal_Parallel_1: "+DebugLibrary.Benchmark.Measure.Execute(()=>GenerateHorizontal_Parallel_1(writeableBitmap)).ElapsedMilliseconds);
+
+                //DebugLibrary.Console.Log("GenerateHorizontal_TaskPool: "+DebugLibrary.Benchmark.Measure.Execute(()=>GenerateHorizontal_TaskPool(writeableBitmap)).ElapsedMilliseconds);
+                
+                DebugLibrary.Console.Log("Finished sorting");
             }
             else
             {
-                GenerateVertical(writeableBitmap);
+                //GenerateVertical(writeableBitmap);
+                DebugLibrary.Console.Log("Disabled");
             }
+        }
+        private unsafe void GenerateHorizontal_TaskPool(WriteableBitmap writeableBitmap)
+        {
+            int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
+            int pixelHeight = writeableBitmap.PixelHeight;
+            int pixelWidth = writeableBitmap.PixelWidth;
+            int stride = writeableBitmap.BackBufferStride;
+
+            writeableBitmap.Lock();
+
+            try
+            {
+                IntPtr bufferPtr = writeableBitmap.BackBuffer;
+                byte* pixelData = (byte*)bufferPtr;
+
+                Task[] tasks = new Task[pixelHeight];
+                for (int i = 0; i < pixelHeight; i++)
+                {
+                    int y = i;
+                    tasks[i] = new Task(() => GenerateRow_v1(y, stride, pixelWidth, bytesPerPixel, pixelData, writeableBitmap));
+                    tasks[i].Start();
+                }
+
+                for (int i = 0; i < tasks.Length;) {
+                    if (tasks[i].IsCompleted) {
+                        i++;
+                    }
+                }
+            }
+            finally
+            {
+                writeableBitmap.Unlock();
+            }
+
+            _applied = true;
+        }
+        private unsafe void GenerateRow_v0(int y, int stride, int pixelWidth, int bytesPerPixel, byte* pixelData, WriteableBitmap writeableBitmap) {
+            byte* row = pixelData + y * stride;
+            //iterate the row for subarrays
+            int startIndex = 0;
+            int endIndex = 0;
+            float pixelEval;
+            while (startIndex < pixelWidth * bytesPerPixel && startIndex - endIndex < MaxPixelSpanLength)
+            {
+                //find subarray
+                pixelEval = SelectedProperty((row[startIndex + 0], row[startIndex + 1], row[startIndex + 2]));
+                while (pixelEval < LowThreshhold && pixelEval > HighThreshhold && startIndex + bytesPerPixel < pixelWidth * bytesPerPixel)
+                {
+                    startIndex += bytesPerPixel;
+                    pixelEval = SelectedProperty((row[startIndex + 0], row[startIndex + 1], row[startIndex + 2]));
+                }
+                endIndex = startIndex;
+                do
+                {
+                    endIndex += bytesPerPixel;
+                    pixelEval = SelectedProperty((row[endIndex + 0], row[endIndex + 1], row[endIndex + 2]));
+                }
+                while (pixelEval >= LowThreshhold && pixelEval <= HighThreshhold  && endIndex + bytesPerPixel < pixelWidth * bytesPerPixel);
+
+                //get subarray
+                (byte, byte, byte)[] pixels = new (byte, byte, byte)[endIndex/bytesPerPixel - startIndex/bytesPerPixel];
+                for (int i = 0; i < pixels.Length; i++)
+                {
+                    pixels[i] = (row[startIndex + i*bytesPerPixel], row[startIndex + i*bytesPerPixel + 1], row[startIndex + i*bytesPerPixel + 2]);
+                }
+
+                //sort the subarray
+                Array.Sort(pixels, Compare);
+
+                //overwrite pixelData with sorted subarray
+                for (int i = 0; i < pixels.Length; i++)
+                {
+                    row[i*bytesPerPixel + 0 + startIndex] = pixels[i].Item1;
+                    row[i*bytesPerPixel + 1 + startIndex] = pixels[i].Item2;
+                    row[i*bytesPerPixel + 2 + startIndex] = pixels[i].Item3;
+                }
+
+                startIndex += bytesPerPixel;
+            }
+        }
+        private unsafe void GenerateRow_v1(int y, int stride, int pixelWidth, int bytesPerPixel, byte* pixelData, WriteableBitmap writeableBitmap) {
+            byte* row = pixelData + y * stride;
+            //iterate the row for subarrays
+            int startIndex = 0;
+            int endIndex = 0;
+            float pixelEval;
+            while (startIndex < pixelWidth * bytesPerPixel && startIndex - endIndex < MaxPixelSpanLength)
+            {
+                //find subarray
+                pixelEval = SelectedProperty((row[startIndex + 0], row[startIndex + 1], row[startIndex + 2]));
+                while (pixelEval < LowThreshhold && pixelEval > HighThreshhold && startIndex + bytesPerPixel < pixelWidth * bytesPerPixel)
+                {
+                    startIndex += bytesPerPixel;
+                    pixelEval = SelectedProperty((row[startIndex + 0], row[startIndex + 1], row[startIndex + 2]));
+                }
+                endIndex = startIndex;
+                do
+                {
+                    endIndex += bytesPerPixel;
+                    pixelEval = SelectedProperty((row[endIndex + 0], row[endIndex + 1], row[endIndex + 2]));
+                }
+                while (pixelEval >= LowThreshhold && pixelEval <= HighThreshhold  && endIndex + bytesPerPixel < pixelWidth * bytesPerPixel);
+
+                //copy subarray
+                var span = new Span<(byte,byte,byte)>(row + startIndex, endIndex/bytesPerPixel - startIndex/bytesPerPixel);
+
+                //sort the subarray
+                span.Sort(_comparer);
+
+                startIndex += bytesPerPixel;
+            }
+        } 
+
+
+        public class Comparer : IComparer<(byte,byte,byte)> {
+            private readonly PixelSorter _sorter;
+
+            public Comparer(PixelSorter sorter) {
+                _sorter = sorter;
+            }
+
+            public int Compare((byte,byte,byte) a, (byte,byte,byte) b) {
+                int dir = _sorter.Direction == SortDirection.Ascending ? 1 : -1;
+                float selA;
+                float selB;
+                _sorter.SelectedProperties(a, b, out selA, out selB);
+
+                if (selA > selB) return 1 * dir;
+                else if (selA < selB) return -1 * dir;
+                else return 0; 
+            }
+        }
+
+
+        private unsafe void GenerateHorizontal_Parallel_1(WriteableBitmap writeableBitmap)
+        {
+            int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
+            int pixelHeight = writeableBitmap.PixelHeight;
+            int pixelWidth = writeableBitmap.PixelWidth;
+            int stride = writeableBitmap.BackBufferStride;
+
+            writeableBitmap.Lock();
+
+            try
+            {
+                IntPtr bufferPtr = writeableBitmap.BackBuffer;
+                byte* pixelData = (byte*)bufferPtr;
+
+
+                Parallel.For(0, pixelHeight, y =>
+                {
+                    GenerateRow_v1(y, stride, pixelWidth, bytesPerPixel, pixelData, writeableBitmap);
+                });
+
+            }
+            finally
+            {
+                writeableBitmap.Unlock();
+            }
+
+            _applied = true;
+        }
+
+
+        private unsafe void GenerateHorizontal_Parallel_0(WriteableBitmap writeableBitmap)
+        {
+            int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
+            int pixelHeight = writeableBitmap.PixelHeight;
+            int pixelWidth = writeableBitmap.PixelWidth;
+            int stride = writeableBitmap.BackBufferStride;
+
+            writeableBitmap.Lock();
+
+            try
+            {
+                IntPtr bufferPtr = writeableBitmap.BackBuffer;
+                byte* pixelData = (byte*)bufferPtr;
+
+
+                Parallel.For(0, pixelHeight, y =>
+                {
+                    GenerateRow_v0(y, stride, pixelWidth, bytesPerPixel, pixelData, writeableBitmap);
+                });
+
+            }
+            finally
+            {
+                writeableBitmap.Unlock();
+            }
+
+            _applied = true;
         }
 
         private unsafe void GenerateVertical(WriteableBitmap writeableBitmap)
@@ -266,26 +490,26 @@ namespace Retros.Program.Workstation.Changes
                 byte* pixelData = (byte*)bufferPtr;
 
                 Parallel.For(0, pixelWidth, x =>
-                {
-                    byte* column = pixelData + x * bytesPerPixel;
-                    //iterate the row for subarrays
-                    int startIndex = 0;
-                    int endIndex = 0;
-                    float pixelEval;
-                    while (startIndex < pixelHeight * stride)
-                    {
+                        {
+                        byte* column = pixelData + x * bytesPerPixel;
+                        //iterate the row for subarrays
+                        int startIndex = 0;
+                        int endIndex = 0;
+                        float pixelEval;
+                        while (startIndex < pixelHeight * stride)
+                        {
                         //find subarray
                         pixelEval = SelectedProperty((column[startIndex + 0], column[startIndex + 1], column[startIndex + 2]));
                         while (pixelEval < LowThreshhold && pixelEval > HighThreshhold && startIndex + stride < pixelHeight * stride)
                         {
-                            startIndex += stride;
-                            pixelEval = SelectedProperty((column[startIndex + 0], column[startIndex + 1], column[startIndex + 2]));
+                        startIndex += stride;
+                        pixelEval = SelectedProperty((column[startIndex + 0], column[startIndex + 1], column[startIndex + 2]));
                         }
                         endIndex = startIndex;
                         do
                         {
-                            endIndex += stride;
-                            pixelEval = SelectedProperty((column[endIndex + 0], column[endIndex + 1], column[endIndex + 2]));
+                        endIndex += stride;
+                        pixelEval = SelectedProperty((column[endIndex + 0], column[endIndex + 1], column[endIndex + 2]));
                         }
                         while (pixelEval >= LowThreshhold && pixelEval <= HighThreshhold  && endIndex + stride < pixelHeight * stride);
 
@@ -308,8 +532,8 @@ namespace Retros.Program.Workstation.Changes
                         }
 
                         startIndex += stride;
-                    }
-               });
+                        }
+                        });
 
 
             }
@@ -320,76 +544,8 @@ namespace Retros.Program.Workstation.Changes
 
             _applied = true;
         }
-        private unsafe void GenerateHorizontal(WriteableBitmap writeableBitmap)
-        {
-            int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
-            int pixelHeight = writeableBitmap.PixelHeight;
-            int pixelWidth = writeableBitmap.PixelWidth;
-            int stride = writeableBitmap.BackBufferStride;
 
-            writeableBitmap.Lock();
-
-            try
-            {
-                IntPtr bufferPtr = writeableBitmap.BackBuffer;
-                byte* pixelData = (byte*)bufferPtr;
-
-                Parallel.For(0, pixelHeight, y =>
-                {
-                    byte* row = pixelData + y * stride;
-                    //iterate the row for subarrays
-                    int startIndex = 0;
-                    int endIndex = 0;
-                    float pixelEval;
-                    while (startIndex < pixelWidth * bytesPerPixel)
-                    {
-                        //find subarray
-                        pixelEval = SelectedProperty((row[startIndex + 0], row[startIndex + 1], row[startIndex + 2]));
-                        while (pixelEval < LowThreshhold && pixelEval > HighThreshhold && startIndex + bytesPerPixel < pixelWidth * bytesPerPixel)
-                        {
-                            startIndex += bytesPerPixel;
-                            pixelEval = SelectedProperty((row[startIndex + 0], row[startIndex + 1], row[startIndex + 2]));
-                        }
-                        endIndex = startIndex;
-                        do
-                        {
-                            endIndex += bytesPerPixel;
-                            pixelEval = SelectedProperty((row[endIndex + 0], row[endIndex + 1], row[endIndex + 2]));
-                        }
-                        while (pixelEval >= LowThreshhold && pixelEval <= HighThreshhold  && endIndex + bytesPerPixel < pixelWidth * bytesPerPixel);
-
-                        //get subarray
-                        (byte, byte, byte)[] pixels = new (byte, byte, byte)[endIndex/bytesPerPixel - startIndex/bytesPerPixel];
-                        for (int i = 0; i < pixels.Length; i++)
-                        {
-                            pixels[i] = (row[startIndex + i*bytesPerPixel], row[startIndex + i*bytesPerPixel + 1], row[startIndex + i*bytesPerPixel + 2]);
-                        }
-
-                        //sort the subarray
-                        Array.Sort(pixels, Compare);
-
-                        //overwrite pixelData with sorted subarray
-                        for (int i = 0; i < pixels.Length; i++)
-                        {
-                            row[i*bytesPerPixel + 0 + startIndex] = pixels[i].Item1;
-                            row[i*bytesPerPixel + 1 + startIndex] = pixels[i].Item2;
-                            row[i*bytesPerPixel + 2 + startIndex] = pixels[i].Item3;
-                        }
-
-                        startIndex += bytesPerPixel;
-                    }
-               });
-
-            }
-            finally
-            {
-                writeableBitmap.Unlock();
-            }
-
-            _applied = true;
-        }
-
-        private int Compare((byte, byte, byte) a, (byte, byte, byte) b)
+        public int Compare((byte, byte, byte) a, (byte, byte, byte) b)
         {
             int dir = Direction == SortDirection.Ascending ? 1 : -1;
             float selA;
@@ -493,5 +649,6 @@ namespace Retros.Program.Workstation.Changes
             return base.Clone();
         }
     }
+
 
 }

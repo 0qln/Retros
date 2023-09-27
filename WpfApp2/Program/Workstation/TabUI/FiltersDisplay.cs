@@ -260,14 +260,14 @@ namespace Retros.Program.Workstation.TabUI
                 Name.PreviewMouseLeftButtonDown += (s, e) => StartDrag();
                 Name.PreviewMouseLeftButtonUp += (s, e) => StopDrag();
 
-                UIManager.ColorThemeManager.SetStyle(IncreaseHierachyButton, WindowHandle.ClientButtonStyle);
+                UIManager.ColorThemeManager.SetStyle(IncreaseHierachyButton, ClientButton.Style);
                 IncreaseHierachyButton.MinWidth = height;
                 IncreaseHierachyButton.Click += (s, e) => { parent.IncreaseHierachy(this); };
                 IncreaseHierachyButton.Content = "⮭";
                 IncreaseHierachyButton.MaxHeight = height;
                 IncreaseHierachyButton.MinHeight = height;
 
-                IncreaseHierachyButton.Style = WindowHandle.ClientButtonStyle();
+                IncreaseHierachyButton.Style = ClientButton.Style();
                 IncreaseHierachyButton.FontSize = 15;
                 IncreaseHierachyButton.Margin = new Thickness(0);
 

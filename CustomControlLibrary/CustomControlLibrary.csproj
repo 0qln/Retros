@@ -8,10 +8,10 @@
 
   <ItemGroup>
     <Reference Include="DebugLibrary">
-      <HintPath>..\..\..\repos\DebugLibrary\Release\DebugLibrary.dll</HintPath>
+      <HintPath>..\..\..\..\Github\Projects\DebugLibrary\DebugLibrary\bin\Release\net7.0\DebugLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Utillities">
-      <HintPath>..\..\..\repos\Utillities\Release\Utillities.dll</HintPath>
+      <HintPath>..\..\..\Utillities\Release\Utillities.dll</HintPath>
     </Reference>
   </ItemGroup>
 

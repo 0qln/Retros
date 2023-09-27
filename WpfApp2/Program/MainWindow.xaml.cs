@@ -24,7 +24,7 @@ namespace Retros.Program
     public partial class MainWindow : Window {
 
         // Window Handle
-        public WindowHandle? WindowHandle;
+        private WindowHandle? _visualHandle;
 
         // UI
         public Workstation.Workstation SelectedWorkstation;
@@ -36,71 +36,69 @@ namespace Retros.Program
             InitializeComponent();
 
             // Init window handle
-            WindowHandle = new(this);
+            _visualHandle = new(this);
             
             // Start WindowManager
             WindowManager.Start(this);
 
 
             // UI
-            Workstation.Workstation workstation = new(WindowHandle.Height);
+            Workstation.Workstation workstation = new(_visualHandle.Height);
             Workstations.Add(workstation);
             SelectedWorkstation = workstation;
             Helper.SetChildInGrid(ClientGrid, workstation.FrameworkElement, 1, 0);
-            
 
-            // WindowHandle
-            UIManager.ColorThemeManager.Set_BG3(b => WindowHandle.SetBGColor(b));
-            UIManager.ColorThemeManager.Set_BGh1(b => WindowHandle.ApplicationButtons.ColorWhenButtonHover = b);
 
-            DropDownMenu fileMenu = new("File", this);
-            DropDownMenu editMenu = new("Edit", Application.Current.MainWindow);
-            DropDownMenu viewMenu = new("View", Application.Current.MainWindow);
-            DropDownMenu settingsMenu = new("Settings", Application.Current.MainWindow);
+            // Window handle
+            _visualHandle.ClientButtons.Add(new ClientButton(
+                "File",
+                new PopupMenu(
+                    new PopupMenuOption("Save").SetAction(() => UIManager.SaveImage(SelectedWorkstation.ImageElement)),
+                    new PopupMenuOption("Open").SetAction(() => UIManager.LoadImage(SelectedWorkstation.ImageElement)))
+                ));
 
-            WindowHandle.CreateClientButton(fileMenu);
-            WindowHandle.CreateClientButton(viewMenu);
-            WindowHandle.CreateClientButton(editMenu);
-            WindowHandle.CreateClientButton(settingsMenu);
+            _visualHandle.ClientButtons.Add(new ClientButton(
+                "View",
+                new PopupMenu(
+                    new PopupMenuOption("Zoom"))
+                ));
 
-            fileMenu.AddOption("Save").SetKeyboardShortcut("Strg + S").AddCommand(() => UIManager.SaveImage(SelectedWorkstation.ImageElement));
-            fileMenu.AddOption("Open").SetKeyboardShortcut("Strg + O").AddCommand(() => UIManager.LoadImage(SelectedWorkstation.ImageElement));
+            _visualHandle.ClientButtons.Add(new ClientButton(
+                "Edit",
+                new PopupMenu(
+                    new PopupMenuOption("Save FIlter"),
+                    new PopupMenuOption("Undo"),
+                    new PopupMenuOption("Redo"))));
 
-            editMenu.AddOption("Save Filter").SetKeyboardShortcut("Strg + S + F");
-            editMenu.AddOption("Undo").SetKeyboardShortcut("Strg + Z");
-            InputBindings.Add(new KeyBinding(new UndoCommand(), Key.Z, ModifierKeys.Control));
-            InputBindings.Add(new KeyBinding(new RedoCommand(), Key.Y, ModifierKeys.Control));
 
-            editMenu.AddOption("Redo").SetKeyboardShortcut("Strg + Y");
+            _visualHandle.ClientButtons.SetWindowChromActiveAll(true);
 
-            viewMenu.AddOption("Zoom").SetKeyboardShortcut("Bla bla");
+            UIManager.ColorThemeManager.Set_BG3(b => _visualHandle.BackgroundColor = b);
+            UIManager.ColorThemeManager.Set_BGh1(b => _visualHandle.ApplicationButtons.ColorWhenButtonHover = b);
 
-            settingsMenu.AddOption("Change Layout").SetKeyboardShortcut("Strg + LShift + L");
 
-            WindowHandle.ActivateAllClientButtons();
+            _visualHandle.ApplicationButtons.ActivateExitButtonSprite();
+            _visualHandle.ApplicationButtons.ExitButtonImageSource = UIManager.ExitIconPath;
+            _visualHandle.ApplicationButtons.ExitButtonImagePadding = UIManager.IconPadding;
 
-            WindowHandle.ApplicationButtons.ActivateExitButtonSprite();
-            WindowHandle.ApplicationButtons.ExitButtonImageSource = UIManager.ExitIconPath;
-            WindowHandle.ApplicationButtons.ExitButtonImagePadding = UIManager.IconPadding;
+            _visualHandle.ApplicationButtons.ActivateMaximizeButtonSprite();
+            _visualHandle.ApplicationButtons.MaximizeButtonImageSource = UIManager.MaximizeIconPath;
+            _visualHandle.ApplicationButtons.MaximizeButtonImageSourceWhenMaximized = UIManager.MaximizeIconPath;
+            _visualHandle.ApplicationButtons.MaximizeButtonImageSourceWhenWindowed = UIManager.WindowedIconPath;
+            _visualHandle.ApplicationButtons.MaximizeButtonImagePadding = UIManager.IconPadding;
 
-            WindowHandle.ApplicationButtons.ActivateMaximizeButtonSprite();
-            WindowHandle.ApplicationButtons.MaximizeButtonImageSource = UIManager.MaximizeIconPath;
-            WindowHandle.ApplicationButtons.MaximizeButtonImageSourceWhenMaximized = UIManager.MaximizeIconPath;
-            WindowHandle.ApplicationButtons.MaximizeButtonImageSourceWhenWindowed = UIManager.WindowedIconPath;
-            WindowHandle.ApplicationButtons.MaximizeButtonImagePadding = UIManager.IconPadding;
+            _visualHandle.ApplicationButtons.ActivateMinimizeButtonSprite();
+            _visualHandle.ApplicationButtons.MinimizeButtonImageSource = UIManager.MinimizeIconPath;
+            _visualHandle.ApplicationButtons.MinimizeButtonImagePadding = UIManager.IconPadding;
 
-            WindowHandle.ApplicationButtons.ActivateMinimizeButtonSprite();
-            WindowHandle.ApplicationButtons.MinimizeButtonImageSource = UIManager.MinimizeIconPath;
-            WindowHandle.ApplicationButtons.MinimizeButtonImagePadding = UIManager.IconPadding;
+            _visualHandle.ApplicationButtons.AddFullcreenButton();
+            _visualHandle.ApplicationButtons.FullscreenButtonImageSource = UIManager.FullscreenIconPath;
+            _visualHandle.ApplicationButtons.FullscreenButtonImagePadding = UIManager.IconPadding;
 
-            WindowHandle.ApplicationButtons.AddFullcreenButton();
-            WindowHandle.ApplicationButtons.FullscreenButtonImageSource = UIManager.FullscreenIconPath;
-            WindowHandle.ApplicationButtons.FullscreenButtonImagePadding = UIManager.IconPadding;
-
-            WindowHandle.ApplicationButtons.AddSettingsButton();
-            WindowHandle.ApplicationButtons.SettingsButtonImageSource = UIManager.SettingsIconPath;/// Properties.Resources.settings_24;
-            WindowHandle.ApplicationButtons.SettingsButtonContentPadding = new Thickness(3);
-            WindowHandle.ApplicationButtons.OverrideSettings(WindowManager.ToggleSettings);
+            _visualHandle.ApplicationButtons.AddSettingsButton();
+            _visualHandle.ApplicationButtons.SettingsButtonImageSource = UIManager.SettingsIconPath;/// Properties.Resources.settings_24;
+            _visualHandle.ApplicationButtons.SettingsButtonContentPadding = new Thickness(3);
+            _visualHandle.ApplicationButtons.OverrideSettings(WindowManager.ToggleSettings);
         }
 
     }

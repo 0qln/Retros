@@ -162,7 +162,7 @@ namespace Retros.Program.Workstation.Changes
                 return;
             }
 
-            Task.Run(() =>
+            Thread applyFilters = new Thread(() =>
             {
                 WriteableBitmap bitmap = _image.GetDownscaledSourceImage();
                 ApplyChanges(bitmap);
@@ -171,9 +171,8 @@ namespace Retros.Program.Workstation.Changes
                 {
                     _image.ChangeCurrentImages(bitmap);
                 });
-                MessageBox.Show("1");
             });
-            MessageBox.Show("2");
+            applyFilters.Start();
 
             changed = false;
         }
